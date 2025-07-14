@@ -1,12 +1,52 @@
-# React + Vite
+# 🦸‍♂️ El Súper Gestor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sistema de gestión para metahumanos y burócratas con autenticación completa y dashboards especializados.
 
-Currently, two official plugins are available:
+## 🚀 **Quick Start**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```bash
+# Instalar dependencias
+npm install
 
-## Expanding the ESLint configuration
+# Iniciar servidor de desarrollo
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Abrir en navegador
+http://localhost:5174
+```
+
+## 🔐 **Credenciales de Prueba**
+
+| Rol | Usuario | Contraseña | Redirección |
+|-----|---------|------------|-------------|
+| Admin | `admin123` | `supersegura` | `/homeAdmin` |
+| Metahumano | `testuser` | `123456` | `/homeMeta` |
+| Burócrata | `burocrata1` | `tramite123` | `/homeBurocrata` |
+
+## 📚 **Documentación**
+
+- [`README_COMPLETO.md`](./README_COMPLETO.md) - Documentación técnica completa
+- [`TESTING_GUIDE.md`](./TESTING_GUIDE.md) - Guía de testing y debugging
+- [`USUARIOS_PRUEBA.md`](./USUARIOS_PRUEBA.md) - Lista de usuarios de prueba
+
+## 🛠️ **Tecnologías**
+
+- **Frontend**: React 18 + Vite
+- **Routing**: React Router DOM
+- **Forms**: React Hook Form
+- **Styling**: Tailwind CSS
+- **Icons**: React Icons
+- **HTTP Client**: Axios
+
+## ✅ **Características**
+
+- ✨ Autenticación completa con validaciones
+- 🔄 Redirección automática por roles
+- 🎨 Diseño moderno responsive
+- 📱 Modal y páginas independientes
+- 🛡️ Manejo robusto de errores
+- 🧪 Testing automatizado
+
+---
+
+*Desarrollado con ❤️ para gestionar el caos superheroico*

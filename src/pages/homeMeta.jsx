@@ -1,6 +1,6 @@
 import { useState } from "react";
 // Estructura de la aplicación
-import Sidebar from "../components/shared/SidebarUser";
+import Sidebar from "../components/shared/SidebarMetaHum";
 import Footer from "../components/footer";
 // Iconos
 import { CgMenuRound } from "react-icons/cg";
@@ -23,7 +23,7 @@ function Home() {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className="bg-[#262837] w-full min-h-screen transition-colors duration-300">
+    <div className="bg-[#545877] w-full min-h-screen transition-colors duration-300">
       <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
 
       {/* MENU */}
@@ -58,17 +58,17 @@ function Home() {
 
         {/* Contenido principal */}
         <div
-          className={`p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full hover:shadow-xl
+          className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
             ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
             ${showUser ? "opacity-90" : "opacity-100"}`}
         >
           <div className="flex-1 min-h-full">
-            <h1 className="text-3xl font-bold mb-6">Bienvenido</h1>
-            <p className="text-gray-300 mb-4">Este es el contenido principal de la aplicación.</p>
+            <h1 className="text-3xl font-bold mb-6">🦸‍♀️ Portal Metahumano</h1>
+            <p className="text-gray-300 mb-6">Bienvenido al panel de control para usuarios Metahumanos.</p>
             
-            {/* Aquí puedes agregar contenido personalizado en el futuro */}
+            {/* Aquí puedes agregar contenido específico para Metahumanos */}
             <div className="text-center py-8">
-              <p className="text-gray-400">Contenido personalizado próximamente...</p>
+              <p className="text-gray-400">Panel de control Metahumano en desarrollo...</p>
             </div>
           </div>
         </div>
@@ -108,7 +108,13 @@ function Home() {
           </div>
         </div>
       </main>
-      <footer>
+      <footer
+          className={`
+            ${showMenu 
+              ? "pl-4 lg:pl-28" 
+              : "pl-0"
+            }`}
+        >
         <Footer />
       </footer>
     </div>

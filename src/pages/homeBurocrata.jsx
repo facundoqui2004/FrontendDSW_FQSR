@@ -1,13 +1,13 @@
 import { useState } from "react";
 // Estructura de la aplicación
-import Sidebar from "../components/shared/SidebarUser";
+import Sidebar from "../components/shared/SidebarBurocrata";
 import Footer from "../components/footer";
 // Iconos
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
 import { RiHome6Line, RiCloseFill } from "react-icons/ri";
 
-function Home() {
+function HomeBurocrata() {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
 
@@ -23,7 +23,7 @@ function Home() {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className="bg-[#262837] w-full min-h-screen transition-colors duration-300">
+    <div className="bg-[#c4a783] w-full min-h-screen transition-colors duration-300">
       <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
 
       {/* MENU */}
@@ -58,17 +58,17 @@ function Home() {
 
         {/* Contenido principal */}
         <div
-          className={`p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full hover:shadow-xl
+          className={`p-4 bg-[#a37e4d] text-white rounded-lg shadow-lg h-full hover:shadow-xl
             ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
             ${showUser ? "opacity-90" : "opacity-100"}`}
         >
           <div className="flex-1 min-h-full">
-            <h1 className="text-3xl font-bold mb-6">Bienvenido</h1>
-            <p className="text-gray-300 mb-4">Este es el contenido principal de la aplicación.</p>
+            <h1 className="text-3xl font-bold mb-6">🏛️ Portal Burócrata</h1>
+            <p className="text-gray-300 mb-6">Bienvenido al panel de administración para usuarios Burócratas.</p>
             
-            {/* Aquí puedes agregar contenido personalizado en el futuro */}
+            {/* Contenido específico para Burócratas */}
             <div className="text-center py-8">
-              <p className="text-gray-400">Contenido personalizado próximamente...</p>
+              <p className="text-gray-400">Panel de administración Burócrata en desarrollo...</p>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@ function Home() {
                 className="text-3xl absolute left-4 top-4 p-2 box-content text-gray-300 bg-[#ec7c6a] rounded-full cursor-pointer hover:scale-110 hover:bg-[#d66b59] active:scale-95 hover:shadow-lg"
               />
               <h1 className="text-2xl font-bold mb-4 flex items-center">
-                Mi Perfil
+                Mi Perfil Burócrata
               </h1>
               <div className="space-y-4">
                 <div className="border-b border-gray-600 pb-2">
@@ -97,22 +97,28 @@ function Home() {
                 </div>
                 <div className="border-b border-gray-600 pb-2">
                   <h2 className="text-lg font-semibold">Configuración</h2>
-                  <p className="text-sm text-gray-400">Ajusta tus preferencias</p>
+                  <p className="text-sm text-gray-400">Ajusta tus preferencias administrativas</p>
                 </div>
                 <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Notificaciones</h2>
-                  <p className="text-sm text-gray-400">Controla las notificaciones</p>
+                  <h2 className="text-lg font-semibold">Permisos</h2>
+                  <p className="text-sm text-gray-400">Revisa tus permisos de acceso</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </main>
-      <footer>
+      <footer
+          className={`
+            ${showMenu 
+              ? "pl-4 lg:pl-28" 
+              : "pl-0"
+            }`}
+        >
         <Footer />
       </footer>
     </div>
   );
 }
 
-export default Home;
+export default HomeBurocrata;

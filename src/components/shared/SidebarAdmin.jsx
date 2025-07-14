@@ -9,12 +9,8 @@ import { useNavigate } from "react-router-dom";
 
 const Sidebar = (props) => {
     const { showMenu, toggleUser } = props;
-    const { isAuthenticated, logout } = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
-
-    const handleLoginClick = () => {
-        navigate('/login');
-    };
 
     const handleLogout = () => {
         logout();
@@ -125,32 +121,21 @@ const Sidebar = (props) => {
       </div>
       <div>
         <ul className="pl-4">
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <div className="relative">
-                    {isAuthenticated ? (
-                        <button
-                            onClick={handleLogout}
-                            className="group-hover:bg-[#ec7c6a] p-4 flex justify-center items-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white"
-                        >
-                            <CiLogout className="text-2xl" />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleLoginClick}
-                            className="group-hover:bg-[#ec7c6a] p-4 flex justify-center items-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white"
-                        >
-                            <CiLogin className="text-2xl" />
-                        </button>
-                    )}
-
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                        {isAuthenticated ? 'Cerrar Sesión' : 'Login'}
-                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </div>
-            </li>
-        </ul>
+                            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                                <button
+                                    onClick={handleLogout}
+                                    className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                                >
+                                    <CiLogout className="text-2xl" />
+                                    {/* Tooltip */}
+                                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                    Cerrar Sesión
+                                    {/* Flecha del tooltip */}
+                                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                                    </div>
+                                </button>
+                            </li>
+                        </ul>
       </div>
       
     </div>

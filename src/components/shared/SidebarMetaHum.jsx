@@ -7,14 +7,11 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 
+
 const Sidebar = (props) => {
     const { showMenu, toggleUser } = props;
-    const { isAuthenticated, logout } = useAuth();
+    const { logout } = useAuth();
     const navigate = useNavigate();
-
-    const handleLoginClick = () => {
-        navigate('/login');
-    };
 
     const handleLogout = () => {
         logout();
@@ -22,12 +19,12 @@ const Sidebar = (props) => {
     };
 
   return (
-    <div className={` bg-[#1F1D2B] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between py-6 rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
+    <div className={` bg-[#317196] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between py-6 rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
     ${showMenu ? 'left-0' : '-left-full'}`}>
       <div className="text-center my-4 relative group">
             <img
-                src="/public/Logo.png" // reemplaza con la ruta real del logo
-                alt="Logo El Súper Gestor"
+                src="/Images/metahumano.png" // reemplaza con la ruta real del logo
+                alt="Logo El Súper Gestor MetaHumano"
                 className="mx-auto w-25 h-auto cursor-pointer" // ancho fijo, altura automática para mantener proporción
             />
             {/* Tooltip estilo cómic para el logo */}
@@ -59,10 +56,10 @@ const Sidebar = (props) => {
         {/* Lista de enlaces */}
       <div>
         <ul className="pl-4">
-            <li className="bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl">
+            <li className="bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl">
             <a 
                 href="#" 
-                className="bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-white relative group"
+                className="bg-[#317196] p-4 flex justify-center block rounded-xl text-white relative group"
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}
@@ -74,10 +71,10 @@ const Sidebar = (props) => {
             </a>
             </li>
 
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <a
                     href="#"
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-[#ec7c6a] group-hover:text-white relative"
+                    className="group-hover:bg-[#317196] p-4 flex justify-center block rounded-xl text-white group-hover:text-white relative"
                 >
                     <FaWpforms className="text-2xl" />
                     {/* Tooltip */}
@@ -90,10 +87,10 @@ const Sidebar = (props) => {
             </li>
 
 
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={toggleUser}
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white relative"
+                    className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
                 >
                     <FaRegUserCircle className="text-2xl" />
                     {/* Tooltip */}
@@ -105,10 +102,10 @@ const Sidebar = (props) => {
                 </button>
             </li>
 
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <a
                     href="#"
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-[#ec7c6a] group-hover:text-white relative"
+                    className="group-hover:bg-[#317196] p-4 flex justify-center block rounded-xl text-white group-hover:text-white relative"
                 >
                     <MdContactSupport className="text-2xl" />
                     {/* Tooltip */}
@@ -125,30 +122,19 @@ const Sidebar = (props) => {
       </div>
       <div>
         <ul className="pl-4">
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <div className="relative">
-                    {isAuthenticated ? (
-                        <button
-                            onClick={handleLogout}
-                            className="group-hover:bg-[#ec7c6a] p-4 flex justify-center items-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white"
-                        >
-                            <CiLogout className="text-2xl" />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={handleLoginClick}
-                            className="group-hover:bg-[#ec7c6a] p-4 flex justify-center items-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white"
-                        >
-                            <CiLogin className="text-2xl" />
-                        </button>
-                    )}
-
+            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                <button
+                    onClick={handleLogout}
+                    className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                >
+                    <CiLogout className="text-2xl" />
                     {/* Tooltip */}
                     <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                        {isAuthenticated ? 'Cerrar Sesión' : 'Login'}
-                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                    Cerrar Sesión
+                    {/* Flecha del tooltip */}
+                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
                     </div>
-                </div>
+                </button>
             </li>
         </ul>
       </div>
