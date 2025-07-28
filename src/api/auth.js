@@ -40,3 +40,10 @@ apiClient.interceptors.response.use(
 
 export const registerRequest = user => apiClient.post('/usuarios/register', user);
 export const loginRequest = user => apiClient.post('/usuarios/login', user);
+
+// Funciones para gestión de usuarios (admin)
+export const getAllUsersRequest = () => apiClient.get('/usuarios');
+export const getUserByIdRequest = (id) => apiClient.get(`/usuarios/${id}`);
+export const updateUserRequest = (id, userData) => apiClient.put(`/usuarios/${id}`, userData);
+export const deleteUserRequest = (id) => apiClient.delete(`/usuarios/${id}`);
+export const toggleUserStatusRequest = (id, activo) => apiClient.patch(`/usuarios/${id}/status`, { activo });
