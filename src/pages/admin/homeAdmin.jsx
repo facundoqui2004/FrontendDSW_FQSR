@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from '../components/layouts/AdminLayout';
+import AdminLayout from '../../components/layouts/AdminLayout';
 
 export default function HomeAdmin() {
   const navigate = useNavigate();

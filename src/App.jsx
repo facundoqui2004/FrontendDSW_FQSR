@@ -2,17 +2,23 @@ import { BrowserRouter, Routes ,Route } from "react-router-dom";
 
 
 //PAGES
-import RegisterPage from './pages/RegisterPage';
-import LoginPage from './pages/LoginPage';
-import Home from './pages/home'; 
-import HomeMeta from './pages/homeMeta';
-import HomeBurocrata from './pages/homeBurocrata'; 
-import HomeAdmin from './pages/homeAdmin';
-import GestionarUsuarios from './pages/GestionarUsuarios';
-import GestionarMetahumanos from './pages/GestionarMetahumanos';
-import GestionarBurocratas from './pages/GestionarBurocratas';
-import Tramites from './pages/Tramites';
-import CrearPoderes from './pages/tramites/CrearPoderes';
+import { 
+  // Páginas generales
+  Home, 
+  LoginPage, 
+  RegisterPage,
+  // Páginas de administrador
+  HomeAdmin, 
+  GestionarUsuarios, 
+  GestionarMetahumanos, 
+  GestionarBurocratas,
+  // Páginas de metahumanos
+  HomeMeta, 
+  Tramites, 
+  CrearPoderes,
+  // Páginas de burócratas
+  HomeBurocrata
+} from './pages';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 

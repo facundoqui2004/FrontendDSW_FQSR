@@ -1,42 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '../components/layouts/AdminLayout';
-import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../api/usuarios';
+import AdminLayout from '../../components/layouts/AdminLayout';
+import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../../api/usuarios';
 
-export default function GestionarBurocratas() {
-  const [burocratas, setBurocratas] = useState([]);
+export default function GestionarMetahumanos() {
+  const [metahumanos, setMetahumanos] = useState([]);
   const [filtro, setFiltro] = useState('todos');
   const [busqueda, setBusqueda] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Cargar burócratas del backend
-  const cargarBurocratas = async () => {
+  // Cargar metahumanos del backend
+  const cargarMetahumanos = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log('🚀 Cargando burócratas desde endpoints disponibles...');
+      console.log('🚀 Cargando metahumanos desde endpoints disponibles...');
       
-      // Usar la función combinada y filtrar solo burócratas
+      // Usar la función combinada y filtrar solo metahumanos
       const response = await obtenerTodosLosUsuariosCombinados();
       console.log('✅ Usuarios obtenidos:', response.data);
       
       const usuariosData = response.data || [];
       
-      // Filtrar solo burócratas
-      const burocratazData = usuariosData.filter(usuario => usuario.rol === 'BUROCRATA');
+      // Filtrar solo metahumanos
+      const metahumanosData = usuariosData.filter(usuario => usuario.rol === 'METAHUMANO');
       
-      if (burocratazData.length === 0) {
-        setError('No se encontraron burócratas en el sistema.');
+      if (metahumanosData.length === 0) {
+        setError('No se encontraron metahumanos en el sistema.');
       } else {
-        setBurocratas(burocratazData);
-        console.log(`🎉 Se cargaron ${burocratazData.length} burócratas exitosamente`);
+        setMetahumanos(metahumanosData);
+        console.log(`🎉 Se cargaron ${metahumanosData.length} metahumanos exitosamente`);
       }
       
     } catch (error) {
-      console.error('❌ Error al cargar burócratas:', error);
+      console.error('❌ Error al cargar metahumanos:', error);
       
-      let mensajeError = 'Error al cargar los burócratas.';
+      let mensajeError = 'Error al cargar los metahumanos.';
       if (error.code === 'ECONNREFUSED') {
         mensajeError += ' El backend no está disponible en http://localhost:3000';
       } else if (error.response?.status === 401) {
@@ -54,22 +54,22 @@ export default function GestionarBurocratas() {
   };
 
   useEffect(() => {
-    cargarBurocratas();
+    cargarMetahumanos();
   }, []);
 
-  // Manejar eliminación de burócrata
+  // Manejar eliminación de metahumano
   const handleEliminar = async (id, tipo) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar este burócrata?')) {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar este metahumano?')) {
       return;
     }
 
     try {
       await eliminarUsuario(id, tipo);
-      await cargarBurocratas(); // Recargar la lista
-      alert('Burócrata eliminado exitosamente');
+      await cargarMetahumanos(); // Recargar la lista
+      alert('Metahumano eliminado exitosamente');
     } catch (error) {
-      console.error('Error al eliminar burócrata:', error);
-      alert('Error al eliminar el burócrata');
+      console.error('Error al eliminar metahumano:', error);
+      alert('Error al eliminar el metahumano');
     }
   };
 
@@ -78,101 +78,109 @@ export default function GestionarBurocratas() {
     try {
       const nuevoEstado = estadoActual === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
       await cambiarEstadoUsuario(id, tipo, nuevoEstado);
-      await cargarBurocratas(); // Recargar la lista
+      await cargarMetahumanos(); // Recargar la lista
       alert(`Estado cambiado a ${nuevoEstado} exitosamente`);
     } catch (error) {
       console.error('Error al cambiar estado:', error);
-      alert('Error al cambiar el estado del burócrata');
+      alert('Error al cambiar el estado del metahumano');
     }
   };
 
-  // Filtrar burócratas según búsqueda y filtro
-  const burocratazFiltrados = burocratas.filter(burocrata => {
+  // Filtrar metahumanos según búsqueda y filtro
+  const metahumanosFiltrados = metahumanos.filter(metahumano => {
     const coincideBusqueda = !busqueda || 
-      burocrata.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.nomBurocrata?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.departamento?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.cargo?.toLowerCase().includes(busqueda.toLowerCase());
+      metahumano.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      metahumano.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      metahumano.nomMetahumano?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      metahumano.nomVillano?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      metahumano.nomHeroe?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      metahumano.nomPersonaje?.toLowerCase().includes(busqueda.toLowerCase());
 
     const coincideFiltro = filtro === 'todos' || 
-      (filtro === 'activos' && burocrata.estado === 'ACTIVO') ||
-      (filtro === 'inactivos' && burocrata.estado === 'INACTIVO') ||
-      (filtro === 'supervisores' && burocrata.cargo?.toLowerCase().includes('supervisor')) ||
-      (filtro === 'empleados' && !burocrata.cargo?.toLowerCase().includes('supervisor'));
+      (filtro === 'activos' && metahumano.estado === 'ACTIVO') ||
+      (filtro === 'inactivos' && metahumano.estado === 'INACTIVO') ||
+      (filtro === 'heroes' && metahumano.categoria === 'heroe') ||
+      (filtro === 'villanos' && metahumano.categoria === 'villano');
 
     return coincideBusqueda && coincideFiltro;
   });
 
-  const obtenerNombreCompleto = (burocrata) => {
-    return burocrata.nomBurocrata || burocrata.nomUsuario || 'Sin nombre';
+  const obtenerNombreCompleto = (metahumano) => {
+    return metahumano.nomMetahumano || 
+           metahumano.nomPersonaje || 
+           metahumano.nomHeroe || 
+           metahumano.nomVillano || 
+           'Sin nombre';
   };
 
-  const obtenerDepartamento = (burocrata) => {
-    return burocrata.departamento || 'Sin departamento';
+  const obtenerCategoria = (metahumano) => {
+    if (metahumano.categoria) return metahumano.categoria;
+    if (metahumano.nomHeroe) return 'héroe';
+    if (metahumano.nomVillano) return 'villano';
+    return 'desconocida';
   };
 
-  const obtenerCargo = (burocrata) => {
-    return burocrata.cargo || 'Sin cargo';
-  };
-
-  const obtenerIconoDepartamento = (departamento) => {
-    const dept = departamento?.toLowerCase();
-    if (dept?.includes('admin')) return '👨‍💼';
-    if (dept?.includes('legal')) return '⚖️';
-    if (dept?.includes('registro')) return '📋';
-    if (dept?.includes('licencia')) return '📄';
-    if (dept?.includes('tramite')) return '📝';
-    return '🏢';
-  };
-
-  const obtenerColorCargo = (cargo) => {
-    if (cargo?.toLowerCase().includes('supervisor') || cargo?.toLowerCase().includes('jefe')) {
-      return 'text-yellow-400';
+  const obtenerIconoCategoria = (categoria) => {
+    switch (categoria?.toLowerCase()) {
+      case 'heroe':
+      case 'héroe':
+        return '🦸‍♂️';
+      case 'villano':
+        return '🦹‍♂️';
+      default:
+        return '⚡';
     }
-    if (cargo?.toLowerCase().includes('coordinador')) {
-      return 'text-green-400';
+  };
+
+  const obtenerColorCategoria = (categoria) => {
+    switch (categoria?.toLowerCase()) {
+      case 'heroe':
+      case 'héroe':
+        return 'text-blue-400';
+      case 'villano':
+        return 'text-red-400';
+      default:
+        return 'text-purple-400';
     }
-    return 'text-blue-400';
   };
 
   if (loading) {
     return (
-      <AdminLayout title="Gestionar Burócratas">
+      <AdminLayout title="Gestionar Metahumanos">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
-          <span className="ml-3 text-white">Cargando burócratas...</span>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
+          <span className="ml-3 text-white">Cargando metahumanos...</span>
         </div>
       </AdminLayout>
     );
   }
 
   return (
-    <AdminLayout title="Gestionar Burócratas">
+    <AdminLayout title="Gestionar Metahumanos">
       <div className="space-y-6">
         {/* Header con estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">🏢</span>
+              <div className="w-10 h-10 bg-cyan-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold">⚡</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Total Burócratas</p>
-                <p className="text-2xl font-bold text-white">{burocratas.length}</p>
+                <p className="text-sm text-gray-400">Total Metahumanos</p>
+                <p className="text-2xl font-bold text-white">{metahumanos.length}</p>
               </div>
             </div>
           </div>
           
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">👨‍💼</span>
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold">🦸‍♂️</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Supervisores</p>
+                <p className="text-sm text-gray-400">Héroes</p>
                 <p className="text-2xl font-bold text-white">
-                  {burocratas.filter(b => obtenerCargo(b).toLowerCase().includes('supervisor')).length}
+                  {metahumanos.filter(m => obtenerCategoria(m).toLowerCase().includes('hero')).length}
                 </p>
               </div>
             </div>
@@ -180,13 +188,13 @@ export default function GestionarBurocratas() {
           
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">✅</span>
+              <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold">🦹‍♂️</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Activos</p>
+                <p className="text-sm text-gray-400">Villanos</p>
                 <p className="text-2xl font-bold text-white">
-                  {burocratas.filter(b => b.estado === 'ACTIVO').length}
+                  {metahumanos.filter(m => obtenerCategoria(m).toLowerCase().includes('villano')).length}
                 </p>
               </div>
             </div>
@@ -201,10 +209,10 @@ export default function GestionarBurocratas() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Buscar burócratas..."
+                  placeholder="Buscar metahumanos..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
-                  className="bg-[#334155] text-white px-4 py-2 rounded-lg pl-10 w-full md:w-80 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                  className="bg-[#334155] text-white px-4 py-2 rounded-lg pl-10 w-full md:w-80 focus:ring-2 focus:ring-cyan-400 focus:outline-none"
                 />
                 <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
               </div>
@@ -213,20 +221,20 @@ export default function GestionarBurocratas() {
               <select
                 value={filtro}
                 onChange={(e) => setFiltro(e.target.value)}
-                className="bg-[#334155] text-white px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                className="bg-[#334155] text-white px-4 py-2 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:outline-none"
               >
                 <option value="todos">Todos</option>
                 <option value="activos">Activos</option>
                 <option value="inactivos">Inactivos</option>
-                <option value="supervisores">Supervisores</option>
-                <option value="empleados">Empleados</option>
+                <option value="heroes">Héroes</option>
+                <option value="villanos">Villanos</option>
               </select>
             </div>
 
             {/* Botón de recarga */}
             <button
-              onClick={cargarBurocratas}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center"
+              onClick={cargarMetahumanos}
+              className="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg transition-colors flex items-center"
             >
               <span className="mr-2">🔄</span>
               Actualizar
@@ -234,11 +242,11 @@ export default function GestionarBurocratas() {
           </div>
         </div>
 
-        {/* Tabla de burócratas */}
+        {/* Tabla de metahumanos */}
         <div className="bg-[#1e293b] rounded-lg border border-slate-600 overflow-hidden">
           <div className="p-6 border-b border-slate-600">
             <h3 className="text-lg font-semibold text-white">
-              Lista de Burócratas ({burocratazFiltrados.length})
+              Lista de Metahumanos ({metahumanosFiltrados.length})
             </h3>
           </div>
 
@@ -248,18 +256,18 @@ export default function GestionarBurocratas() {
                 <div className="flex items-center">
                   <span className="text-red-400 mr-3">⚠️</span>
                   <div>
-                    <h4 className="font-medium text-red-400">Error al cargar burócratas</h4>
+                    <h4 className="font-medium text-red-400">Error al cargar metahumanos</h4>
                     <p className="text-red-300 text-sm">{error}</p>
                   </div>
                 </div>
               </div>
             </div>
-          ) : burocratazFiltrados.length === 0 ? (
+          ) : metahumanosFiltrados.length === 0 ? (
             <div className="p-6 text-center">
               <p className="text-gray-400">
                 {busqueda || filtro !== 'todos' 
-                  ? 'No se encontraron burócratas que coincidan con los filtros.' 
-                  : 'No hay burócratas registrados en el sistema.'
+                  ? 'No se encontraron metahumanos que coincidan con los filtros.' 
+                  : 'No hay metahumanos registrados en el sistema.'
                 }
               </p>
             </div>
@@ -269,70 +277,65 @@ export default function GestionarBurocratas() {
                 <thead className="bg-[#334155]">
                   <tr>
                     <th className="text-left p-4 text-gray-300 font-medium">Usuario</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Nombre Completo</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Departamento</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Cargo</th>
+                    <th className="text-left p-4 text-gray-300 font-medium">Nombre Metahumano</th>
+                    <th className="text-left p-4 text-gray-300 font-medium">Categoría</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Email</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Estado</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {burocratazFiltrados.map((burocrata, index) => {
-                    const departamento = obtenerDepartamento(burocrata);
-                    const cargo = obtenerCargo(burocrata);
+                  {metahumanosFiltrados.map((metahumano, index) => {
+                    const categoria = obtenerCategoria(metahumano);
                     return (
-                      <tr key={burocrata.id || index} className="border-t border-slate-600 hover:bg-[#334155] transition-colors">
+                      <tr key={metahumano.id || index} className="border-t border-slate-600 hover:bg-[#334155] transition-colors">
                         <td className="p-4">
                           <div className="flex items-center">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                            <div className="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center">
                               <span className="text-white font-bold">
-                                {obtenerIconoDepartamento(departamento)}
+                                {obtenerIconoCategoria(categoria)}
                               </span>
                             </div>
                             <div className="ml-3">
-                              <p className="text-white font-medium">{burocrata.nomUsuario}</p>
-                              <p className="text-gray-400 text-sm">ID: {burocrata.id}</p>
+                              <p className="text-white font-medium">{metahumano.nomUsuario}</p>
+                              <p className="text-gray-400 text-sm">ID: {metahumano.id}</p>
                             </div>
                           </div>
                         </td>
                         <td className="p-4">
-                          <p className="text-white">{obtenerNombreCompleto(burocrata)}</p>
+                          <p className="text-white">{obtenerNombreCompleto(metahumano)}</p>
                         </td>
                         <td className="p-4">
-                          <p className="text-gray-300">{departamento}</p>
-                        </td>
-                        <td className="p-4">
-                          <span className={`font-medium ${obtenerColorCargo(cargo)}`}>
-                            {cargo}
+                          <span className={`font-medium capitalize ${obtenerColorCategoria(categoria)}`}>
+                            {categoria}
                           </span>
                         </td>
                         <td className="p-4">
-                          <p className="text-gray-300">{burocrata.email}</p>
+                          <p className="text-gray-300">{metahumano.email}</p>
                         </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            burocrata.estado === 'ACTIVO' 
+                            metahumano.estado === 'ACTIVO' 
                               ? 'bg-green-900 text-green-300' 
                               : 'bg-red-900 text-red-300'
                           }`}>
-                            {burocrata.estado || 'ACTIVO'}
+                            {metahumano.estado || 'ACTIVO'}
                           </span>
                         </td>
                         <td className="p-4">
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => handleCambiarEstado(burocrata.id, 'burocrata', burocrata.estado)}
+                              onClick={() => handleCambiarEstado(metahumano.id, 'metahumano', metahumano.estado)}
                               className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                burocrata.estado === 'ACTIVO'
+                                metahumano.estado === 'ACTIVO'
                                   ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
                                   : 'bg-green-600 hover:bg-green-700 text-white'
                               }`}
                             >
-                              {burocrata.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
+                              {metahumano.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
                             </button>
                             <button
-                              onClick={() => handleEliminar(burocrata.id, 'burocrata')}
+                              onClick={() => handleEliminar(metahumano.id, 'metahumano')}
                               className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
                             >
                               Eliminar

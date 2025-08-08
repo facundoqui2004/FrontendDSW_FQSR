@@ -3,7 +3,9 @@ const API_URL = 'http://localhost:3000/api/poderes';
 // Obtener todos los poderes
 export const getPoderes = async () => {
   try {
-    const response = await fetch(API_URL);
+    const response = await fetch(API_URL, {
+      // credentials: 'include' // TEMPORALMENTE DESHABILITADO - Problema de CORS
+    });
     if (!response.ok) {
       throw new Error('Error al obtener poderes');
     }
@@ -17,7 +19,9 @@ export const getPoderes = async () => {
 // Obtener un poder por ID
 export const getPoderById = async (id) => {
   try {
-    const response = await fetch(`${API_URL}/${id}`);
+    const response = await fetch(`${API_URL}/${id}`, {
+      // credentials: 'include' // TEMPORALMENTE DESHABILITADO - Problema de CORS
+    });
     if (!response.ok) {
       throw new Error('Error al obtener el poder');
     }
@@ -33,6 +37,7 @@ export const createPoder = async (poderData) => {
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
+      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
       headers: {
         'Content-Type': 'application/json',
       },
@@ -53,6 +58,7 @@ export const updatePoder = async (id, poderData) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'PUT',
+      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
       headers: {
         'Content-Type': 'application/json',
       },
@@ -73,6 +79,7 @@ export const deletePoder = async (id) => {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
       method: 'DELETE',
+      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
     });
     if (!response.ok) {
       throw new Error('Error al eliminar el poder');

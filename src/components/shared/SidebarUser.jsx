@@ -16,9 +16,14 @@ const Sidebar = (props) => {
         navigate('/login');
     };
 
-    const handleLogout = () => {
-        logout();
-        navigate('/');
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/');
+        } catch (error) {
+            console.error('Error durante logout:', error);
+            navigate('/');
+        }
     };
 
   return (

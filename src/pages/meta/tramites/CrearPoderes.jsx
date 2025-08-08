@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AdminLayout from '../../components/layouts/AdminLayout';
-import { getPoderes, createPoder, deletePoder } from '../../api/poderes';
+import AdminLayout from '../../../components/layouts/AdminLayout';
+import { getPoderes, createPoder, deletePoder } from '../../../api/poderes';
 
 const CrearPoderes = () => {
   const navigate = useNavigate();

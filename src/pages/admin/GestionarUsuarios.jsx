@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from '../components/layouts/AdminLayout';
-import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../api/usuarios';
+import AdminLayout from '../../components/layouts/AdminLayout';
+import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../../api/usuarios';
 
 export default function GestionarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);

@@ -6,6 +6,7 @@ const API = 'http://localhost:3000/api';
 const apiClient = axios.create({
     baseURL: API,
     timeout: 10000, // 10 segundos de timeout
+    // withCredentials: true, // TEMPORALMENTE DESHABILITADO - Problema de CORS
     headers: {
         'Content-Type': 'application/json',
     }
@@ -38,8 +39,11 @@ apiClient.interceptors.response.use(
     }
 );
 
-export const registerRequest = user => apiClient.post('/usuarios/register', user);
-export const loginRequest = user => apiClient.post('/usuarios/login', user);
+export const registerMetahumanoRequest = user => apiClient.post('/auth/register/metahumano', user);
+export const registerBurocrataRequest = user => apiClient.post('/auth/register/burocrata', user);
+export const loginRequest = user => apiClient.post('/auth/login', user);
+export const logoutRequest = () => apiClient.post('/auth/logout');
+export const getPerfilRequest = () => apiClient.get('/auth/perfil');
 
 // Funciones para gestión de usuarios (admin)
 export const getAllUsersRequest = () => apiClient.get('/usuarios');

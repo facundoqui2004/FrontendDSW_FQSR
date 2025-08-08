@@ -3,21 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaUser, FaEnvelope, FaLock, FaUserPlus, FaSignInAlt } from "react-icons/fa";
 import { RiCloseFill } from "react-icons/ri";
-import { useAuth } from "../context/AuthContext";
-import Sidebar from "../components/shared/SidebarUser";
-import Footer from "../components/footer";
+import { useAuth } from "../../context/AuthContext";
+import Sidebar from "../../components/shared/SidebarUser";
+import Footer from "../../components/footer";
 
 const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { isAuthenticated, getHomeRouteByRole, login, signup, error } = useAuth();
+  const { isAuthenticated, user, getHomeRouteByRole, login, signup, error } = useAuth();
   const navigate = useNavigate();
   
   // Formularios separados para login y registro
   const loginForm = useForm({
     defaultValues: {
-      nomUsuario: '', // Cambiado de email a nomUsuario para consistencia con backend
+      email: '', // El backend espera email para login
       password: ''
     }
   });
@@ -38,23 +38,25 @@ const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
 
   // Redirigir si ya está autenticado
   useEffect(() => {
-    console.log('🔄 useEffect - isAuthenticated:', isAuthenticated);
-    if (isAuthenticated) {
-      console.log('✅e Usuario autenticado, obteniendo ruta...');
+    console.log('🔄 LoginPage useEffect - isAuthenticated:', isAuthenticated);
+    console.log('🔄 LoginPage useEffect - user:', user);
+    if (isAuthenticated && user) {
+      console.log('✅ Usuario autenticado, obteniendo ruta...');
       const homeRoute = getHomeRouteByRole();
       console.log('🏠 Navegando a:', homeRoute);
+      console.log('📊 Datos completos para navegación:', { user, homeRoute });
       navigate(homeRoute);
       if (isModal && onClose) {
         onClose(); // Cerrar el modal solo si es modal
       }
     }
-  }, [isAuthenticated, navigate, getHomeRouteByRole, onClose, isModal]);
+  }, [isAuthenticated, user, navigate, getHomeRouteByRole, onClose, isModal]);
 
   const onSubmitLogin = async (data) => {
     console.log('🚀 Intentando login con:', data);
     const result = await login({
-      nomUsuario: data.nomUsuario,
-      contrasena: data.password
+      email: data.email, // Corregido para usar email como espera el backend
+      password: data.password
     });
     
     console.log('📊 Resultado del login:', result);
@@ -76,11 +78,13 @@ const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
     }
     
     const result = await signup({
-      nomUsuario: data.name,
-      mail: data.email,
-      contrasena: data.password,
-      rol: data.role
-    });
+      email: data.email,
+      telefono: data.phone || "+1-555-0000", // Telefono es requerido en backend
+      password: data.password,
+      nombre: data.name,
+      alias: data.name, // Usar name como alias por defecto
+      origen: "Registro Web" // Valor por defecto
+    }, data.role ? data.role.toLowerCase() : 'metahumano');
     
     if (result.success) {
       console.log('Registro exitoso:', result.data);
@@ -190,7 +194,7 @@ const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
                     }
                     <input
                         type="text"
-                        {...register(isLogin ? 'nomUsuario' : 'email', {
+                        {...register(isLogin ? 'email' : 'email', {
                             required: isLogin ? 'El nombre de usuario es requerido' : 'El correo electrónico es requerido',
                             ...(isLogin ? {} : {
                                 pattern: {
@@ -202,8 +206,8 @@ const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
                         placeholder={isLogin ? "Nombre de usuario" : "Correo electrónico"}
                         className="w-full pl-10 pr-4 py-3 bg-[#262837] border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-[#ec7c6a] focus:ring-2 focus:ring-[#ec7c6a] focus:ring-opacity-50 transition-all duration-200"
                     />
-                    {(errors.nomUsuario || errors.email) && (
-                        <p className="mt-1 text-sm text-red-400">{errors.nomUsuario?.message || errors.email?.message}</p>
+                    {errors.email && (
+                        <p className="mt-1 text-sm text-red-400">{errors.email?.message}</p>
                     )}
                 </div>
 
@@ -276,8 +280,8 @@ const LoginPage = ({ isOpen = true, onClose = () => {}, isModal = false }) => {
                             className="w-full pl-4 pr-4 py-3 bg-[#262837] border border-gray-600 rounded-lg text-white appearance-none placeholder-gray-400 focus:outline-none focus:border-[#ec7c6a] focus:ring-2 focus:ring-[#ec7c6a] focus:ring-opacity-50 transition-all duration-200"
                         >
                             <option value="" disabled>Selecciona tu tipo</option>
-                            <option value="BUROCRATA">BUROCRAT</option>
                             <option value="METAHUMANO">METAHUMANO</option>
+                            <option value="BUROCRATA">BURÓCRATA</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
                             ▼

@@ -6,18 +6,16 @@ const API = 'http://localhost:3000/api';
 const usuariosAPI = axios.create({
     baseURL: API,
     timeout: 10000,
+    // withCredentials: true, // TEMPORALMENTE DESHABILITADO - Problema de CORS
     headers: {
         'Content-Type': 'application/json',
     }
 });
 
-// Interceptor para agregar token de autenticación si existe
+// Interceptor para requests (ya no necesitamos token manual)
 usuariosAPI.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
+        // Las cookies se envían automáticamente con withCredentials: true
         console.log('Enviando request a:', config.url);
         return config;
     },
@@ -37,8 +35,8 @@ usuariosAPI.interceptors.response.use(
         console.error('Error en response:', error);
         
         if (error.response?.status === 401) {
-            // Token expirado o no válido
-            localStorage.removeItem('token');
+            // Token expirado o no válido - las cookies se manejan automáticamente
+            console.error('No autorizado - sesión expirada');
             window.location.href = '/login';
         } else if (error.response?.status === 403) {
             console.error('No tienes permisos para realizar esta acción');
