@@ -2,6 +2,7 @@ import { useState } from "react";
 // Estructura de la aplicación
 import Sidebar from "../../components/shared/SidebarMetaHum";
 import Footer from "../../components/footer";
+import { useNavigate } from "react-router-dom";
 // Iconos
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
@@ -10,7 +11,12 @@ import { RiHome6Line, RiCloseFill } from "react-icons/ri";
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
+  const navigate = useNavigate();
 
+
+  const goToTramites = () => {
+    navigate('/meta/tramites');
+  }
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) {
@@ -54,7 +60,7 @@ function Home() {
         </button>
       </nav>
 
-      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0">
+      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0 h-full">
 
         {/* Contenido principal */}
         <div
@@ -70,8 +76,110 @@ function Home() {
             <div className="text-center py-8">
               <p className="text-gray-400">Panel de control Metahumano en desarrollo...</p>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              {/* Botón Mis Proyectos */}
+              <button className="group relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-blue-500/30">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-left">📋 Mis Proyectos</h2>
+                    <div className="w-8 h-8 bg-blue-500/30 rounded-full flex items-center justify-center group-hover:bg-blue-400/50 transition-colors">
+                      <span className="text-sm">→</span>
+                    </div>
+                  </div>
+                  <p className="text-blue-100 text-sm text-left leading-relaxed">
+                    Gestiona y supervisa todos tus proyectos Metahumanos en un solo lugar.
+                  </p>
+                </div>
+              </button>
+
+              {/* Botón Mis Trámites */}
+              <button 
+                onClick={goToTramites}
+                className="group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-left">⚡ Mis Trámites</h2>
+                    <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center group-hover:bg-purple-400/50 transition-colors">
+                      <span className="text-sm">→</span>
+                    </div>
+                  </div>
+                  <p className="text-purple-100 text-sm text-left leading-relaxed">
+                    Administra tus trámites de roles y poderes de forma rápida y eficiente.
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
+          
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         {/* Panel de usuario */}
         <div

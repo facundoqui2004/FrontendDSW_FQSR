@@ -12,9 +12,10 @@ import {
   GestionarUsuarios, 
   GestionarMetahumanos, 
   GestionarBurocratas,
+  Tramites,
   // Páginas de metahumanos
   HomeMeta, 
-  Tramites, 
+  TramitesMetaHumano, 
   CrearPoderes,
   // Páginas de burócratas
   HomeBurocrata
@@ -38,6 +39,14 @@ function App() {
             element={
               <ProtectedRoute requiredRole="METAHUMANO">
                 <HomeMeta />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/meta/tramites" 
+            element={
+              <ProtectedRoute requiredRole="METAHUMANO">
+                <TramitesMetaHumano />
               </ProtectedRoute>
             } 
           />
