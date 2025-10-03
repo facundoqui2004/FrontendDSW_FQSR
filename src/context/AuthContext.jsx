@@ -89,14 +89,14 @@ export const AuthProvider = ({children}) => {
         
         switch (normalizedRole) {
             case 'METAHUMANO':
-                console.log('🦸‍♂️ Redirigiendo a /homeMeta');
-                return '/homeMeta';
+                console.log('🦸‍♂️ Redirigiendo a /metahumano');
+                return '/metahumano';
             case 'BUROCRATA':
                 console.log('📋 Redirigiendo a /homeBurocrata');
                 return '/homeBurocrata';
             case 'admin':
-                console.log('👑 Redirigiendo a /homeAdmin');
-                return '/homeAdmin';
+                console.log('👑 Redirigiendo a /admin');
+                return '/admin';
             default:
                 console.log('❓ Rol desconocido después de normalización, redirigiendo a /', normalizedRole);
                 return '/';
