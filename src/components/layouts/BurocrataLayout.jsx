@@ -18,7 +18,7 @@ export default function BurocrataLayout({ children }) {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className="bg-[#c4a783] w-full min-h-screen transition-colors duration-300">
+    <div className="bg-[#c4a783] w-full min-h-screen transition-colors duration-300 flex flex-col">
       {/* Sidebar */}
       <SidebarBurocrata showMenu={showMenu} toggleUser={toggleUser} />
 
@@ -34,7 +34,7 @@ export default function BurocrataLayout({ children }) {
 
       {/* CONTENIDO */}
       <main
-        className={`pt-20 lg:pt-6 pb-10 transition-all duration-300 ease-in-out
+        className={`flex-1 pt-20 lg:pt-6 pb-10 transition-all duration-300 ease-in-out
         ${showMenu ? "pl-4" : "pl-0"} lg:ml-28`}
       >
         {children}
@@ -42,7 +42,7 @@ export default function BurocrataLayout({ children }) {
 
       {/* FOOTER */}
       <footer
-        className={`${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
+        className={`mt-auto ${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
       >
         <Footer />
       </footer>

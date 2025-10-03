@@ -26,6 +26,9 @@
     CarpetaDetalle
   } from './pages';
 
+  // Importar componentes adicionales
+  import GestionarPoderes from './pages/admin/tramites/gestionar-poderes';
+
   import { AuthProvider } from './context/AuthContext';
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
 
@@ -47,6 +50,7 @@
             <Route path="/admin/burocratas" element={<GestionarBurocratas />} />
             <Route path="/admin/tramites" element={<Tramites />} />
             <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
+            <Route path="/admin/tramites/gestionar-poderes" element={<GestionarPoderes />} />
 
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
