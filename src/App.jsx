@@ -46,6 +46,7 @@
             <Route path="/admin/metahumanos" element={<GestionarMetahumanos />} />
             <Route path="/admin/burocratas" element={<GestionarBurocratas />} />
             <Route path="/admin/tramites" element={<Tramites />} />
+            <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
 
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
