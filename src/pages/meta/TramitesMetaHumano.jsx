@@ -117,7 +117,7 @@ const solicitarPoder = async (poder) => {
       poderId: parseInt(poder.id),
       dominio: "NOVATO", // Nivel inicial para nuevos poderes
       nivelControl: 25, // Nivel de control inicial (0-100)
-      estado: "ACTIVO", // Estado del poder
+      estado: "SOLICITADO", // Estado del poder
       fechaAdquisicion: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
     };
 
