@@ -1,120 +1,120 @@
 import { useState } from "react";
-// Estructura de la aplicación
+import { useNavigate } from "react-router-dom";
+// 🧱 Estructura
 import Sidebar from "../../components/shared/SidebarBurocrata";
 import Footer from "../../components/footer";
-// Iconos
+// 🔸 Iconos
 import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
-import { RiHome6Line, RiCloseFill } from "react-icons/ri";
+import { FaRegUserCircle } from "react-icons/fa";
+import { RiCloseFill } from "react-icons/ri";
 
 function HomeBurocrata() {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
+  const navigate = useNavigate();
 
+  // 📌 Navegación
+  const goToCarpetas = () => navigate("/burocrata/carpetas");
+  const goToPerfil = () => navigate("/burocrata/perfil");
+  const goToSoporte = () => navigate("/burocrata/soporte");
+
+  // 📌 Menú lateral y usuario
   const toggleMenu = () => {
     setShowMenu(!showMenu);
-    if (showUser) {
-      setShowUser(false); // Cierra el menú de usuario si el menú principal se abre
-    }
+    if (showUser) setShowUser(false);
   };
-  
+
   const toggleUser = () => setShowUser(!showUser);
-  
   const closeUser = () => setShowUser(false);
 
   return (
     <div className="bg-[#c4a783] w-full min-h-screen transition-colors duration-300">
+      {/* 🧭 Sidebar */}
       <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
 
-      {/* MENU */}
-      <nav className="bg-[#1F1D2B] lg:hidden fixed w-full bottom-0 left-0 text-4xl text-gray-500 py-2 px-8 flex items-center rounded-tl-xl rounded-tr-xl shadow-lg justify-between transition-all duration-300 ease-in-out transform">
-        
-        <button 
-          onClick={toggleUser} 
-          className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
+      {/* 📱 Menú Mobile */}
+      <nav className="bg-[#1F1D2B] lg:hidden fixed top-0 left-0 w-full flex justify-between items-center p-4 z-20">
+        <button onClick={toggleMenu} className="text-white text-3xl">
+          {showMenu ? <RiCloseFill /> : <CgMenuRound />}
+        </button>
+        <button onClick={toggleUser} className="text-white text-2xl">
           <FaRegUserCircle />
-        </button>
-        
-        <button className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95">
-          <RiHome6Line />
-        </button>
-        
-        <button className="text-white p-2 transition-all duration-200 ease-in-out hover:scale-110 active:scale-95 hover:bg-[#ec7c6a] rounded-full">
-          <FaPlus />
-        </button>
-        
-        <button 
-          onClick={toggleMenu} 
-          className="p-2 transition-all duration-300 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <div className="transition-transform duration-300 ease-in-out">
-            {showMenu ? <FaWindowClose /> : <CgMenuRound />}
-          </div>
         </button>
       </nav>
 
-      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0">
+      {/* 📌 Contenido principal */}
+      <main
+        className={`pt-20 lg:pt-6 pb-10 transition-all duration-300 ease-in-out
+        ${showMenu ? "pl-4" : "pl-0"} lg:ml-28`}
+      >
+        {/* 🏛️ Encabezado centrado */}
+        <section className="text-center text-white mt-8 mb-8">
+          <h1 className="text-3xl font-extrabold tracking-tight mb-2">
+            🏛️ Portal Burócrata
+          </h1>
+          <p className="opacity-90 text-base">
+            Bienvenido al panel de control para usuarios burócratas.
+          </p>
+        </section>
 
-        {/* Contenido principal */}
-        <div
-          className={`p-4 bg-[#a37e4d] text-white rounded-lg shadow-lg h-full hover:shadow-xl
-            ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
-            ${showUser ? "opacity-90" : "opacity-100"}`}
-        >
-          <div className="flex-1 min-h-full">
-            <h1 className="text-3xl font-bold mb-6">🏛️ Portal Burócrata</h1>
-            <p className="text-gray-300 mb-6">Bienvenido al panel de administración para usuarios Burócratas.</p>
-            
-            {/* Contenido específico para Burócratas */}
-            <div className="text-center py-8">
-              <p className="text-gray-400">Panel de administración Burócrata en desarrollo...</p>
-            </div>
+        {/* 🧭 Cards en columna */}
+        <section className="flex flex-col items-center gap-6">
+          {/* 📂 Gestión Carpetas */}
+          <div
+            onClick={goToCarpetas}
+            className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 
+                       p-6 rounded-2xl shadow-2xl text-white w-full max-w-md transition transform hover:-translate-y-1 hover:shadow-blue-500/30"
+          >
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              📂 Gestión Carpetas
+            </h2>
+            <p className="text-white/90 text-sm">
+              Gestioná y supervisá todas tus carpetas burocráticas en un solo lugar.
+            </p>
+            <div className="text-right mt-3 text-2xl font-light">→</div>
           </div>
-        </div>
 
-        {/* Panel de usuario */}
-        <div
-          className={`fixed lg:static top-0 right-0 w-full lg:w-auto h-full z-50
-            ${showUser 
-              ? "translate-x-0 opacity-100 lg:col-span-2" 
-              : "translate-x-full opacity-0 lg:translate-x-0 lg:opacity-0 lg:w-0 lg:overflow-hidden"
-            }`}
-        >
-          <div className="p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full">
-            <div className="relative pt-16 text-gray-300 p-8">
-              <RiCloseFill
-                onClick={closeUser}
-                className="text-3xl absolute left-4 top-4 p-2 box-content text-gray-300 bg-[#ec7c6a] rounded-full cursor-pointer hover:scale-110 hover:bg-[#d66b59] active:scale-95 hover:shadow-lg"
-              />
-              <h1 className="text-2xl font-bold mb-4 flex items-center">
-                Mi Perfil Burócrata
-              </h1>
-              <div className="space-y-4">
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Información Personal</h2>
-                  <p className="text-sm text-gray-400">Gestiona tu información</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Configuración</h2>
-                  <p className="text-sm text-gray-400">Ajusta tus preferencias administrativas</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Permisos</h2>
-                  <p className="text-sm text-gray-400">Revisa tus permisos de acceso</p>
-                </div>
-              </div>
-            </div>
+          {/* 👤 Mi Perfil */}
+          <div
+            onClick={goToPerfil}
+            className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 
+                       p-6 rounded-2xl shadow-2xl text-white w-full max-w-md transition transform hover:-translate-y-1 hover:shadow-emerald-500/30"
+          >
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              👤 Mi Perfil
+            </h2>
+            <p className="text-white/90 text-sm">
+              Consultá y actualizá tu información personal, credenciales y preferencias.
+            </p>
+            <div className="text-right mt-3 text-2xl font-light">→</div>
           </div>
-        </div>
+
+          {/* 🛠️ Soporte */}
+          <div
+            onClick={goToSoporte}
+            className="cursor-pointer bg-gradient-to-r from-purple-600 to-fuchsia-500 hover:from-purple-700 hover:to-fuchsia-600 
+                       p-6 rounded-2xl shadow-2xl text-white w-full max-w-md transition transform hover:-translate-y-1 hover:shadow-fuchsia-500/30"
+          >
+            <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
+              🛠️ Soporte
+            </h2>
+            <p className="text-white/90 text-sm">
+              Accedé a ayuda, tutoriales y contactá con el equipo de soporte técnico.
+            </p>
+            <div className="text-right mt-3 text-2xl font-light">→</div>
+          </div>
+        </section>
+
+        {/* Bloque informativo */}
+        <section className="mt-12 text-center text-white/70">
+          Panel de control Burócrata en desarrollo…
+        </section>
       </main>
+
+      {/* 🦶 Footer */}
       <footer
-          className={`
-            ${showMenu 
-              ? "pl-4 lg:pl-28" 
-              : "pl-0"
-            }`}
-        >
+        className={`${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
+      >
         <Footer />
       </footer>
     </div>
