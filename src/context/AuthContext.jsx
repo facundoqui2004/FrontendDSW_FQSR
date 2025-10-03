@@ -2,8 +2,6 @@ import { createContext, useState, useContext, useEffect } from "react";
 import { registerMetahumanoRequest, registerBurocrataRequest, loginRequest, logoutRequest, getPerfilRequest } from '../api/auth';
 import { getUserFromCookie, isAuthenticated as checkCookieAuth, getFormattedUserInfo } from '../utils/cookies';
 
-
-
 export const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -15,42 +13,92 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({children}) => {
-    // Inicializar con datos de localStorage como principal (temporal hasta arreglar CORS)
+    // Inicializar con cookies primero, localStorage como respaldo
     const [user, setUser] = useState(() => {
-        // Temporal: usar localStorage como principal hasta que CORS esté arreglado
         try {
-            const savedUser = localStorage.getItem('user');
-            return savedUser ? JSON.parse(savedUser) : null;
+            // PRIORIDAD 1: Intentar obtener de cookies
+            let userData = getUserFromCookie();
+            
+            if (userData) {
+                console.log('🍪 Usuario encontrado en cookies:', userData);
+                return userData;
+            }
+            
+            // PRIORIDAD 2: Respaldo en localStorage
+            const savedUser = localStorage.getItem('user_info'); // Cambiado a user_info
+            if (savedUser) {
+                userData = JSON.parse(savedUser);
+                console.log('💾 Usuario encontrado en localStorage:', userData);
+                return userData;
+            }
+            
+            console.log('❌ No se encontró usuario en cookies ni localStorage');
+            return null;
         } catch (error) {
-            console.error('Error al recuperar usuario del localStorage:', error);
+            console.error('Error al recuperar usuario:', error);
             return null;
         }
     });
     
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        // Temporal: usar localStorage como principal hasta que CORS esté arreglado
-        try {
-            const savedAuth = localStorage.getItem('isAuthenticated');
-            return savedAuth === 'true';
-        } catch (error) {
-            console.error('Error al recuperar estado de autenticación:', error);
-            return false;
-        }
+        // Verificar si hay usuario válido
+        const hasUser = getUserFromCookie() !== null || localStorage.getItem('user_info') !== null;
+        console.log('🔐 Estado de autenticación inicial:', hasUser);
+        return hasUser;
     });
     
     const [error, setError] = useState(null);
 
-    // Efecto para sincronizar cambios con localStorage (modo temporal)
+    // Efecto para sincronizar cambios y guardar en ambos lugares
     useEffect(() => {
         if (user && isAuthenticated) {
-            localStorage.setItem('user', JSON.stringify(user));
-            localStorage.setItem('isAuthenticated', 'true');
-            console.log('💾 Sesión guardada en localStorage (modo temporal)');
+            // Guardar en localStorage como respaldo
+            localStorage.setItem('user_info', JSON.stringify(user));
+            console.log('💾 Sesión guardada en localStorage');
+            console.log('👤 Datos del usuario guardados:', {
+                id: user.id,
+                role: user.role,
+                alias: user.alias,
+                perfil: user.perfil,
+                perfilId: user.perfilId
+            });
         } else {
-            localStorage.removeItem('user');
+            // Limpiar localStorage
+            localStorage.removeItem('user_info');
+            localStorage.removeItem('user'); // Limpiar el anterior también
             localStorage.removeItem('isAuthenticated');
         }
     }, [user, isAuthenticated]);
+
+    // Función para guardar usuario completo
+    const saveUserData = (userData) => {
+        console.log('💾 Guardando datos completos del usuario:', userData);
+        
+        // Estructurar datos completos para guardar
+        const completeUserData = {
+            id: userData.id || userData.usuarioId,
+            role: userData.role || userData.rol,
+            alias: userData.alias,
+            perfil: userData.perfil,
+            perfilId: userData.perfilId,
+            // Agregar más campos que necesites
+            nombre: userData.nombre,
+            email: userData.email || userData.mail,
+            // Datos adicionales del backend
+            ...userData
+        };
+        
+        console.log('📦 Estructura completa a guardar:', completeUserData);
+        
+        // Guardar en localStorage (las cookies se manejan automáticamente por el backend)
+        localStorage.setItem('user_info', JSON.stringify(completeUserData));
+        
+        // Actualizar estado
+        setUser(completeUserData);
+        setIsAuthenticated(true);
+        
+        return completeUserData;
+    };
     
     // Función para normalizar roles que vienen del backend
     const normalizeRole = (role) => {
@@ -68,7 +116,7 @@ export const AuthProvider = ({children}) => {
                 return 'BUROCRATA';
             case 'ADMIN':
             case 'ADMINISTRATOR':
-                return 'admin';
+                return 'ADMIN';
             default:
                 console.log('⚠️ Rol no reconocido, usando valor original:', role);
                 return role;
@@ -83,7 +131,6 @@ export const AuthProvider = ({children}) => {
             return '/';
         }
         
-        // Normalizar el rol antes de usar
         const normalizedRole = normalizeRole(user.role);
         console.log('👤 Rol original:', user.role, '→ Rol normalizado:', normalizedRole);
         
@@ -94,11 +141,11 @@ export const AuthProvider = ({children}) => {
             case 'BUROCRATA':
                 console.log('📋 Redirigiendo a /homeBurocrata');
                 return '/homeBurocrata';
-            case 'admin':
+            case 'ADMIN':
                 console.log('👑 Redirigiendo a /admin');
                 return '/admin';
             default:
-                console.log('❓ Rol desconocido después de normalización, redirigiendo a /', normalizedRole);
+                console.log('❓ Rol desconocido, redirigiendo a /', normalizedRole);
                 return '/';
         }
     };
@@ -109,22 +156,18 @@ export const AuthProvider = ({children}) => {
             console.log('🔄 Iniciando registro como:', userType);
             console.log('📦 Datos para registro:', userData);
             
-            // Usar el endpoint correcto según el tipo de usuario
             let registerFunc;
             if (userType === 'metahumano') {
                 registerFunc = registerMetahumanoRequest;
             } else if (userType === 'burocrata') {
                 registerFunc = registerBurocrataRequest;
             } else {
-                // Por defecto metahumano si no se especifica
                 registerFunc = registerMetahumanoRequest;
             }
             
             const res = await registerFunc(userData);
             console.log('🌐 Respuesta del servidor para registro:', res.data);
             
-            // SOLO registrar, NO hacer login automático aquí
-            // El login se hará por separado desde el RegisterPage
             const userDataFromServer = res.data.data || res.data;
             console.log('✅ Registro exitoso (sin login automático)');
             return { success: true, data: userDataFromServer };
@@ -157,18 +200,16 @@ export const AuthProvider = ({children}) => {
             const res = await loginRequest(userData);
             console.log('🌐 Respuesta del servidor completa:', res.data);
             
-            // Usar datos del usuario del servidor (está en res.data.usuario)
-            const userDataFromServer = res.data.usuario;
+            // Extraer datos del usuario del servidor
+            const userDataFromServer = res.data.usuario || res.data.user || res.data;
             console.log('👤 Datos del usuario del servidor:', userDataFromServer);
             console.log('🎭 Rol del usuario:', userDataFromServer?.role);
             
-            setUser(userDataFromServer);
-            setIsAuthenticated(true);
-            console.log('🔐 Login exitoso, sesión iniciada. Estado actualizado:', {
-                user: userDataFromServer,
-                isAuthenticated: true
-            });
-            return { success: true, data: userDataFromServer };
+            // Guardar datos completos
+            const completeUser = saveUserData(userDataFromServer);
+            
+            console.log('🔐 Login exitoso, sesión iniciada. Usuario completo:', completeUser);
+            return { success: true, data: completeUser };
         } catch (error) {
             console.error('❌ Error en login:', error);
             
@@ -213,9 +254,9 @@ export const AuthProvider = ({children}) => {
         try {
             console.log('🚪 Cerrando sesión...');
             
-            // TEMPORAL: Comentado hasta arreglar CORS
-            // await logoutRequest();
-            console.log('✅ Logout (modo temporal - sin llamada al servidor)');
+            // Intentar logout en servidor (con cookies)
+            await logoutRequest();
+            console.log('✅ Logout exitoso en servidor');
         } catch (error) {
             console.error('Error al hacer logout en el servidor:', error);
             // Continuar con el logout local aunque falle el servidor
@@ -226,10 +267,11 @@ export const AuthProvider = ({children}) => {
         setIsAuthenticated(false);
         setError(null);
         
-        // Limpiar localStorage para retrocompatibilidad
+        // Limpiar todo el localStorage relacionado
+        localStorage.removeItem('user_info');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('token'); // Por si acaso hay token guardado
+        localStorage.removeItem('token');
         
         console.log('✅ Sesión cerrada correctamente, estado local limpiado');
     };
@@ -240,15 +282,21 @@ export const AuthProvider = ({children}) => {
             const res = await getPerfilRequest();
             const profileData = res.data;
             
-            // Actualizar con datos del servidor
-            setUser(profileData);
-            console.log('🔄 Perfil actualizado desde el servidor');
-            return { success: true, data: profileData };
+            // Actualizar con datos completos del servidor
+            const updatedUser = saveUserData(profileData);
+            console.log('🔄 Perfil actualizado desde el servidor:', updatedUser);
+            return { success: true, data: updatedUser };
         } catch (error) {
             console.error('Error al refrescar perfil:', error);
             return { success: false, error: error.message };
         }
     };
+
+    // Función para obtener datos específicos del usuario
+    const getUserId = () => user?.id || user?.usuarioId || null;
+    const getPerfilId = () => user?.perfilId || null;
+    const getUserRole = () => user?.role || user?.rol || null;
+    const getUserAlias = () => user?.alias || null;
 
     return(
         <AuthContext.Provider value={{
@@ -260,6 +308,12 @@ export const AuthProvider = ({children}) => {
             isAuthenticated,
             error,
             getHomeRouteByRole,
+            // Nuevas funciones de utilidad
+            getUserId,
+            getPerfilId,
+            getUserRole,
+            getUserAlias,
+            saveUserData,
         }}>
             {children}
         </AuthContext.Provider>

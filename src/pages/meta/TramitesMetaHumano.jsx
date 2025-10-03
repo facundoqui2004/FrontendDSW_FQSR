@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 // Estructura de la aplicación
 import Sidebar from "../../components/shared/SidebarMetaHum";
 import Footer from "../../components/footer";
-// Utilities
-import { getUserFromCookie } from "../../utils/cookies";
+// Context para autenticación
+import { useAuth } from "../../context/AuthContext";
 // Iconos
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
@@ -19,12 +19,24 @@ function Home() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Obtener datos del usuario desde el contexto
+  const { 
+    user, 
+    isAuthenticated, 
+    getUserId, 
+    getPerfilId, 
+    getUserRole, 
+    getUserAlias 
+  } = useAuth();
+
   // Función para obtener poderes del backend
   const fetchPoderes = async () => {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch('http://localhost:3000/api/poderes');
+      const response = await fetch('http://localhost:3000/api/poderes', {
+        credentials: 'include' // Incluir cookies para autenticación
+      });
       
       if (!response.ok) {
         throw new Error('Error al obtener los poderes');
@@ -41,187 +53,174 @@ function Home() {
   };
 
   // Función para solicitar un poder
-  const solicitarPoder = async (poder) => {
-    try {
-      // Debug: Mostrar todas las cookies disponibles
-      console.log('Todas las cookies:', document.cookie);
-      
-      // Obtener información del usuario desde las cookies
-      let userInfo = getUserFromCookie();
-      console.log('UserInfo obtenida:', userInfo);
-      
-      if (!userInfo) {
-        // Intentar obtener datos de otras posibles cookies
-        const allCookies = document.cookie.split('; ');
-        console.log('Cookies disponibles:', allCookies);
-        
-        // Buscar otras posibles cookies de usuario
-        const userCookies = allCookies.filter(cookie => 
-          cookie.includes('user') || 
-          cookie.includes('auth') || 
-          cookie.includes('login') ||
-          cookie.includes('session')
-        );
-        console.log('Cookies relacionadas con usuario:', userCookies);
-        
-        // TEMPORAL: Usar datos de prueba para desarrollo
-        console.warn('⚠️ No se encontraron cookies de usuario. Usando datos de prueba para desarrollo.');
-        userInfo = {
-          id: 3,
-          usuarioId: 3,
-          nombre: "Peter Parker",
-          alias: "Spider-Man", 
-          origen: "Nueva York",
-          nivelExperiencia: "INTERMEDIO" // Nivel de experiencia en lugar de tipo de héroe
-        };
-        
-        // Mostrar advertencia al usuario
-        setError('⚠️ Modo de desarrollo: Usando datos de prueba. En producción necesitarás iniciar sesión.');
-        
-        // Continuar con los datos de prueba
-        console.log('Usando datos de prueba:', userInfo);
-      }
-
-      // Preparar los datos para la asignación (formato exacto del backend)
-      // El campo tipoMeta se refiere al NIVEL DE EXPERIENCIA del metahumano
-      const nivelExperiencia = userInfo?.nivelExperiencia || userInfo?.nivel || "NOVATO";
-      const nivelesPermitidos = ["NOVATO", "INTERMEDIO", "AVANZADO", "EXPERTO", "MAESTRO"];
-      
-      const tipoMetaFinal = nivelesPermitidos.includes(nivelExperiencia.toUpperCase()) 
-        ? nivelExperiencia.toUpperCase() 
-        : "NOVATO"; // Por defecto, nuevo metahumano es NOVATO
-      
-      console.log('Nivel de experiencia original:', userInfo?.nivelExperiencia || userInfo?.nivel);
-      console.log('Nivel procesado para tipoMeta:', tipoMetaFinal);
-      console.log('Niveles permitidos por el backend:', nivelesPermitidos);
-      
-      // Probar diferentes variaciones del nombre del campo
-      const asignacionData = {
-        usuarioId: parseInt(userInfo.id || userInfo.usuarioId || 3),
-        nombre: String(userInfo.nombre || userInfo.name || "Peter Parker").trim(),
-        alias: String(userInfo.alias || "Spider-Man").trim(),
-        origen: String(userInfo.origen || userInfo.origin || "Nueva York").trim(),
-        tipoMeta: "NOVATO", // Campo que podría estar causando el error
-        nivel: "NOVATO",     // Posible campo alternativo
-        nivelExperiencia: "NOVATO", // Otra posibilidad
-        poderId: parseInt(poder.id)
-      };
-      
-      console.log('🧪 TESTING: Enviando múltiples campos de nivel para ver cuál acepta el backend');
-
-      // Validación detallada de cada campo
-      console.log('=== VALIDACIÓN DE DATOS ===');
-      console.log('🔍 VERIFICACIÓN CRÍTICA - tipoMeta que se enviará:', asignacionData.tipoMeta);
-      console.log('¿Es uno de los valores válidos?', nivelesPermitidos.includes(asignacionData.tipoMeta));
-      console.log('usuarioId:', asignacionData.usuarioId, typeof asignacionData.usuarioId);
-      console.log('nombre:', asignacionData.nombre, typeof asignacionData.nombre);
-      console.log('alias:', asignacionData.alias, typeof asignacionData.alias);
-      console.log('origen:', asignacionData.origen, typeof asignacionData.origen);
-      console.log('tipoMeta:', asignacionData.tipoMeta, typeof asignacionData.tipoMeta);
-      console.log('poderId:', asignacionData.poderId, typeof asignacionData.poderId);
-      
-      // Verificar si algún campo está vacío o undefined
-      const camposVacios = Object.entries(asignacionData).filter(([, value]) => 
-        value === null || value === undefined || value === ''
-      );
-      
-      if (camposVacios.length > 0) {
-        console.error('Campos vacíos encontrados:', camposVacios);
-      }
-
-      console.log('Datos de asignación completos:', asignacionData);
-      console.log('Poder seleccionado completo:', poder);
-
-      setLoading(true);
-      
-      // Enviar petición al backend
-      const url = 'http://localhost:3000/api/metapoderes';
-      console.log('URL de la petición:', url);
-      console.log('Body que se enviará:', JSON.stringify(asignacionData, null, 2));
-      
-      // Hacer la petición al backend para asignar el poder
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(asignacionData),
-      });
-
-      console.log('Respuesta del servidor:', response.status, response.statusText);
-
-      if (!response.ok) {
-        let errorMessage = `Error ${response.status}: ${response.statusText}`;
-        try {
-          const errorData = await response.json();
-          console.log('Error data del servidor:', errorData);
-          console.log('🔍 INSPECCIÓN COMPLETA DEL ERROR:', JSON.stringify(errorData, null, 2));
-          
-          // Si el backend envía valores válidos, mostrarlos
-          if (errorData.validos && Array.isArray(errorData.validos)) {
-            console.log('Valores válidos permitidos por el backend:', errorData.validos);
-            errorMessage = `${errorData.message}. Valores válidos: ${errorData.validos.join(', ')}`;
-          } else {
-            errorMessage = errorData.message || errorData.error || errorMessage;
-          }
-          
-          // Verificar si hay información adicional sobre qué campo está fallando
-          if (errorData.campo || errorData.field) {
-            console.log('🚨 Campo que está fallando:', errorData.campo || errorData.field);
-          }
-          
-          if (errorData.valor || errorData.value) {
-            console.log('🚨 Valor que está causando el error:', errorData.valor || errorData.value);
-          }
-          
-        } catch {
-          console.log('No se pudo parsear el error como JSON');
-        }
-        throw new Error(errorMessage);
-      }
-
-      const result = await response.json();
-      
-      // Mostrar mensaje de éxito
-      setSuccessMessage(`¡Éxito! Has solicitado el poder "${poder.nomPoder}" correctamente.`);
-      setError(""); // Limpiar errores previos
-      
-      console.log('Poder asignado exitosamente:', result);
-      
-      // Limpiar el mensaje de éxito después de 5 segundos
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 5000);
-      
-    } catch (err) {
-      setError(`Error al solicitar el poder: ${err.message}`);
-      console.error('Error solicitando poder:', err);
-    } finally {
-      setLoading(false);
+const solicitarPoder = async (poder) => {
+  try {
+    setLoading(true);
+    setError("");
+    
+    // Verificar autenticación
+    if (!isAuthenticated || !user) {
+      setError('Debes iniciar sesión para solicitar poderes');
+      return;
     }
-  };
+
+    // Verificar que es un metahumano
+    const userRole = getUserRole();
+    if (userRole !== 'METAHUMANO') {
+      setError('Solo los metahumanos pueden solicitar poderes');
+      return;
+    }
+
+    // Obtener datos del usuario desde el contexto
+    const userId = getUserId();
+    const alias = getUserAlias();
+
+    console.log('👤 Datos del usuario para solicitud:', {
+      userId,
+      userRole,
+      alias,
+      user
+    });
+
+    if (!userId) {
+      setError('No se pudo obtener la información del usuario');
+      return;
+    }
+
+    // PASO NUEVO: Obtener el ID del metahumano desde la API
+    console.log('🔍 Obteniendo datos completos del usuario desde la API...');
+    const userResponse = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+      credentials: 'include'
+    });
+
+    if (!userResponse.ok) {
+      throw new Error('Error al obtener los datos del usuario');
+    }
+
+    const userData = await userResponse.json();
+    console.log('📡 Datos completos del usuario:', userData);
+
+    // Extraer el ID del metahumano
+    const metahumanoId = userData.usuario?.metahumano?.id;
+    
+    if (!metahumanoId) {
+      setError('No se pudo obtener el ID del metahumano. Verifica que tu perfil esté completo.');
+      console.error('❌ No se encontró metahumano.id en:', userData);
+      return;
+    }
+
+    console.log('🦸‍♂️ ID del metahumano obtenido:', metahumanoId);
+
+    // Preparar los datos completos para la asignación de metapoder
+    const asignacionData = {
+      metahumanoId: parseInt(metahumanoId), // Usar el ID correcto del metahumano
+      poderId: parseInt(poder.id),
+      dominio: "NOVATO", // Nivel inicial para nuevos poderes
+      nivelControl: 25, // Nivel de control inicial (0-100)
+      estado: "ACTIVO", // Estado del poder
+      fechaAdquisicion: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
+    };
+
+    console.log('📤 Enviando solicitud de metapoder:', asignacionData);
+    console.log('⚡ Poder seleccionado:', poder.nomPoder);
+    
+    // Enviar petición al backend
+    const response = await fetch('http://localhost:3000/api/metapoderes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include', // Incluir cookies para autenticación
+      body: JSON.stringify(asignacionData),
+    });
+
+    console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+
+    if (!response.ok) {
+      let errorMessage = `Error ${response.status}: ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        console.log('❌ Error del servidor:', errorData);
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch {
+        console.log('No se pudo parsear el error como JSON');
+      }
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    console.log('✅ Metapoder asignado exitosamente:', result);
+    
+    // Mostrar mensaje de éxito con más detalles
+    setSuccessMessage(
+      `¡Éxito! Has adquirido el poder "${poder.nomPoder}" con dominio NOVATO y 25% de control. 🎉`
+    );
+    setError(""); // Limpiar errores previos
+    
+    // Limpiar el mensaje de éxito después de 5 segundos
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 5000);
+    
+  } catch (err) {
+    setError(`Error al solicitar el poder: ${err.message}`);
+    console.error('Error solicitando poder:', err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Cargar poderes cuando se selecciona "solicitar"
   useEffect(() => {
     if (tipoSolicitud === "solicitar") {
+      // Verificar autenticación antes de cargar poderes
+      if (!isAuthenticated) {
+        setError('Debes iniciar sesión para ver los poderes disponibles');
+        return;
+      }
+      
+      if (getUserRole() !== 'METAHUMANO') {
+        setError('Solo los metahumanos pueden ver los poderes disponibles');
+        return;
+      }
+      
       fetchPoderes();
     }
-  }, [tipoSolicitud]);
+  }, [tipoSolicitud, isAuthenticated, getUserRole]);
 
   const togglePowersForm = () => {
     setShowFormPowers(!showFormPowers);
+    // Limpiar errores y mensajes al cerrar/abrir el formulario
+    if (!showFormPowers) {
+      setError("");
+      setSuccessMessage("");
+      setTipoSolicitud("");
+    }
   }
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) {
-      setShowUser(false); // Cierra el menú de usuario si el menú principal se abre
+      setShowUser(false);
     }
   };
   
   const toggleUser = () => setShowUser(!showUser);
-  
   const closeUser = () => setShowUser(false);
+
+  // Verificar autenticación en el componente
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-[#545877] w-full min-h-screen flex items-center justify-center">
+        <div className="bg-red-900/50 border border-red-600 rounded-lg p-6 max-w-md mx-4">
+          <p className="text-red-200 text-center">
+            <span className="mr-2">🔒</span>
+            Debes iniciar sesión para acceder a esta página
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#545877] w-full min-h-screen transition-colors duration-300">
@@ -266,6 +265,12 @@ function Home() {
           <div className="flex-1 min-h-full">
             <div className="p-6 bg-[#044b97] text-white text-2xl text-bold rounded-lg h-full flex flex-col justify-center items-center">
                 <h1>Panel de Tramites Metahumano</h1>
+                {/* Mostrar información del usuario */}
+                {user && (
+                  <p className="text-lg mt-2 opacity-80">
+                    Bienvenido, {getUserAlias() || user.nombre || 'Metahumano'}
+                  </p>
+                )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
               {/* Botón Gestión de Poderes */}
@@ -287,7 +292,7 @@ function Home() {
                 </div>
               </button>
 
-              {/* Botón Mis Trámites */}
+              {/* Botón Definir Estilo de Vida */}
               <button 
                 className="group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
               >
@@ -453,78 +458,8 @@ function Home() {
                 )}
               </div>
             )}
-            
-            <div>
-
-            </div>
           </div>
-          
-
-
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/* Panel de usuario */}
         <div
@@ -543,6 +478,24 @@ function Home() {
               <h1 className="text-2xl font-bold mb-4 flex items-center">
                 Mi Perfil
               </h1>
+              
+              {/* Mostrar información del usuario en el panel */}
+              {user && (
+                <div className="space-y-4 mb-6">
+                  <div className="bg-slate-800 rounded-lg p-4">
+                    <h3 className="text-lg font-semibold text-white mb-2">Información de Usuario</h3>
+                    <div className="space-y-2 text-sm">
+                      <p><span className="text-gray-400">ID:</span> {getUserId()}</p>
+                      <p><span className="text-gray-400">Alias:</span> {getUserAlias() || 'Sin alias'}</p>
+                      <p><span className="text-gray-400">Rol:</span> {getUserRole()}</p>
+                      {getPerfilId() && (
+                        <p><span className="text-gray-400">Perfil ID:</span> {getPerfilId()}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <div className="space-y-4">
                 <div className="border-b border-gray-600 pb-2">
                   <h2 className="text-lg font-semibold">Información Personal</h2>
