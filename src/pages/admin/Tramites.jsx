@@ -18,12 +18,22 @@ const Tramites = () => {
     },
     {
       id: 2,
+      title: 'Gestionar Poderes',
+      description: 'Administrar, editar y eliminar poderes existentes',
+      icon: '🎯',
+      route: '/admin/tramites/gestionar-poderes',
+      bgColor: 'bg-gradient-to-r from-blue-500 to-indigo-500',
+      hoverColor: 'hover:from-blue-600 hover:to-indigo-600',
+      available: true
+    },
+    {
+      id: 3,
       title: 'Aprobar/Rechazar Trámites',
       description: 'Revisar y gestionar solicitudes pendientes',
       icon: '📋',
       route: '#',
-      bgColor: 'bg-gradient-to-r from-blue-500 to-cyan-500',
-      hoverColor: 'hover:from-blue-600 hover:to-cyan-600',
+      bgColor: 'bg-gradient-to-r from-green-500 to-emerald-500',
+      hoverColor: 'hover:from-green-600 hover:to-emerald-600',
       available: false
     }
   ];
@@ -97,7 +107,11 @@ const Tramites = () => {
               <ul className="space-y-2 text-gray-400">
                 <li className="flex items-center">
                   <span className="text-green-500 mr-2">✓</span>
-                  Crear y gestionar poderes
+                  Crear nuevos poderes
+                </li>
+                <li className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  Gestionar poderes existentes (editar/eliminar)
                 </li>
                 <li className="flex items-center">
                   <span className="text-green-500 mr-2">✓</span>

@@ -15,7 +15,7 @@ function Home() {
 
 
   const goToTramites = () => {
-    navigate('/meta/tramites');
+    navigate('/metahumano/tramites');
   }
   const toggleMenu = () => {
     setShowMenu(!showMenu);

@@ -141,7 +141,7 @@ const CrearPoderes = () => {
 
   return (
     <>
-      <AdminLayout>
+      <AdminLayout title="Gestión de Poderes">
         <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

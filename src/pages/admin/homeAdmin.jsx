@@ -11,7 +11,7 @@ export default function HomeAdmin() {
         {/* Card de Usuarios - Ahora interactivo */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
-          onClick={() => navigate('/admin/gestionar-usuarios')}
+          onClick={() => navigate('/admin/usuarios')}
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
@@ -34,7 +34,7 @@ export default function HomeAdmin() {
         {/* Card de Metahumanos - Ahora interactivo */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
-          onClick={() => navigate('/admin/gestionar-metahumanos')}
+          onClick={() => navigate('/admin/metahumanos')}
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white group-hover:text-cyan-400 transition-colors">
@@ -57,7 +57,7 @@ export default function HomeAdmin() {
         {/* Card de Burócratas - Ahora interactivo */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
-          onClick={() => navigate('/admin/gestionar-burocratas')}
+          onClick={() => navigate('/admin/burocratas')}
         >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white group-hover:text-blue-500 transition-colors">

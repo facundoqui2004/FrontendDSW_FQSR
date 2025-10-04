@@ -62,7 +62,7 @@ const Sidebar = (props) => {
         <ul className="pl-4">
             <li className="bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl">
             <button 
-                onClick={() => navigate('/homeAdmin')}
+                onClick={() => navigate('/admin')}
                 className="bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-white relative group"
             >
                 <RiHome6Line className="text-2xl" />
@@ -77,7 +77,7 @@ const Sidebar = (props) => {
 
             <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
-                    onClick={() => navigate('/admin/gestionar-usuarios')}
+                    onClick={() => navigate('/admin/usuarios')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <FaUsers className="text-2xl" />
@@ -92,7 +92,7 @@ const Sidebar = (props) => {
 
             <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
-                    onClick={() => navigate('/admin/gestionar-metahumanos')}
+                    onClick={() => navigate('/admin/metahumanos')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <span className="text-2xl">⚡</span>
@@ -107,7 +107,7 @@ const Sidebar = (props) => {
 
             <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
-                    onClick={() => navigate('/admin/gestionar-burocratas')}
+                    onClick={() => navigate('/admin/burocratas')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <span className="text-2xl">🏢</span>
