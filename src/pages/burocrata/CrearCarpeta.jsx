@@ -6,6 +6,7 @@ import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 export default function CrearCarpeta() {
   const [titulo, setTitulo] = useState("");
   const [estado, setEstado] = useState("activa");
+  const [metahumanoId, setMetahumanoId] = useState("");
   const [tipo, setTipo] = useState("general"); // 👈 valor por defecto
   const navigate = useNavigate();
 
@@ -16,6 +17,7 @@ export default function CrearCarpeta() {
         descripcion: titulo,
         estado: estado,
         tipo: tipo,
+        metahumanoId: Number(metahumanoId),
       });
       alert("✅ Carpeta creada con éxito");
       navigate("/burocrata/carpetas");
@@ -74,6 +76,19 @@ export default function CrearCarpeta() {
             <option value="civil">Civil</option>
             <option value="metahumano">Metahumano</option>
           </select>
+        </div>
+
+        {/* Metahumano ID */}
+        <div>
+          <label className="block mb-1 font-semibold">ID del Metahumano</label>
+          <input
+            type="number"
+            value={metahumanoId}
+            onChange={(e) => setMetahumanoId(e.target.value)}
+            className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            placeholder="Ingrese el ID del Metahumano"
+            required
+          />
         </div>
 
         {/* Botón */}

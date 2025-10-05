@@ -1,71 +1,14 @@
-import axios from "axios";
+import { api } from './client';
 
-const API = 'http://localhost:3000/api';
+export const obtenerTodosLosUsuarios   = ()      => api.get('/usuarios');
+export const obtenerUsuarioActual      = ()      => api.get('/usuarios/me');
+export const obtenerUsuarioPorId       = (id)    => api.get(`/usuarios/${id}`);
+export const actualizarUsuario         = (id,d)  => api.put(`/usuarios/${id}`, d);
+export const eliminarUsuario           = (id)    => api.delete(`/usuarios/${id}`);
+export const cambiarEstadoUsuario      = (id,a)  => api.patch(`/usuarios/${id}/estado`, { activo: a });
 
-// Crear instancia de axios específica para usuarios
-const usuariosAPI = axios.create({
-    baseURL: API,
-    timeout: 10000,
-    // withCredentials: true, // TEMPORALMENTE DESHABILITADO - Problema de CORS
-    headers: {
-        'Content-Type': 'application/json',
-    }
-});
-
-// Interceptor para requests (ya no necesitamos token manual)
-usuariosAPI.interceptors.request.use(
-    (config) => {
-        // Las cookies se envían automáticamente con withCredentials: true
-        console.log('Enviando request a:', config.url);
-        return config;
-    },
-    (error) => {
-        console.error('Error en request:', error);
-        return Promise.reject(error);
-    }
-);
-
-// Interceptor para manejar respuestas y errores
-usuariosAPI.interceptors.response.use(
-    (response) => {
-        console.log('Respuesta recibida de:', response.config.url);
-        return response;
-    },
-    (error) => {
-        console.error('Error en response:', error);
-        
-        if (error.response?.status === 401) {
-            // Token expirado o no válido - las cookies se manejan automáticamente
-            console.error('No autorizado - sesión expirada');
-            window.location.href = '/login';
-        } else if (error.response?.status === 403) {
-            console.error('No tienes permisos para realizar esta acción');
-        } else if (error.code === 'ECONNREFUSED') {
-            console.error('El servidor no está disponible en:', API);
-        }
-        
-        return Promise.reject(error);
-    }
-);
-
-// Funciones específicas para usuarios
-export const obtenerTodosLosUsuarios = () => usuariosAPI.get('/usuarios'); // Intenta primero /usuarios
-export const obtenerUsuarioActual = () => usuariosAPI.get('/usuarios/me'); // Endpoint específico que mencionaste
-export const obtenerUsuarioPorId = (id) => usuariosAPI.get(`/usuarios/${id}`);
-export const actualizarUsuario = (id, userData) => usuariosAPI.put(`/usuarios/${id}`, userData);
-export const eliminarUsuario = (id) => usuariosAPI.delete(`/usuarios/${id}`);
-export const cambiarEstadoUsuario = (id, activo) => usuariosAPI.patch(`/usuarios/${id}/estado`, { activo });
-
-// Funciones para obtener otros tipos de usuarios
-export const obtenerMetahumanos = () => usuariosAPI.get('/metahumanos');
-export const obtenerBurocratas = () => usuariosAPI.get('/Burocratas'); // Respetando la capitalización
-
-// Funciones adicionales que podrías necesitar
-export const obtenerUsuariosPorRol = (rol) => usuariosAPI.get(`/usuarios?rol=${rol}`);
-export const obtenerEstadisticasUsuarios = () => usuariosAPI.get('/usuarios/estadisticas');
-export const buscarUsuarios = (termino) => usuariosAPI.get(`/usuarios/buscar?q=${termino}`);
-
-// Función especial para obtener todos los usuarios de todos los endpoints
+export const obtenerMetahumanos        = ()      => api.get('/metahumanos');
+export const obtenerBurocratas         = ()      => api.get('/Burocratas');
 export const obtenerTodosLosUsuariosCombinados = async () => {
     try {
         console.log('🔍 Obteniendo usuarios de endpoints disponibles...');
@@ -131,5 +74,3 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
         throw error;
     }
 };
-
-export default usuariosAPI;

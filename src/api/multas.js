@@ -1,16 +1,14 @@
 // src/api/multas.js
-import axios from 'axios';
+import { api } from './client';
 
-const API_URL = 'http://localhost:3000/api/multas';
+// Crear multa
+export const createMultaRequest = (data) => api.post('/multas', data);
 
-// 📌 Crear multa
-export const createMultaRequest = (data) => axios.post(API_URL, data);
+// Obtener todas
+export const getAllMultasRequest = () => api.get('/multas');
 
-// 📌 Obtener todas las multas
-export const getAllMultasRequest = () => axios.get(API_URL);
+// Obtener una
+export const getMultaByIdRequest = (id) => api.get(`/multas/${id}`);
 
-// 📌 Obtener una multa
-export const getMultaByIdRequest = (id) => axios.get(`${API_URL}/${id}`);
-
-// 📌 Eliminar multa
-export const deleteMultaRequest = (id) => axios.delete(`${API_URL}/${id}`);
+// Eliminar
+export const deleteMultaRequest = (id) => api.delete(`/multas/${id}`);

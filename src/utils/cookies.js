@@ -64,7 +64,7 @@ export const getFormattedUserInfo = () => {
   
   return {
     id: userInfo.id,
-    rol: userInfo.role, // Mapeo de 'role' a 'rol' para compatibilidad
+    rol: userInfo.role,
     alias: userInfo.alias,
     perfil: userInfo.perfil,
     perfilId: userInfo.perfilId
