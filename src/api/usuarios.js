@@ -1,7 +1,7 @@
 import { api } from './client';
 
 export const obtenerTodosLosUsuarios   = ()      => api.get('/usuarios');
-export const obtenerUsuarioActual      = ()      => api.get('/usuarios/me');
+export const getMe                     = ()      => api.get('/usuarios/me');
 export const obtenerUsuarioPorId       = (id)    => api.get(`/usuarios/${id}`);
 export const actualizarUsuario         = (id,d)  => api.put(`/usuarios/${id}`, d);
 export const eliminarUsuario           = (id)    => api.delete(`/usuarios/${id}`);
