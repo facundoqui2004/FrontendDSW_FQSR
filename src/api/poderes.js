@@ -1,92 +1,32 @@
-const API_URL = 'http://localhost:3000/api/poderes';
+// src/api/poderes.js
+import { api } from './client';
 
 // Obtener todos los poderes
 export const getPoderes = async () => {
-  try {
-    const response = await fetch(API_URL, {
-      // credentials: 'include' // TEMPORALMENTE DESHABILITADO - Problema de CORS
-    });
-    if (!response.ok) {
-      throw new Error('Error al obtener poderes');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error en getPoderes:', error);
-    throw error;
-  }
+  const res = await api.get('/poderes');
+  return res.data; // si tu backend devuelve { message, data }, quizás quieras res.data.data
 };
 
-// Obtener un poder por ID
+// Obtener poder por ID
 export const getPoderById = async (id) => {
-  try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      // credentials: 'include' // TEMPORALMENTE DESHABILITADO - Problema de CORS
-    });
-    if (!response.ok) {
-      throw new Error('Error al obtener el poder');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error en getPoderById:', error);
-    throw error;
-  }
+  const res = await api.get(`/poderes/${id}`);
+  return res.data;
 };
 
-// Crear un nuevo poder
+// Crear poder
 export const createPoder = async (poderData) => {
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(poderData),
-    });
-    if (!response.ok) {
-      throw new Error('Error al crear el poder');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error en createPoder:', error);
-    throw error;
-  }
+  const res = await api.post('/poderes', poderData);
+  return res.data;
 };
 
-// Actualizar un poder
+// Actualizar poder
 export const updatePoder = async (id, poderData) => {
-  try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(poderData),
-    });
-    if (!response.ok) {
-      throw new Error('Error al actualizar el poder');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error en updatePoder:', error);
-    throw error;
-  }
+  const res = await api.put(`/poderes/${id}`, poderData);
+  return res.data;
 };
 
-// Eliminar un poder
+// Eliminar poder
 export const deletePoder = async (id) => {
-  try {
-    const response = await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
-      // credentials: 'include', // TEMPORALMENTE DESHABILITADO - Problema de CORS
-    });
-    if (!response.ok) {
-      throw new Error('Error al eliminar el poder');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error en deletePoder:', error);
-    throw error;
-  }
+  const res = await api.delete(`/poderes/${id}`);
+  return res.data;
 };

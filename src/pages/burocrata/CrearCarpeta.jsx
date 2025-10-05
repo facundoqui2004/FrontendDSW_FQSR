@@ -1,13 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createCarpetaRequest } from "../../api/carpetas";
+import { getMe } from "../../api/usuarios";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 
 export default function CrearCarpeta() {
   const [titulo, setTitulo] = useState("");
   const [estado, setEstado] = useState("activa");
+  const [metahumanoId, setMetahumanoId] = useState("");
+  const [burocrataId, setBurocrataId] = useState("");
   const [tipo, setTipo] = useState("general"); // 👈 valor por defecto
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getMe();
+        const u = data?.data;
+        if (u.role !== 'BUROCRATA' || !u.perfilId) {
+          alert('Debés iniciar sesión como BUROCRATA.');
+          return;
+        }
+        setBurocrataId(u.perfilId);
+      } catch (e) {
+        console.error('No se pudo obtener /usuarios/me', e);
+        alert('Iniciá sesión para continuar.');
+      }
+    })();
+  }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -16,6 +36,8 @@ export default function CrearCarpeta() {
         descripcion: titulo,
         estado: estado,
         tipo: tipo,
+        metahumanoId: Number(metahumanoId),
+        burocrataId: Number(burocrataId),
       });
       alert("✅ Carpeta creada con éxito");
       navigate("/burocrata/carpetas");
@@ -74,6 +96,19 @@ export default function CrearCarpeta() {
             <option value="civil">Civil</option>
             <option value="metahumano">Metahumano</option>
           </select>
+        </div>
+
+        {/* Metahumano ID */}
+        <div>
+          <label className="block mb-1 font-semibold">ID del Metahumano</label>
+          <input
+            type="number"
+            value={metahumanoId}
+            onChange={(e) => setMetahumanoId(e.target.value)}
+            className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+            placeholder="Ingrese el ID del Metahumano"
+            required
+          />
         </div>
 
         {/* Botón */}

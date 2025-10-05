@@ -17,6 +17,9 @@ function Home() {
   const goToTramites = () => {
     navigate('/metahumano/tramites');
   }
+  const goToCarpetas = () => {
+    navigate('/metahumano/carpetas');
+  }
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) {
@@ -108,6 +111,25 @@ function Home() {
                   </div>
                   <p className="text-purple-100 text-sm text-left leading-relaxed">
                     Administra tus trámites de roles y poderes de forma rápida y eficiente.
+                  </p>
+                </div>
+              </button>
+
+              {/* Botón Mis Carpetas */}
+              <button 
+                onClick={goToCarpetas}
+                className="group relative overflow-hidden bg-gradient-to-br from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-bold text-left">📂 Mis Carpetas</h2>
+                    <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center group-hover:bg-purple-400/50 transition-colors">
+                      <span className="text-sm">→</span>
+                    </div>
+                  </div>
+                  <p className="text-purple-100 text-sm text-left leading-relaxed">
+                    Encontrá carpetas que te pertenezcan y donde abonar sus respectivas multas.
                   </p>
                 </div>
               </button>
