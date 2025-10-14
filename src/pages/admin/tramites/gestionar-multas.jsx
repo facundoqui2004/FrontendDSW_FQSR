@@ -34,6 +34,12 @@ const GestionarMultas = () => {
       console.log('✅ Multas cargadas y ordenadas:', multasOrdenadas);
       console.log('📊 Total de multas:', multasOrdenadas.length);
       console.log('⏳ Pendientes:', multasOrdenadas.filter(m => m.estado === 'PENDIENTE').length);
+      
+      // Verificar relaciones en la primera multa
+      if (multasOrdenadas.length > 0) {
+        console.log('🔍 Primera multa con relaciones:', multasOrdenadas[0]);
+        console.log('🦸 Metahumano:', multasOrdenadas[0].evidencia?.carpeta?.metahumano);
+      }
     } catch (error) {
       console.error('❌ Error al cargar multas:', error);
       setMultas([]);
@@ -163,8 +169,12 @@ const GestionarMultas = () => {
     }
   };
 
-  const formatearMonto = (monto) => {
+  const formatearMonto = (multa) => {
+    // El campo correcto es "montoMulta" según tu backend
+    const monto = multa?.montoMulta || multa?.monto;
+    
     if (!monto && monto !== 0) return 'N/A';
+    
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'USD'
@@ -339,129 +349,136 @@ const GestionarMultas = () => {
                           {getEstadoIcon(multa.estado)} {multa.estado}
                         </span>
                       </div>
+                      {/* Alias del metahumano en el header - NO FUNCIONA porque no vienen las relaciones */}
+                      {/* El backend solo devuelve IDs, no objetos anidados */}
                     </div>
-
+``
                     {/* Contenido */}
                     <div className="p-4 space-y-3">
-                      {/* Monto */}
-                      <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 border border-amber-600/30 rounded-lg p-3">
-                        <p className="text-amber-200 text-xs font-medium mb-1">MONTO</p>
-                        <p className="text-2xl font-bold text-amber-100">
-                          {formatearMonto(multa.monto)}
+                      {/* 🦸 METAHUMANO - Ahora SÍ disponible */}
+                      <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-2 border-blue-600/50 rounded-lg p-3">
+                        <p className="text-blue-200 text-xs font-bold mb-2 flex items-center gap-1">
+                          <span>🦸</span>
+                          METAHUMANO INFRACTOR
                         </p>
-                      </div>
-
-                      {/* Descripción */}
-                      <div>
-                        <p className="text-gray-400 text-xs mb-1 font-medium">DESCRIPCIÓN</p>
-                        <p className="text-gray-200 text-sm">
-                          {multa.descripcion || 'Sin descripción'}
-                        </p>
-                      </div>
-
-                      {/* Metahumano y Carpeta */}
-                      {(multa.metahumano || multa.evidencia?.carpeta?.metahumano) && (
-                        <div className="bg-slate-800 rounded-lg p-3 space-y-2">
-                          <p className="text-gray-400 text-xs mb-1 font-medium">METAHUMANO INFRACTOR</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">🦸</span>
-                            <div className="flex-1">
-                              <p className="text-white font-medium">
-                                {multa.metahumano?.alias || 
-                                 multa.evidencia?.carpeta?.metahumano?.alias || 
-                                 `ID: ${multa.metahumanoId || multa.evidencia?.carpeta?.metahumanoId}`}
-                              </p>
-                              <p className="text-gray-400 text-xs">
-                                {multa.metahumano?.nombre || 
-                                 multa.evidencia?.carpeta?.metahumano?.nombre || 
-                                 'Nombre no disponible'}
-                              </p>
-                            </div>
-                          </div>
-                          
-                          {/* Info adicional del metahumano desde carpeta */}
-                          {multa.evidencia?.carpeta?.metahumano && (
-                            <div className="border-t border-slate-700 pt-2 mt-2">
-                              <div className="grid grid-cols-2 gap-2 text-xs">
-                                {multa.evidencia.carpeta.metahumano.dni && (
-                                  <div>
-                                    <p className="text-gray-500">DNI:</p>
-                                    <p className="text-gray-300">{multa.evidencia.carpeta.metahumano.dni}</p>
-                                  </div>
-                                )}
-                                {multa.evidencia.carpeta.metahumano.edad && (
-                                  <div>
-                                    <p className="text-gray-500">Edad:</p>
-                                    <p className="text-gray-300">{multa.evidencia.carpeta.metahumano.edad} años</p>
-                                  </div>
-                                )}
-                                {multa.evidencia.carpeta.metahumano.genero && (
-                                  <div>
-                                    <p className="text-gray-500">Género:</p>
-                                    <p className="text-gray-300 capitalize">{multa.evidencia.carpeta.metahumano.genero}</p>
-                                  </div>
-                                )}
-                                {multa.evidencia.carpeta.metahumano.nacionalidad && (
-                                  <div>
-                                    <p className="text-gray-500">Nacionalidad:</p>
-                                    <p className="text-gray-300">{multa.evidencia.carpeta.metahumano.nacionalidad}</p>
-                                  </div>
-                                )}
-                              </div>
-                              
-                              {/* Info de la carpeta */}
-                              <div className="mt-2 pt-2 border-t border-slate-700">
-                                <p className="text-gray-500 text-xs mb-1">Carpeta Asociada:</p>
-                                <div className="flex items-center gap-2 text-xs">
-                                  <span className="text-purple-400">📁</span>
-                                  <span className="text-gray-300">
-                                    #{multa.evidencia.carpeta.id} - {multa.evidencia.carpeta.descripcion || 'Sin descripción'}
-                                  </span>
-                                </div>
-                                <p className="text-gray-500 text-xs mt-1">
-                                  Estado: <span className="text-gray-300 capitalize">{multa.evidencia.carpeta.estado}</span>
+                        {multa.evidencia?.carpeta?.metahumano ? (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl">🦸</span>
+                              <div className="flex-1">
+                                <p className="text-white font-bold">
+                                  {multa.evidencia.carpeta.metahumano.alias || 'Sin alias'}
+                                </p>
+                                <p className="text-gray-300 text-sm">
+                                  {multa.evidencia.carpeta.metahumano.nombre || 'Sin nombre'}
                                 </p>
                               </div>
                             </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Burócrata */}
-                      {multa.burocrata && (
-                        <div className="bg-slate-800 rounded-lg p-3">
-                          <p className="text-gray-400 text-xs mb-1 font-medium">EMITIDA POR</p>
-                          <div className="flex items-center gap-2">
-                            <span className="text-xl">👨‍💼</span>
-                            <div>
-                              <p className="text-white font-medium">
-                                {multa.burocrata.nomBurocrata || `ID: ${multa.burociataId}`}
-                              </p>
-                              <p className="text-gray-400 text-xs">
-                                {multa.burocrata.cargo || 'Burócrata'}
-                              </p>
+                            
+                            <div className="grid grid-cols-2 gap-2 text-xs bg-slate-800/50 rounded p-2">
+                              {multa.evidencia.carpeta.metahumano.dni && (
+                                <div>
+                                  <p className="text-gray-400">DNI:</p>
+                                  <p className="text-white font-medium">{multa.evidencia.carpeta.metahumano.dni}</p>
+                                </div>
+                              )}
+                              {multa.evidencia.carpeta.metahumano.edad && (
+                                <div>
+                                  <p className="text-gray-400">Edad:</p>
+                                  <p className="text-white font-medium">{multa.evidencia.carpeta.metahumano.edad} años</p>
+                                </div>
+                              )}
+                              {multa.evidencia.carpeta.metahumano.nacionalidad && (
+                                <div className="col-span-2">
+                                  <p className="text-gray-400">Nacionalidad:</p>
+                                  <p className="text-white font-medium">{multa.evidencia.carpeta.metahumano.nacionalidad}</p>
+                                </div>
+                              )}
                             </div>
                           </div>
-                        </div>
-                      )}
+                        ) : (
+                          <div className="bg-yellow-900/30 border border-yellow-600/50 rounded p-3">
+                            <p className="text-yellow-200 text-sm">
+                              ⚠️ No se encontró información del metahumano
+                            </p>
+                          </div>
+                        )}
+                      </div>
 
-                      {/* Evidencia asociada */}
-                      {multa.evidencia && (
-                        <div className="bg-slate-800 rounded-lg p-3">
-                          <p className="text-gray-400 text-xs mb-1 font-medium">EVIDENCIA RELACIONADA</p>
-                          <div className="flex items-start gap-2">
-                            <span className="text-xl">🔍</span>
-                            <div className="flex-1">
-                              <p className="text-white text-sm">
-                                {multa.evidencia.descripcion || 'Sin descripción'}
-                              </p>
-                              <p className="text-gray-400 text-xs mt-1">
-                                Recolectada: {formatearFecha(multa.evidencia.fechaRecoleccion)}
-                              </p>
+                      {/* Monto - CORREGIDO para usar montoMulta */}
+                      <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 border border-amber-600/30 rounded-lg p-3">
+                        <p className="text-amber-200 text-xs font-medium mb-1">MONTO</p>
+                        <p className="text-2xl font-bold text-amber-100">
+                          {formatearMonto(multa)}
+                        </p>
+                      </div>
+
+                      {/* Motivo/Descripción */}
+                      <div>
+                        <p className="text-gray-400 text-xs mb-1 font-medium">MOTIVO DE LA MULTA</p>
+                        <p className="text-gray-200 text-sm">
+                          {multa.motivoMulta || multa.descripcion || 'Sin descripción'}
+                        </p>
+                      </div>
+
+                      {/* Info de la carpeta - Ahora disponible */}
+                      <div className="bg-slate-800 rounded-lg p-3">
+                        <p className="text-gray-400 text-xs font-medium mb-1">CARPETA ASOCIADA</p>
+                        {multa.evidencia?.carpeta ? (
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-purple-400">📁</span>
+                              <span className="text-white text-sm">
+                                #{multa.evidencia.carpeta.id} - {multa.evidencia.carpeta.descripcion || 'Sin descripción'}
+                              </span>
+                            </div>
+                            <p className="text-gray-400 text-xs">
+                              Estado: <span className="text-gray-300 capitalize">{multa.evidencia.carpeta.estado}</span>
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-500 text-xs">No disponible</p>
+                        )}
+                      </div>
+
+                      {/* Burócrata y Evidencia (compactos) */}
+                      <div className="grid grid-cols-2 gap-2">
+                        {/* Burócrata */}
+                        {multa.burocrata && (
+                          <div className="bg-slate-800 rounded-lg p-2">
+                            <p className="text-gray-400 text-[10px] font-semibold mb-1">EMITIDA POR</p>
+                            <div className="flex items-center gap-1">
+                              <span className="text-sm">👨‍💼</span>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white text-xs font-medium truncate">
+                                  {multa.burocrata.nomBurocrata || `ID: ${multa.burociataId}`}
+                                </p>
+                                <p className="text-gray-400 text-[10px] truncate">
+                                  {multa.burocrata.cargo || 'Burócrata'}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+
+                        {/* Evidencia */}
+                        {multa.evidencia && (
+                          <div className="bg-slate-800 rounded-lg p-2">
+                            <p className="text-gray-400 text-[10px] font-semibold mb-1">EVIDENCIA</p>
+                            <div className="flex items-center gap-1">
+                              <span className="text-sm">🔍</span>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-white text-xs truncate">
+                                  {multa.evidencia.descripcion || 'Sin descripción'}
+                                </p>
+                                <p className="text-gray-400 text-[10px]">
+                                  {formatearFecha(multa.evidencia.fechaRecoleccion)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
 
                       {/* Fechas */}
                       <div className="grid grid-cols-2 gap-2 text-xs">
