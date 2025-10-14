@@ -15,14 +15,14 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
         
         const promesas = [];
         
-        // Solo usar los endpoints que SÍ funcionan
+        // Intentar obtener metahumanos y burócratas
         promesas.push(
-            usuariosAPI.get('/metahumanos').catch((error) => {
-                console.log('⚠️ Error en /metahumanos:', error.response?.status);
+            api.get('/metahumanos').catch((error) => {
+                console.log('⚠️ Error en /metahumanos:', error.response?.status || error.message);
                 return { data: { data: [] } };
             }),
-            usuariosAPI.get('/Burocratas').catch((error) => {
-                console.log('⚠️ Error en /Burocratas:', error.response?.status);
+            api.get('/Burocratas').catch((error) => {
+                console.log('⚠️ Error en /Burocratas:', error.response?.status || error.message);
                 return { data: { data: [] } };
             })
         );
@@ -34,40 +34,68 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
         let todosLosUsuarios = [];
         
         resultados.forEach((resultado, index) => {
-            // La estructura de respuesta es: { message: "...", data: [...] }
-            const usuarios = resultado.data?.data || [];
+            console.log(`📋 Procesando resultado ${index}:`, resultado);
+            
+            // La estructura de respuesta puede variar
+            let usuarios = [];
+            
+            if (resultado.data) {
+                // Intentar diferentes estructuras de respuesta
+                if (Array.isArray(resultado.data)) {
+                    usuarios = resultado.data;
+                } else if (resultado.data.data && Array.isArray(resultado.data.data)) {
+                    usuarios = resultado.data.data;
+                } else if (resultado.data.metahumanos && Array.isArray(resultado.data.metahumanos)) {
+                    usuarios = resultado.data.metahumanos;
+                } else if (resultado.data.burocratas && Array.isArray(resultado.data.burocratas)) {
+                    usuarios = resultado.data.burocratas;
+                }
+            }
+            
+            console.log(`📦 Usuarios extraídos del resultado ${index}:`, usuarios);
             
             if (Array.isArray(usuarios) && usuarios.length > 0) {
+                const tipoUsuario = index === 0 ? 'METAHUMANO' : 'BUROCRATA';
+                
                 // Convertir a formato estándar de usuario
-                const usuariosConvertidos = usuarios.map(usuario => ({
-                    id: usuario.id,
-                    // Para metahumanos: usar 'nombre', para burócratas: usar 'nombreBuro'
-                    nomUsuario: usuario.nombre || usuario.nombreBuro || usuario.nomUsuario || `Usuario${usuario.id}`,
-                    email: usuario.mail || usuario.email || 'sin-email@ejemplo.com',
-                    rol: index === 0 ? 'METAHUMANO' : 'BUROCRATA',
-                    fechaCreacion: new Date().toISOString(), // Como no viene fecha, usar actual
-                    activo: usuario.estado !== 'fugitivo' && usuario.estado !== 'inactivo', // Solo inactivo si es fugitivo
-                    // Campos adicionales específicos de metahumanos
-                    ...(usuario.alias && { alias: usuario.alias }),
-                    ...(usuario.origen && { origen: usuario.origen }),
-                    ...(usuario.telefono && { telefono: usuario.telefono }),
-                    ...(usuario.poderes && { poderes: usuario.poderes }),
-                    ...(usuario.nivelPeligrosidad && { nivelPeligrosidad: usuario.nivelPeligrosidad }),
-                    ...(usuario.recompensa && { recompensa: usuario.recompensa }),
-                    // Campos adicionales específicos de burócratas
-                    ...(usuario.aliasBuro && { alias: usuario.aliasBuro }),
-                    ...(usuario.origenBuro && { origen: usuario.origenBuro }),
-                    ...(usuario.estado && { estadoOriginal: usuario.estado })
-                }));
+                const usuariosConvertidos = usuarios.map(usuario => {
+                    console.log(`🔄 Convirtiendo ${tipoUsuario}:`, usuario);
+                    
+                    return {
+                        id: usuario.id,
+                        // Para metahumanos: usar 'nombre', para burócratas: usar 'nombreBuro' o 'nomBurocrata'
+                        nomUsuario: usuario.nombre || usuario.nombreBuro || usuario.nomBurocrata || usuario.nomUsuario || `Usuario${usuario.id}`,
+                        email: usuario.mail || usuario.email || 'sin-email@ejemplo.com',
+                        rol: tipoUsuario,
+                        fechaCreacion: usuario.fechaCreacion || usuario.createdAt || new Date().toISOString(),
+                        estado: usuario.estado || 'ACTIVO',
+                        activo: usuario.activo !== false && usuario.estado !== 'fugitivo' && usuario.estado !== 'inactivo',
+                        // Campos adicionales específicos de metahumanos
+                        ...(usuario.alias && { alias: usuario.alias }),
+                        ...(usuario.origen && { origen: usuario.origen }),
+                        ...(usuario.telefono && { telefono: usuario.telefono }),
+                        ...(usuario.poderes && { poderes: usuario.poderes }),
+                        ...(usuario.nivelPeligrosidad && { nivelPeligrosidad: usuario.nivelPeligrosidad }),
+                        ...(usuario.recompensa && { recompensa: usuario.recompensa }),
+                        // Campos adicionales específicos de burócratas
+                        ...(usuario.nomBurocrata && { nomBurocrata: usuario.nomBurocrata }),
+                        ...(usuario.departamento && { departamento: usuario.departamento }),
+                        ...(usuario.cargo && { cargo: usuario.cargo }),
+                        // Guardar el objeto original por si acaso
+                        _original: usuario
+                    };
+                });
                 
                 todosLosUsuarios = [...todosLosUsuarios, ...usuariosConvertidos];
-                console.log(`✅ Agregados ${usuariosConvertidos.length} usuarios de tipo: ${index === 0 ? 'METAHUMANO' : 'BUROCRATA'}`);
+                console.log(`✅ Agregados ${usuariosConvertidos.length} usuarios de tipo: ${tipoUsuario}`);
             } else {
                 console.log(`ℹ️ No se encontraron usuarios en el endpoint: ${index === 0 ? '/metahumanos' : '/Burocratas'}`);
             }
         });
         
         console.log(`✅ Total usuarios combinados: ${todosLosUsuarios.length}`);
+        console.log('👥 Usuarios finales:', todosLosUsuarios);
+        
         return { data: todosLosUsuarios };
     } catch (error) {
         console.error('❌ Error al obtener usuarios combinados:', error);

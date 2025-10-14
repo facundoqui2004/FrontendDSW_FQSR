@@ -82,6 +82,7 @@ export default function CarpetaDetalle() {
         ...formData,
         montoMulta: Number(formData.montoMulta),
         evidenciaId: evidenciaId,
+        estado: "PENDIENTE", // 🟡 Estado por defecto al crear multa
       });
 
       setMultaForms(prev => ({
@@ -97,8 +98,10 @@ export default function CarpetaDetalle() {
       }));
 
       fetchCarpeta();
+      alert("✅ Multa creada exitosamente con estado PENDIENTE");
     } catch (err) {
       console.error("❌ Error al crear multa:", err);
+      alert("❌ Error al crear la multa: " + err.message);
     }
   };
 
@@ -259,6 +262,12 @@ export default function CarpetaDetalle() {
                       onSubmit={(e) => handleCrearMulta(e, ev.id)}
                       className="space-y-2"
                     >
+                      <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-3 mb-3">
+                        <p className="text-yellow-200 text-sm flex items-center gap-2">
+                          <span>⏳</span>
+                          <span>La multa se creará con estado <strong>PENDIENTE</strong> y debe ser aprobada por un administrador</span>
+                        </p>
+                      </div>
                       <input
                         type="text"
                         placeholder="Motivo de la multa"

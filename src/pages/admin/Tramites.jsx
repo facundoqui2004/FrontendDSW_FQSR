@@ -28,6 +28,16 @@ const Tramites = () => {
     },
     {
       id: 3,
+      title: 'Gestionar Multas',
+      description: 'Aprobar o rechazar multas de metahumanos',
+      icon: '💰',
+      route: '/admin/tramites/gestionar-multas',
+      bgColor: 'bg-gradient-to-r from-amber-500 to-orange-500',
+      hoverColor: 'hover:from-amber-600 hover:to-orange-600',
+      available: true
+    },
+    {
+      id: 4,
       title: 'Aprobar/Rechazar Trámites',
       description: 'Revisar y gestionar solicitudes pendientes',
       icon: '📋',
@@ -116,6 +126,10 @@ const Tramites = () => {
                 <li className="flex items-center">
                   <span className="text-green-500 mr-2">✓</span>
                   Asignar poderes a metahumanos
+                </li>
+                <li className="flex items-center">
+                  <span className="text-green-500 mr-2">✓</span>
+                  Aprobar/rechazar multas de metahumanos
                 </li>
               </ul>
             </div>

@@ -28,6 +28,7 @@
 
   // Importar componentes adicionales
   import GestionarPoderes from './pages/admin/tramites/gestionar-poderes';
+  import GestionarMultas from './pages/admin/tramites/gestionar-multas';
 
   import { AuthProvider } from './context/AuthContext';
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
@@ -51,6 +52,7 @@
             <Route path="/admin/tramites" element={<Tramites />} />
             <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
             <Route path="/admin/tramites/gestionar-poderes" element={<GestionarPoderes />} />
+            <Route path="/admin/tramites/gestionar-multas" element={<GestionarMultas />} />
 
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
