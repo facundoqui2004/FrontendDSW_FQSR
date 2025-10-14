@@ -18,6 +18,7 @@
     HomeMeta, 
     TramitesMetaHumano, 
     CrearPoderes,
+    CarpetasMeta,
 
     // 🧾 Burócratas
     HomeBurocrata,
@@ -58,6 +59,7 @@
             <Route path="/metahumano" element={<HomeMeta />} />
             <Route path="/metahumano/tramites" element={<TramitesMetaHumano />} />
             <Route path="/metahumano/poderes/crear" element={<CrearPoderes />} />
+            <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
 
             {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
             <Route path="/homeBurocrata" element={<HomeBurocrata />} />
