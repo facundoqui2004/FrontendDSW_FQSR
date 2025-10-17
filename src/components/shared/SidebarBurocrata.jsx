@@ -33,7 +33,6 @@ const Sidebar = (props) => {
           alt="Logo El Súper Gestor"
           className="mx-auto w-25 h-auto cursor-pointer"
         />
-        {/* Tooltip estilo cómic */}
         <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
           <div className="relative bg-red-500 text-white px-4 py-3 rounded-lg text-sm font-bold border-4 border-black shadow-lg transform rotate-1 whitespace-nowrap">
             <div className="relative z-10">
@@ -73,7 +72,7 @@ const Sidebar = (props) => {
             </button>
           </li>
 
-          {/* 🗂️ Carpetas (antes: Trámites) */}
+          {/* 🗂️ Carpetas */}
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/carpetas")}

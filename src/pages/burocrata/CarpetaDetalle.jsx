@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCarpetaByIdRequest } from "../../api/carpetas";
+import { getCarpetaByIdRequest, patchCarpetaEstadoRequest } from "../../api/carpetas";
 import { createEvidenciaRequest, deleteEvidenciaRequest } from "../../api/evidencias";
 import { createMultaRequest, deleteMultaRequest } from "../../api/multas";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
@@ -10,17 +10,24 @@ export default function CarpetaDetalle() {
   const [carpeta, setCarpeta] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 📌 Evidencia
+  // Evidencia
   const [descripcion, setDescripcion] = useState("");
   const [fechaRecoleccion, setFechaRecoleccion] = useState("");
 
-  // 📌 Multas (por evidencia)
+  // Actualizar estado carpeta
+  const [estadoEdit, setEstadoEdit] = useState("");
+  const [savingEstado, setSavingEstado] = useState(false);
+
+  // Multas (por evidencia)
   const [multaForms, setMultaForms] = useState({});
 
   const fetchCarpeta = async () => {
     try {
       const res = await getCarpetaByIdRequest(id);
+      const c = res.data.data || res.data;
       setCarpeta(res.data.data || res.data);
+      setCarpeta(c);
+      setEstadoEdit(c?.estado || "activa");
     } catch (err) {
       console.error("❌ Error al obtener carpeta:", err);
     } finally {
@@ -31,6 +38,25 @@ export default function CarpetaDetalle() {
   useEffect(() => {
     fetchCarpeta();
   }, [id]);
+
+  // Cambiar estado carpeta
+  const handleGuardarEstado = async () => {
+    try {
+      if (!carpeta) return;
+      if (estadoEdit === carpeta.estado) return;
+
+      setSavingEstado(true);
+      await patchCarpetaEstadoRequest(carpeta.id, estadoEdit);
+
+      await fetchCarpeta();
+
+    } catch (err) {
+      console.error("❌ Error al actualizar estado:", err);
+      alert("No se pudo actualizar el estado.");
+    } finally {
+      setSavingEstado(false);
+    }
+  };
 
   // 📝 Crear evidencia
   const handleCrearEvidencia = async (e) => {
@@ -49,6 +75,8 @@ export default function CarpetaDetalle() {
     }
   };
 
+
+  
   // 🗑️ Eliminar evidencia
   const handleEliminarEvidencia = async (evidenciaId) => {
     if (!confirm("¿Eliminar esta evidencia?")) return;
@@ -155,8 +183,34 @@ export default function CarpetaDetalle() {
                 <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
                   Estado
                 </p>
-                <p className="text-white text-base capitalize">{carpeta.estado}</p>
+                <p className="text-white text-base">
+                  Actual: <span className="capitalize">{carpeta.estado}</span>
+                </p>
+                <br></br>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={estadoEdit}
+                    onChange={(e) => setEstadoEdit(e.target.value)}
+                    className="p-2 rounded bg-[#1a1a1a] text-white"
+                  >
+                    <option value="activa">Activa</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="cerrada">Cerrada</option>
+                  </select>
+                  <button
+                    onClick={handleGuardarEstado}
+                    disabled={savingEstado || estadoEdit === carpeta.estado}
+                    className={`px-3 py-1 rounded font-semibold transition ${
+                      savingEstado || estadoEdit === carpeta.estado
+                        ? "bg-gray-600 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    {savingEstado ? "Guardando..." : "Guardar"}
+                  </button>
+                </div>
               </div>
+
               <div>
                 <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
                   Tipo

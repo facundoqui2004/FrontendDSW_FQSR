@@ -1,9 +1,7 @@
 import { useState } from "react";
-// Estructura de la aplicación
 import Sidebar from "../../components/shared/SidebarMetaHum";
 import Footer from "../../components/footer";
 import { useNavigate } from "react-router-dom";
-// Iconos
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
 import { RiHome6Line, RiCloseFill } from "react-icons/ri";
@@ -135,73 +133,7 @@ function Home() {
               </button>
             </div>
           </div>
-          
-
-
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         {/* Panel de usuario */}
         <div
