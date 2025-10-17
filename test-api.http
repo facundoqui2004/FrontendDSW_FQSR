@@ -80,3 +80,19 @@ Content-Type: {{contentType}}
   "alias": "El Tramitador",
   "origen": "Ministerio de Pruebas"
 }
+
+### Obtener carpetas de un metahumano específico
+# @name getCarpetasByMetahumano
+GET {{baseUrl}}/api/carpetas?metahumano_id=1
+
+### Obtener todas las carpetas
+# @name getAllCarpetas
+GET {{baseUrl}}/api/carpetas
+
+### Eliminar evidencia
+# @name deleteEvidencia
+DELETE {{baseUrl}}/api/evidencias/1
+
+### Obtener evidencia por ID
+# @name getEvidenciaById
+GET {{baseUrl}}/api/evidencias/1

@@ -19,6 +19,7 @@
     TramitesMetaHumano, 
     CarpetasMetaHumano,
     CrearPoderes,
+    CarpetasMeta,
 
     // 🧾 Burócratas
     HomeBurocrata,
@@ -29,6 +30,7 @@
 
   // Importar componentes adicionales
   import GestionarPoderes from './pages/admin/tramites/gestionar-poderes';
+  import GestionarMultas from './pages/admin/tramites/gestionar-multas';
 
   import { AuthProvider } from './context/AuthContext';
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
@@ -52,12 +54,14 @@
             <Route path="/admin/tramites" element={<Tramites />} />
             <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
             <Route path="/admin/tramites/gestionar-poderes" element={<GestionarPoderes />} />
+            <Route path="/admin/tramites/gestionar-multas" element={<GestionarMultas />} />
 
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
             <Route path="/metahumano/tramites" element={<TramitesMetaHumano />} />
             <Route path="/metahumano/carpetas" element={<CarpetasMetaHumano />} />
             <Route path="/metahumano/poderes/crear" element={<CrearPoderes />} />
+            <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
 
             {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
             <Route path="/homeBurocrata" element={<HomeBurocrata />} />
