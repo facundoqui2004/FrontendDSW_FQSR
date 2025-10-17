@@ -14,7 +14,6 @@ export default function CarpetasList() {
   useEffect(() => {
     getAllCarpetasRequest()
       .then(res => {
-        // 👇 asegurate de acceder a la data correcta según tu backend
         setCarpetas(res.data.data || res.data);
         setLoading(false);
       })
