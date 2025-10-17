@@ -17,6 +17,7 @@
     // 🧍 Metahumanos
     HomeMeta, 
     TramitesMetaHumano, 
+    CarpetasMetaHumano,
     CrearPoderes,
     CarpetasMeta,
 
@@ -58,6 +59,7 @@
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
             <Route path="/metahumano/tramites" element={<TramitesMetaHumano />} />
+            <Route path="/metahumano/carpetas" element={<CarpetasMetaHumano />} />
             <Route path="/metahumano/poderes/crear" element={<CrearPoderes />} />
             <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
 

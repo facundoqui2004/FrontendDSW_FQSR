@@ -62,9 +62,9 @@ const Sidebar = (props) => {
       <div>
         <ul className="pl-4">
             <li className="bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl">
-            <a 
-                href="#" 
-                className="bg-[#317196] p-4 flex justify-center block rounded-xl text-white relative group"
+            <button
+              onClick={() => navigate("/metahumano")}
+              className="bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}
@@ -73,13 +73,13 @@ const Sidebar = (props) => {
                 {/* Flecha del tooltip */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
                 </div>
-            </a>
+            </button>
             </li>
 
             <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <a
-                    href="#"
-                    className="group-hover:bg-[#317196] p-4 flex justify-center block rounded-xl text-white group-hover:text-white relative"
+                <button
+                onClick={() => navigate("/metahumano/tramites")}
+                className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
                 >
                     <FaWpforms className="text-2xl" />
                     {/* Tooltip */}
@@ -88,7 +88,7 @@ const Sidebar = (props) => {
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
                     </div>
-                </a>
+                </button>
             </li>
 
 
