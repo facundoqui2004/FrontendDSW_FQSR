@@ -34,12 +34,6 @@ const GestionarMultas = () => {
       console.log('✅ Multas cargadas y ordenadas:', multasOrdenadas);
       console.log('📊 Total de multas:', multasOrdenadas.length);
       console.log('⏳ Pendientes:', multasOrdenadas.filter(m => m.estado === 'PENDIENTE').length);
-      
-      // Verificar relaciones en la primera multa
-      if (multasOrdenadas.length > 0) {
-        console.log('🔍 Primera multa con relaciones:', multasOrdenadas[0]);
-        console.log('🦸 Metahumano:', multasOrdenadas[0].evidencia?.carpeta?.metahumano);
-      }
     } catch (error) {
       console.error('❌ Error al cargar multas:', error);
       setMultas([]);
@@ -352,7 +346,7 @@ const GestionarMultas = () => {
                       {/* Alias del metahumano en el header - NO FUNCIONA porque no vienen las relaciones */}
                       {/* El backend solo devuelve IDs, no objetos anidados */}
                     </div>
-``
+
                     {/* Contenido */}
                     <div className="p-4 space-y-3">
                       {/* 🦸 METAHUMANO - Ahora SÍ disponible */}
