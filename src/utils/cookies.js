@@ -8,9 +8,9 @@ export const getUserFromCookie = () => {
   try {
     const raw = document.cookie
       .split('; ')
-      .find(c => c.startsWith('user_info='))
+      .find((c) => c.startsWith('user_info='))
       ?.split('=')[1];
-    
+
     return raw ? JSON.parse(decodeURIComponent(raw)) : null;
   } catch (error) {
     console.error('Error al leer cookie user_info:', error);
@@ -45,6 +45,11 @@ export const getUserId = () => {
   return userInfo?.id || null;
 };
 
+export const getMetaId = () => {
+  const userInfo = getUserFromCookie();
+  return userInfo?.perfilId || null;
+};
+
 /**
  * Obtiene el alias del usuario desde la cookie
  * @returns {string|null} El alias del usuario o null
@@ -61,12 +66,12 @@ export const getUserAlias = () => {
 export const getFormattedUserInfo = () => {
   const userInfo = getUserFromCookie();
   if (!userInfo) return null;
-  
+
   return {
     id: userInfo.id,
     rol: userInfo.role,
     alias: userInfo.alias,
     perfil: userInfo.perfil,
-    perfilId: userInfo.perfilId
+    perfilId: userInfo.perfilId,
   };
 };

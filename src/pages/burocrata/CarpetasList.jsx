@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  getAllCarpetasRequest,
   deleteCarpetaRequest
 } from "../../api/carpetas";
+import { getCarpetasByBurocrataId } from "../../api/burocratas";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
+import { getMe } from "../../api/usuarios";
 
 export default function CarpetasList() {
   const [carpetas, setCarpetas] = useState([]);
@@ -12,16 +13,27 @@ export default function CarpetasList() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getAllCarpetasRequest()
-      .then(res => {
-        setCarpetas(res.data.data || res.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Error al obtener carpetas:", err);
-        setLoading(false);
-      });
+    (async () => {
+      try {
+        setLoading(true);
+        const { data } = await getMe();
+        const u = data?.data;
+        console.log(u);
+        if (u.role !== "BUROCRATA" || !u.perfilId) {
+          alert("Debés iniciar sesión como BUROCRATA.");
+          return;
+        }
+        const carpetasBuro = await getCarpetasByBurocrataId(u.perfilId);
+        setCarpetas(carpetasBuro.data.data);
+      } catch (e) {
+        console.error("No se pudo obtener /usuarios/me", e);
+        alert("Iniciá sesión para continuar.");
+      }finally{
+        setLoading(false)
+      }
+    })();
   }, []);
+   
 
   const handleDelete = async (id) => {
     if (confirm("¿Estás seguro de eliminar esta carpeta?")) {

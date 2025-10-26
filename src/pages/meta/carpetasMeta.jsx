@@ -3,8 +3,8 @@ import React, { useState, useCallback, useEffect } from "react";
 import Sidebar from "../../components/shared/SidebarMetaHum";
 import Footer from "../../components/footer";
 import { useAuth } from "../../context/AuthContext";
+import { getMetaId}  from "../../utils/cookies";
 // Iconos
-
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose, FaFolder, FaExclamationCircle } from "react-icons/fa";
 import { RiHome6Line, RiCloseFill } from "react-icons/ri";
@@ -18,12 +18,8 @@ function Home() {
   const [expandedCarpetas, setExpandedCarpetas] = useState({});
   const [expandedMultas, setExpandedMultas] = useState({});
  
-    const { 
-      user, 
-      getUserId, 
-      getPerfilId, 
-      getUserRole, 
-      getUserAlias 
+    const {
+      getPerfilId 
     } = useAuth();
   
     // Función para obtener carpetas del backend
@@ -33,7 +29,7 @@ function Home() {
             setError("");
             
             // Obtener todas las carpetas del metahumano específico
-            const response = await fetch(`http://localhost:3000/api/carpetas?metahumano_id=${getPerfilId()}`, {
+            const response = await fetch(`http://localhost:3000/api/carpetas/idMetahumano/${getMetaId()}`, {
                 credentials: 'include'
             });
             
