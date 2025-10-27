@@ -62,7 +62,7 @@ const Sidebar = (props) => {
           <li className="bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl">
             <button
               onClick={() => navigate("/homeBurocrata")}
-              className="bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white relative group"
+              className="bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white relative group cursor-pointer"
             >
               <RiHome6Line className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#f1a035] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
@@ -76,7 +76,7 @@ const Sidebar = (props) => {
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/carpetas")}
-              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <FaRegFolder className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#f1a035] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
@@ -89,8 +89,8 @@ const Sidebar = (props) => {
           {/* 👤 Mi Perfil */}
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
-              onClick={toggleUser}
-              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+              onClick={() => navigate("/burocrata/perfil")}
+              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <FaRegUserCircle className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#f1a035] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
@@ -104,7 +104,7 @@ const Sidebar = (props) => {
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/soporte")}
-              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <MdContactSupport className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#f1a035] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
@@ -122,7 +122,7 @@ const Sidebar = (props) => {
           <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={handleLogout}
-              className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+              className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <CiLogout className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">

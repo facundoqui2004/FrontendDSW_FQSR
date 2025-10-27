@@ -7,6 +7,7 @@ import Footer from "../../components/footer";
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle } from "react-icons/fa";
 import { RiCloseFill } from "react-icons/ri";
+import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 
 function HomeBurocrata() {
   const [showMenu, setShowMenu] = useState(false);
@@ -28,25 +29,9 @@ function HomeBurocrata() {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className="bg-[#c4a783] w-full min-h-screen transition-colors duration-300 flex flex-col">
-      {/* 🧭 Sidebar */}
-      <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
-
-      {/* 📱 Menú Mobile */}
-      <nav className="bg-[#1F1D2B] lg:hidden fixed top-0 left-0 w-full flex justify-between items-center p-4 z-20">
-        <button onClick={toggleMenu} className="text-white text-3xl">
-          {showMenu ? <RiCloseFill /> : <CgMenuRound />}
-        </button>
-        <button onClick={toggleUser} className="text-white text-2xl">
-          <FaRegUserCircle />
-        </button>
-      </nav>
-
+   
+   <BurocrataLayout>
       {/* 📌 Contenido principal */}
-      <main
-        className={`flex-1 pt-20 lg:pt-6 pb-10 transition-all duration-300 ease-in-out
-        ${showMenu ? "pl-4" : "pl-0"} lg:ml-28`}
-      >
         {/* 🏛️ Encabezado centrado */}
         <section className="text-center text-white mt-8 mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight mb-2">
@@ -109,15 +94,7 @@ function HomeBurocrata() {
         <section className="mt-12 text-center text-white/70">
           Panel de control Burócrata en desarrollo…
         </section>
-      </main>
-
-      {/* 🦶 Footer */}
-      <footer
-        className={`mt-auto ${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
-      >
-        <Footer />
-      </footer>
-    </div>
+      </BurocrataLayout>
   );
 }
 

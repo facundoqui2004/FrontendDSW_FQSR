@@ -32,6 +32,8 @@
   import GestionarMultas from './pages/admin/tramites/gestionar-multas';
 
   import { AuthProvider } from './context/AuthContext';
+import MiPerfil from "./pages/burocrata/MiPerfil";
+import Soporte from "./pages/burocrata/Soporte";
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
 
   function App() {
@@ -63,10 +65,11 @@
 
             {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
             <Route path="/homeBurocrata" element={<HomeBurocrata />} />
-
             <Route path="/burocrata/carpetas" element={<CarpetasList />} />
             <Route path="/burocrata/carpeta/crear" element={<CrearCarpeta />} />
             <Route path="/burocrata/carpeta/:id" element={<CarpetaDetalle />} />
+            <Route path="/burocrata/perfil" element = {<MiPerfil/>}/>
+            <Route path="/burocrata/soporte" element={<Soporte/>}/>
           </Routes>
         </AuthProvider>
       </BrowserRouter>
