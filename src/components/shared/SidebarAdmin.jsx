@@ -23,16 +23,20 @@ const Sidebar = (props) => {
     };
 
   return (
-    <div className={` bg-[#0f172a] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between  rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
-    ${showMenu ? 'left-0' : '-left-full'}`}>
-      <div className="text-center  relative group">
+    <div className={`bg-[#0f172a] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg overflow-x-hidden
+    ${showMenu ? 'left-0' : '-left-full'}`}
+    style={{
+      scrollbarWidth: 'thin',
+      scrollbarColor: '#0891b2 #0f172a'
+    }}>
+      <div className="text-center relative group flex-shrink-0 py-2 w-full overflow-hidden">
             <img
                 src="/Images/Admin.png"
                 alt="Logo El Súper Gestor"
-                className="mx-auto w-25 h-auto cursor-pointer" // ancho fijo, altura automática para mantener proporción
+                className="mx-auto w-20 h-auto cursor-pointer max-w-full"
             />
             {/* Tooltip estilo cómic para el logo */}
-            <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+            <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 <div className="relative bg-[#0891b2] text-white px-4 py-3 rounded-lg text-sm font-bold border-4 border-black shadow-lg transform rotate-1 whitespace-nowrap">
                 <div className="relative z-10">
                     <div className="text-[#bfdbfe] text-lg font-black tracking-wide drop-shadow-lg">
@@ -57,9 +61,9 @@ const Sidebar = (props) => {
             </div>
       </div>
 
-        {/* Lista de enlaces */}
-      <div>
-        <ul className="pl-4">
+        {/* Lista de enlaces - Con scroll si es necesario */}
+      <div className="flex-1 overflow-y-auto py-2 scrollbar-thin overflow-x-hidden w-full">
+        <ul className="pl-4 space-y-1 w-full overflow-x-hidden">
             <li className="bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl">
             <button 
                 onClick={() => navigate('/admin')}
@@ -67,7 +71,7 @@ const Sidebar = (props) => {
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 Inicio
                 {/* Flecha del tooltip */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -82,7 +86,7 @@ const Sidebar = (props) => {
                 >
                     <FaUsers className="text-2xl" />
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Gestionar Usuarios
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -97,7 +101,7 @@ const Sidebar = (props) => {
                 >
                     <span className="text-2xl">⚡</span>
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Gestionar Metahumanos
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -112,7 +116,7 @@ const Sidebar = (props) => {
                 >
                     <span className="text-2xl">🏢</span>
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Gestionar Burócratas
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -127,7 +131,7 @@ const Sidebar = (props) => {
                 >
                     <FaWpforms className="text-2xl" />
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Tramites
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -143,7 +147,7 @@ const Sidebar = (props) => {
                 >
                     <FaRegUserCircle className="text-2xl" />
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Usuario
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -158,7 +162,7 @@ const Sidebar = (props) => {
                 >
                     <MdContactSupport className="text-2xl" />
                     {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                     Soporte
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
@@ -169,7 +173,9 @@ const Sidebar = (props) => {
                         
         </ul>
       </div>
-      <div>
+      
+      {/* Logout - Siempre visible al final */}
+      <div className="flex-shrink-0 pb-2">
         <ul className="pl-4">
                             <li className="hover:bg-[#075985] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                                 <button
@@ -178,7 +184,7 @@ const Sidebar = (props) => {
                                 >
                                     <CiLogout className="text-2xl" />
                                     {/* Tooltip */}
-                                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                                     Cerrar Sesión
                                     {/* Flecha del tooltip */}
                                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
