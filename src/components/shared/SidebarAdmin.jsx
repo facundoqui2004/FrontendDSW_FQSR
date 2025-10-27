@@ -23,9 +23,9 @@ const Sidebar = (props) => {
     };
 
   return (
-    <div className={` bg-[#0f172a] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between py-6 rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
+    <div className={` bg-[#0f172a] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between  rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
     ${showMenu ? 'left-0' : '-left-full'}`}>
-      <div className="text-center my-4 relative group">
+      <div className="text-center  relative group">
             <img
                 src="/Images/Admin.png"
                 alt="Logo El Súper Gestor"
@@ -60,7 +60,7 @@ const Sidebar = (props) => {
         {/* Lista de enlaces */}
       <div>
         <ul className="pl-4">
-            <li className="bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl">
+            <li className="bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl">
             <button 
                 onClick={() => navigate('/admin')}
                 className="bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-white relative group"
@@ -75,7 +75,7 @@ const Sidebar = (props) => {
             </button>
             </li>
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/usuarios')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -90,7 +90,7 @@ const Sidebar = (props) => {
                 </button>
             </li>
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/metahumanos')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -105,7 +105,7 @@ const Sidebar = (props) => {
                 </button>
             </li>
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/burocratas')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -120,7 +120,7 @@ const Sidebar = (props) => {
                 </button>
             </li>
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/tramites')}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -136,7 +136,7 @@ const Sidebar = (props) => {
             </li>
 
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={toggleUser}
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -151,7 +151,7 @@ const Sidebar = (props) => {
                 </button>
             </li>
 
-            <li className="hover:bg-[#0f4958] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <a
                     href="#"
                     className="group-hover:bg-[#0891b2] p-4 flex justify-center block rounded-xl text-[#06b6d4] group-hover:text-white relative"
@@ -171,7 +171,7 @@ const Sidebar = (props) => {
       </div>
       <div>
         <ul className="pl-4">
-                            <li className="hover:bg-[#075985] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                            <li className="hover:bg-[#075985] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                                 <button
                                     onClick={handleLogout}
                                     className="group-hover:bg-[#0ea5e9] p-4 flex justify-center w-full rounded-xl text-[#67e8f9] group-hover:text-white relative"

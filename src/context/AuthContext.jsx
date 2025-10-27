@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { registerMetahumanoRequest, registerBurocrataRequest, loginRequest, logoutRequest, getPerfilRequest } from '../api/auth';
-import { getUserFromCookie, isAuthenticated as checkCookieAuth, getFormattedUserInfo } from '../utils/cookies';
+import { getUserFromCookie } from '../utils/cookies';
 
 export const AuthContext = createContext();
 

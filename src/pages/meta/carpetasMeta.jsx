@@ -2,12 +2,13 @@ import React, { useState, useCallback, useEffect } from "react";
 // Estructura de la aplicación
 import Sidebar from "../../components/shared/SidebarMetaHum";
 import Footer from "../../components/footer";
-import { useAuth } from "../../context/AuthContext";
+import { getMetaId, getUserFromCookie}  from "../../utils/cookies";
 // Iconos
-
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose, FaFolder, FaExclamationCircle } from "react-icons/fa";
 import { RiHome6Line, RiCloseFill } from "react-icons/ri";
+import { getBurocrataByIdRequest} from "../../api/burocratas";
+
 
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
@@ -17,14 +18,9 @@ function Home() {
   const [error, setError] = useState("");
   const [expandedCarpetas, setExpandedCarpetas] = useState({});
   const [expandedMultas, setExpandedMultas] = useState({});
+  const [burocrataNombre, setBurocrataNombre] = useState(null)
  
-    const { 
-      user, 
-      getUserId, 
-      getPerfilId, 
-      getUserRole, 
-      getUserAlias 
-    } = useAuth();
+
   
     // Función para obtener carpetas del backend
     const fetchCarpetas = useCallback(async () => {
@@ -33,7 +29,7 @@ function Home() {
             setError("");
             
             // Obtener todas las carpetas del metahumano específico
-            const response = await fetch(`http://localhost:3000/api/carpetas?metahumano_id=${getPerfilId()}`, {
+            const response = await fetch(`http://localhost:3000/api/carpetas/idMetahumano/${getMetaId()}`, {
                 credentials: 'include'
             });
             
@@ -52,14 +48,37 @@ function Home() {
         } finally {
             setLoading(false);
         }
-    }, [getPerfilId]);
+    }, []);
 
     // Cargar carpetas al montar el componente
-    useEffect(() => {
-        if (getPerfilId()) {
-            fetchCarpetas();
-        }
-    }, [fetchCarpetas, getPerfilId]);
+   useEffect(() => {
+  async function fetchData() {
+    try {
+      // Si existe el metahumano, trae sus carpetas
+      if (getMetaId()) {
+        await fetchCarpetas();
+      }
+
+      // Ahora busca los datos del burócrata
+      const user = getUserFromCookie();
+      const burocrataId = user?.perfilId;
+
+      if (burocrataId) {
+        const res = await getBurocrataByIdRequest(burocrataId);
+        setBurocrataNombre(res.data.data.nombre);
+        console.log("nombre del burócrata:", res.data.data.nombre);
+      } else {
+        console.warn("No se encontró perfilId en la cookie");
+      }
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+    }
+  }
+
+  fetchData();
+}, [fetchCarpetas]);
+
+
 
     const toggleMenu = () => setShowMenu(!showMenu);
     const toggleUser = () => setShowUser(!showUser);
@@ -82,17 +101,19 @@ function Home() {
     };
     
     // Función para obtener todas las multas de una carpeta
-    const obtenerMultasDeCarpeta = (carpeta) => {
-        const todasLasMultas = [];
-        if (carpeta.evidencias) {
-            carpeta.evidencias.forEach(evidencia => {
-                if (evidencia.multas) {
-                    todasLasMultas.push(...evidencia.multas);
-                }
-            });
-        }
-        return todasLasMultas;
-    };
+const obtenerMultasDeCarpeta = (carpeta) => {
+  const totalMultas = [];
+
+  if (carpeta.evidencias && Array.isArray(carpeta.evidencias)) {
+    for (const evidencia of carpeta.evidencias) {
+      if (evidencia.multas && Array.isArray(evidencia.multas)) {
+        totalMultas.push(...evidencia.multas);
+      }
+    }
+  }
+
+  return totalMultas;
+};
 
     // Función para obtener la evidencia correspondiente a una multa
     const obtenerEvidenciaDeMulta = (carpeta, multaId) => {
@@ -204,8 +225,7 @@ function Home() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {carpetas.map((carpeta) => {
                       const multas = obtenerMultasDeCarpeta(carpeta);
-                      const multasPendientes = multas.filter(m => m.estado !== 'PAGADA').length;
-                      
+                      const multasPendientes = multas.filter(m => m.estado == 'PENDIENTE').length;
                       return (
                         <>
                         <div 
@@ -219,6 +239,7 @@ function Home() {
                               carpeta.estado === 'pendiente' ? 'bg-yellow-500/20 text-yellow-400' :
                               'bg-gray-500/20 text-gray-400'
                             }`}>
+                              {console.log("estado de la carpeta", carpeta.estado)}
                               {carpeta.estado || 'Sin estado'}
                             </span>
                           </div>
@@ -234,6 +255,7 @@ function Home() {
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-300">Total de multas:</span>
                               <span className="text-white font-medium">{multas.length}</span>
+                            {console.log("multas de la carpeta", multas.length)}
                             </div>
                             {multasPendientes > 0 && (
                               <div className="flex justify-between items-center text-sm mt-1">
@@ -245,8 +267,9 @@ function Home() {
                           
                           <div className="text-xs text-gray-500 mb-3">
                             <p>Creada: {carpeta.fecha_creacion ? new Date(carpeta.fecha_creacion).toLocaleDateString() : 'Fecha no disponible'}</p>
-                            {carpeta.burocrata && <p>Asignada a: Burócrata #{carpeta.burocrata}</p>}
+                            {carpeta.burocrata && <p>Asignada a: Burócrata : {burocrataNombre} </p>}
                           </div>
+
                           
                           {/* Botón Ver/Ocultar Multas */}
                           <button

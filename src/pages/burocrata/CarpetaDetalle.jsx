@@ -4,6 +4,7 @@ import { getCarpetaByIdRequest, patchCarpetaEstadoRequest } from "../../api/carp
 import { createEvidenciaRequest, deleteEvidenciaRequest } from "../../api/evidencias";
 import { createMultaRequest, deleteMultaRequest } from "../../api/multas";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
+import { obtenerMetahumanoById } from "../../api/usuarios";
 
 export default function CarpetaDetalle() {
   const { id } = useParams();
@@ -13,11 +14,12 @@ export default function CarpetaDetalle() {
   // Evidencia
   const [descripcion, setDescripcion] = useState("");
   const [fechaRecoleccion, setFechaRecoleccion] = useState("");
+  const[metahumanoNombre, setMetahumanoNombre]= useState(null);
 
   // Actualizar estado carpeta
   const [estadoEdit, setEstadoEdit] = useState("");
   const [savingEstado, setSavingEstado] = useState(false);
-
+  
   // Multas (por evidencia)
   const [multaForms, setMultaForms] = useState({});
 
@@ -28,6 +30,9 @@ export default function CarpetaDetalle() {
       setCarpeta(res.data.data || res.data);
       setCarpeta(c);
       setEstadoEdit(c?.estado || "activa");
+      console.log("carpeta", c)
+      const metahumanoFounded = await obtenerMetahumanoById(c.metahumano)
+      setMetahumanoNombre(metahumanoFounded.data.data.nombre)
     } catch (err) {
       console.error("❌ Error al obtener carpeta:", err);
     } finally {
@@ -174,60 +179,84 @@ export default function CarpetaDetalle() {
           </div>
 
           {/* 🧾 Panel de datos */}
-          <div className="bg-[#2e2e2e] rounded-xl shadow-xl p-5 mb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
-              <div>
-                <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
-                  Descripción
-                </p>
-                <p className="text-white text-base">{carpeta.descripcion}</p>
-              </div>
-              <div>
-                <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
-                  Estado
-                </p>
-                <p className="text-white text-base">
-                  Actual: <span className="capitalize">{carpeta.estado}</span>
-                </p>
-                <br></br>
-                <div className="flex items-center gap-2">
-                  <select
-                    value={estadoEdit}
-                    onChange={(e) => setEstadoEdit(e.target.value)}
-                    className="p-2 rounded bg-[#1a1a1a] text-white"
-                  >
-                    <option value="activa">Activa</option>
-                    <option value="pendiente">Pendiente</option>
-                    <option value="cerrada">Cerrada</option>
-                  </select>
-                  <button
-                    onClick={handleGuardarEstado}
-                    disabled={savingEstado || estadoEdit === carpeta.estado}
-                    className={`px-3 py-1 rounded font-semibold transition ${
-                      savingEstado || estadoEdit === carpeta.estado
-                        ? "bg-gray-600 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700"
-                    }`}
-                  >
-                    {savingEstado ? "Guardando..." : "Guardar"}
-                  </button>
-                </div>
-              </div>
+            <div className="bg-[#2e2e2e] rounded-xl shadow-xl p-6 mb-8">
+          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            📋 Información de la Carpeta
+          </h2>
 
-              <div>
-                <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
-                  Tipo
-                </p>
-                <p className="text-white text-base capitalize">{carpeta.tipo}</p>
-              </div>
-              <div>
-                <p className="text-gray-300 text-sm font-semibold uppercase tracking-wide">
-                  ID Carpeta
-                </p>
-                <p className="text-white text-base">{carpeta.id}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-8">
+
+            {/* Descripción */}
+            <div>
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                Descripción
+              </p>
+              <p className="text-white text-base font-medium">
+                {carpeta.descripcion}
+              </p>
+            </div>
+
+            {/* Estado */}
+            <div>
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                Estado
+              </p>
+              <div className="flex items-center gap-3">
+                <select
+                  value={estadoEdit}
+                  onChange={(e) => setEstadoEdit(e.target.value)}
+                  className="p-2 rounded bg-[#1a1a1a] text-white border border-gray-700"
+                >
+                  <option value="activa">Activa</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="cerrada">Cerrada</option>
+                </select>
+                <button
+                  onClick={handleGuardarEstado}
+                  disabled={savingEstado || estadoEdit === carpeta.estado}
+                  className={`px-3 py-1 rounded font-semibold transition ${
+                    savingEstado || estadoEdit === carpeta.estado
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700"
+                  }`}
+                >
+                  {savingEstado ? "Guardando..." : "Guardar"}
+                </button>
               </div>
             </div>
+
+            {/* 🔹 Metahumano */}
+            <div className="-mt-3 "> {/* 👈 Este margen negativo lo sube visualmente */}
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                Metahumano
+              </p>
+              <p className="text-white text-base font-medium">
+                {metahumanoNombre ?? "—"}
+              </p>
+            </div>
+
+            {/* Tipo */}
+            <div>
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                Tipo
+              </p>
+              <p className="text-white text-base font-medium capitalize">
+                {carpeta.tipo}
+              </p>
+            </div>
+
+            {/* ID Carpeta */}
+            <div>
+              <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
+                ID Carpeta
+              </p>
+              <p className="text-white text-base font-medium">
+                {carpeta.id}
+              </p>
+            </div>
           </div>
+        </div>
+
 
           {/* ✍️ Formulario evidencia */}
           <div className="bg-[#2e2e2e] rounded-xl shadow-xl p-5 mb-8">
