@@ -50,16 +50,12 @@ function Home() {
         }
     }, []);
 
-    // Cargar carpetas al montar el componente
    useEffect(() => {
   async function fetchData() {
     try {
-      // Si existe el metahumano, trae sus carpetas
       if (getMetaId()) {
         await fetchCarpetas();
       }
-
-      // Ahora busca los datos del burócrata
       const user = getUserFromCookie();
       const burocrataId = user?.perfilId;
 
@@ -103,8 +99,9 @@ function Home() {
     // Función para obtener todas las multas de una carpeta
 const obtenerMultasDeCarpeta = (carpeta) => {
   const totalMultas = [];
-
+  console.log("CARPETA:", carpeta)
   if (carpeta.evidencias && Array.isArray(carpeta.evidencias)) {
+    console.log("EVIDENCIAS: ", carpeta.evidencias)
     for (const evidencia of carpeta.evidencias) {
       if (evidencia.multas && Array.isArray(evidencia.multas)) {
         totalMultas.push(...evidencia.multas);
@@ -222,40 +219,46 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                     </button>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {carpetas.map((carpeta) => {
                       const multas = obtenerMultasDeCarpeta(carpeta);
-                      const multasPendientes = multas.filter(m => m.estado == 'PENDIENTE').length;
+                      const multasPendientes = multas.filter(m => m.estado === 'PENDIENTE').length;
+                      const isExpanded = expandedCarpetas[carpeta.id];
+
                       return (
-                        <>
-                        <div 
-                          key={carpeta.id} 
-                          className="bg-[#1F1D2B] rounded-lg p-6 hover:bg-[#2A2738] transition-colors border border-gray-700 hover:border-gray-600"
+                        <div
+                          key={carpeta.id}
+                          className={`bg-[#1F1D2B] rounded-lg p-6 border border-gray-700 hover:border-gray-600 hover:bg-[#2A2738] transition-all duration-300 
+                            ${isExpanded ? 'col-span-2' : ''}`}
                         >
+                          {/* 🗂️ Cabecera de la carpeta */}
                           <div className="flex items-start justify-between mb-4">
                             <FaFolder className="text-2xl text-[#ec7c6a]" />
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              carpeta.estado === 'activa' ? 'bg-green-500/20 text-green-400' :
-                              carpeta.estado === 'pendiente' ? 'bg-yellow-500/20 text-yellow-400' :
-                              'bg-gray-500/20 text-gray-400'
-                            }`}>
-                              {console.log("estado de la carpeta", carpeta.estado)}
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium ${
+                                carpeta.estado === 'activa'
+                                  ? 'bg-green-500/20 text-green-400'
+                                  : carpeta.estado === 'pendiente'
+                                  ? 'bg-yellow-500/20 text-yellow-400'
+                                  : 'bg-gray-500/20 text-gray-400'
+                              }`}
+                            >
                               {carpeta.estado || 'Sin estado'}
                             </span>
                           </div>
+
                           <h3 className="text-lg font-semibold text-white mb-2">
                             Carpeta #{carpeta.id}
                           </h3>
                           <p className="text-gray-400 text-sm mb-3">
                             {carpeta.descripcion || 'Sin descripción disponible'}
                           </p>
-                          
-                          {/* Información de multas */}
+
+                          {/* 📊 Resumen de multas */}
                           <div className="bg-gray-800/50 rounded-lg p-3 mb-3">
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-300">Total de multas:</span>
                               <span className="text-white font-medium">{multas.length}</span>
-                            {console.log("multas de la carpeta", multas.length)}
                             </div>
                             {multasPendientes > 0 && (
                               <div className="flex justify-between items-center text-sm mt-1">
@@ -264,151 +267,107 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                               </div>
                             )}
                           </div>
-                          
+
                           <div className="text-xs text-gray-500 mb-3">
-                            <p>Creada: {carpeta.fecha_creacion ? new Date(carpeta.fecha_creacion).toLocaleDateString() : 'Fecha no disponible'}</p>
-                            {carpeta.burocrata && <p>Asignada a: Burócrata : {burocrataNombre} </p>}
+                            <p>
+                              Creada:{' '}
+                              {carpeta.fecha_creacion
+                                ? new Date(carpeta.fecha_creacion).toLocaleDateString()
+                                : 'Fecha no disponible'}
+                            </p>
+                            {carpeta.burocrata && (
+                              <p>Asignada al Burócrata: {burocrataNombre}</p>
+                            )}
                           </div>
 
-                          
-                          {/* Botón Ver/Ocultar Multas */}
+                          {/* 🔘 Botón para expandir multas */}
                           <button
                             onClick={() => toggleMultas(carpeta.id)}
                             disabled={multas.length === 0}
-                            className="w-full px-4 py-2 bg-[#ec7c6a] hover:bg-[#d66b59] disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg text-white font-medium transition-colors text-sm"
+                            className="w-full px-4 py-2 bg-[#ec7c6a] hover:bg-[#d66b59] disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg text-white font-medium transition-colors text-sm mb-2"
                           >
-                            {multas.length === 0 
-                              ? 'Sin Multas' 
-                              : expandedCarpetas[carpeta.id] 
-                                ? `Ocultar ${multas.length} Multa${multas.length !== 1 ? 's' : ''}`
-                                : `Ver ${multas.length} Multa${multas.length !== 1 ? 's' : ''}`
-                            }
+                            {multas.length === 0
+                              ? 'Sin Multas'
+                              : isExpanded
+                              ? `Ocultar ${multas.length} Multa${multas.length !== 1 ? 's' : ''}`
+                              : `Ver ${multas.length} Multa${multas.length !== 1 ? 's' : ''}`}
                           </button>
-                        </div>
-                        
-                        {/* Sección de multas expandible */}
-                        {expandedCarpetas[carpeta.id] && (
-                          <div className="mt-4 space-y-3">
-                            <div className="bg-[#1F1D2B] rounded-lg p-4 border-l-4 border-[#ec7c6a]">
+
+                          {/* 💰 Sección expandible de multas */}
+                          {isExpanded && (
+                            <div className="mt-4 border-t border-gray-700 pt-4">
                               <h4 className="text-lg font-semibold text-white mb-3">
                                 Multas de la Carpeta #{carpeta.id}
                               </h4>
-                              
+
                               {multas.length === 0 ? (
-                                <div className="text-center py-4">
-                                  <FaExclamationCircle className="text-2xl text-gray-400 mx-auto mb-2" />
-                                  <p className="text-gray-400">No hay multas en esta carpeta</p>
-                                </div>
+                                <p className="text-gray-400 text-sm">
+                                  No hay multas en esta carpeta.
+                                </p>
                               ) : (
                                 <div className="space-y-3">
                                   {multas.map((multa) => (
-                                    <div 
-                                      key={multa.id} 
+                                    <div
+                                      key={multa.id}
                                       className="bg-[#2A2738] rounded-lg p-4 border border-gray-600"
                                     >
                                       <div className="flex justify-between items-start mb-3">
                                         <h5 className="text-base font-semibold text-white">
                                           Multa #{multa.id}
                                         </h5>
-                                        <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                          multa.estado === 'PAGADA' ? 'bg-green-500/20 text-green-400' :
-                                          multa.estado === 'APROBADA' ? 'bg-yellow-500/20 text-yellow-400' :
-                                          multa.estado === 'PENDIENTE' ? 'bg-orange-500/20 text-orange-400' :
-                                          'bg-red-500/20 text-red-400'
-                                        }`}>
+                                        <span
+                                          className={`px-2 py-1 rounded text-xs font-medium ${
+                                            multa.estado === 'PAGADA'
+                                              ? 'bg-green-500/20 text-green-400'
+                                              : multa.estado === 'APROBADA'
+                                              ? 'bg-yellow-500/20 text-yellow-400'
+                                              : multa.estado === 'PENDIENTE'
+                                              ? 'bg-orange-500/20 text-orange-400'
+                                              : 'bg-red-500/20 text-red-400'
+                                          }`}
+                                        >
                                           {multa.estado}
                                         </span>
                                       </div>
-                                      
-                                      {/* Vista simplificada - siempre visible */}
-                                      <div className="text-sm mb-3">
-                                        <p className="text-gray-300">
-                                          Monto: <span className="text-white font-medium">${multa.montoMulta.toLocaleString()}</span>
-                                        </p>
-                                      </div>
-
-                                      {/* Detalles expandibles */}
-                                      {expandedMultas[multa.id] && (() => {
-                                        const evidencia = obtenerEvidenciaDeMulta(carpeta, multa.id);
-                                        return (
-                                          <div className="bg-[#1F1D2B] rounded-lg p-3 mb-3 border border-gray-600">
-                                            <h6 className="text-white font-medium mb-3">Detalles de la multa:</h6>
-                                            
-                                            {/* Información de la multa */}
-                                            <div className="mb-4">
-                                              <h7 className="text-gray-300 font-medium mb-2 block">📋 Información de la multa:</h7>
-                                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm pl-4">
-                                                <div>
-                                                  <p className="text-gray-400">Motivo:</p>
-                                                  <p className="text-white font-medium">{multa.motivoMulta}</p>
-                                                </div>
-                                                <div>
-                                                  <p className="text-gray-400">Lugar de Pago:</p>
-                                                  <p className="text-white">{multa.lugarDePago}</p>
-                                                </div>
-                                                <div>
-                                                  <p className="text-gray-400">Fecha de Emisión:</p>
-                                                  <p className="text-white">{new Date(multa.fechaEmision).toLocaleDateString()}</p>
-                                                </div>
-                                                <div>
-                                                  <p className="text-gray-400">Fecha de Vencimiento:</p>
-                                                  <p className={`font-medium ${
-                                                    new Date(multa.fechaVencimiento) < new Date() 
-                                                      ? 'text-red-400' 
-                                                      : 'text-white'
-                                                  }`}>
-                                                    {new Date(multa.fechaVencimiento).toLocaleDateString()}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            {/* Información de la evidencia */}
-                                            {evidencia && (
-                                              <div>
-                                                <h7 className="text-gray-300 font-medium mb-2 block">🔍 Evidencia asociada:</h7>
-                                                <div className="bg-[#2A2738] rounded-lg p-3 text-sm">
-                                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                    <div>
-                                                      <p className="text-gray-400">ID de Evidencia:</p>
-                                                      <p className="text-white font-medium">#{evidencia.id}</p>
-                                                    </div>
-                                                    <div>
-                                                      <p className="text-gray-400">Fecha de Recolección:</p>
-                                                      <p className="text-white">{new Date(evidencia.fechaRecoleccion).toLocaleDateString()}</p>
-                                                    </div>
-                                                    <div className="sm:col-span-2">
-                                                      <p className="text-gray-400">Descripción de la evidencia:</p>
-                                                      <p className="text-white font-medium mt-1">{evidencia.descripcion}</p>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            )}
-                                          </div>
-                                        );
-                                      })()}
-                                      
-                                      {/* Botones de acción para cada multa */}
-                                      <div className="mt-3 flex gap-2 flex-wrap">
-                                        <button 
-                                          onClick={() => toggleDetallesMulta(multa.id)}
-                                          className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs transition-colors"
-                                        >
-                                          {expandedMultas[multa.id] ? 'Ocultar Detalles' : 'Ver Detalles'}
-                                        </button>
+                                      <p className="text-gray-300 text-sm">
+                                        Monto: ${multa.montoMulta.toLocaleString()}
+                                      </p>
+                                      <h7 className="text-gray-300 font-medium mb-2 block">📋 Información de la multa:</h7>
+                                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 text-sm pl-4">
+                                        <div>
+                                          <p className="text-gray-400">Motivo:</p>
+                                          <p className="text-white font-medium">{multa.motivoMulta}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-gray-400">Lugar de Pago:</p>
+                                          <p className="text-white">{multa.lugarDePago}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-gray-400">Fecha de Emisión:</p>
+                                          <p className="text-white">{new Date(multa.fechaEmision).toLocaleDateString()}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-gray-400">Fecha de Vencimiento:</p>
+                                          <p className={`font-medium ${
+                                            new Date(multa.fechaVencimiento) < new Date() 
+                                            ? 'text-red-400' 
+                                            : 'text-white'
+                                            }`}>
+                                            {new Date(multa.fechaVencimiento).toLocaleDateString()}
+                                          </p>
+                                        </div>
                                       </div>
                                     </div>
                                   ))}
                                 </div>
                               )}
                             </div>
-                          </div>
-                        )}
-                        </>
+                          )}
+                        </div>
                       );
                     })}
                   </div>
+
                 )}
               </>
             )}

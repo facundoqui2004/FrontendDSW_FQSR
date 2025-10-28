@@ -2,7 +2,7 @@ import { FaPhoneAlt, FaEnvelope, FaHeadset, FaQuestionCircle } from "react-icons
 import { MdSupportAgent, MdOutlineForum } from "react-icons/md";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 
-export default function Soporte() {
+export default function SoporteBuro() {
   return (
     <BurocrataLayout>
       {/* 🏛️ Encabezado */}

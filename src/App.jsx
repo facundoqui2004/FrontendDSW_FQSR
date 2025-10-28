@@ -19,12 +19,14 @@
     TramitesMetaHumano, 
     CarpetasMeta,
     CrearPoderes,
+    SoporteMeta,
 
     // 🧾 Burócratas
     HomeBurocrata,
     CarpetasList,
     CrearCarpeta,
-    CarpetaDetalle
+    CarpetaDetalle,
+    SoporteBuro
   } from './pages';
 
   // Importar componentes adicionales
@@ -33,7 +35,6 @@
 
   import { AuthProvider } from './context/AuthContext';
 import MiPerfil from "./pages/burocrata/MiPerfil";
-import Soporte from "./pages/burocrata/Soporte";
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
 
   function App() {
@@ -62,6 +63,7 @@ import Soporte from "./pages/burocrata/Soporte";
             <Route path="/metahumano/tramites" element={<TramitesMetaHumano />} />
             <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
             <Route path="/metahumano/poderes/crear" element={<CrearPoderes />} />
+            <Route path="/metahumano/soporte" element={<SoporteMeta/>}/>
 
             {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
             <Route path="/homeBurocrata" element={<HomeBurocrata />} />
@@ -69,7 +71,7 @@ import Soporte from "./pages/burocrata/Soporte";
             <Route path="/burocrata/carpeta/crear" element={<CrearCarpeta />} />
             <Route path="/burocrata/carpeta/:id" element={<CarpetaDetalle />} />
             <Route path="/burocrata/perfil" element = {<MiPerfil/>}/>
-            <Route path="/burocrata/soporte" element={<Soporte/>}/>
+            <Route path="/burocrata/soporte" element={<SoporteBuro/>}/>
           </Routes>
         </AuthProvider>
       </BrowserRouter>
