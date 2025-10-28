@@ -18,6 +18,10 @@ function Home() {
   const goToCarpetas = () => {
     navigate('/metahumano/carpetas');
   }
+  const goToSoporte = () => {
+    navigate('/metahumano/soporte');
+  }
+
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) {
