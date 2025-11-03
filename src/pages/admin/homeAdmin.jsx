@@ -7,8 +7,8 @@ export default function HomeAdmin() {
   
   return (
     <AdminLayout title="Panel de Administración">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {/* Card de Usuarios - Ahora interactivo */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Card de Gestionar Usuarios */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
           onClick={() => navigate('/admin/usuarios')}
@@ -18,12 +18,11 @@ export default function HomeAdmin() {
               Gestionar Usuarios
             </h3>
             <div className="w-10 h-10 bg-[#0891b2] rounded-full flex items-center justify-center group-hover:bg-[#0ea5e9] transition-colors">
-              <span className="text-white font-bold">👥</span>
+              <span className="text-white font-bold text-xl">👥</span>
             </div>
           </div>
-          <p className="text-2xl font-bold text-white mb-2"></p>
           <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-            Click para gestionar usuarios
+            Administra y gestiona todos los usuarios del sistema
           </p>
           <div className="mt-3 flex items-center text-blue-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
             <span>Ver todos los usuarios</span>
@@ -31,7 +30,7 @@ export default function HomeAdmin() {
           </div>
         </div>
 
-        {/* Card de Metahumanos - Ahora interactivo */}
+        {/* Card de Gestionar Metahumanos */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
           onClick={() => navigate('/admin/metahumanos')}
@@ -41,12 +40,11 @@ export default function HomeAdmin() {
               Gestionar Metahumanos
             </h3>
             <div className="w-10 h-10 bg-[#06b6d4] rounded-full flex items-center justify-center group-hover:bg-[#0891b2] transition-colors">
-              <img src="/Images/metahumano.png" alt="Meta" className="w-6 h-6" />
+              <span className="text-white font-bold text-xl">⚡</span>
             </div>
           </div>
-          <p className="text-2xl font-bold text-white mb-2"></p>
           <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-            Click para gestionar metahumanos
+            Supervisa y administra todos los metahumanos registrados
           </p>
           <div className="mt-3 flex items-center text-cyan-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
             <span>Ver todos los metahumanos</span>
@@ -54,7 +52,7 @@ export default function HomeAdmin() {
           </div>
         </div>
 
-        {/* Card de Burócratas - Ahora interactivo */}
+        {/* Card de Gestionar Burócratas */}
         <div 
           className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
           onClick={() => navigate('/admin/burocratas')}
@@ -64,65 +62,81 @@ export default function HomeAdmin() {
               Gestionar Burócratas
             </h3>
             <div className="w-10 h-10 bg-[#0ea5e9] rounded-full flex items-center justify-center group-hover:bg-[#0284c7] transition-colors">
-              <img src="/Images/burocrataLogo.png" alt="Burocrata" className="w-6 h-6" />
+              <span className="text-white font-bold text-xl">🏢</span>
             </div>
           </div>
-          <p className="text-2xl font-bold text-white mb-2"></p>
           <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-            Click para gestionar burócratas
+            Gestiona el personal burocrático del sistema
           </p>
           <div className="mt-3 flex items-center text-blue-500 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
             <span>Ver todos los burócratas</span>
             <span className="ml-2">→</span>
           </div>
         </div>
-      </div>
 
-      {/* Tabla de actividades recientes */}
-      <div className="bg-[#1e293b] rounded-lg shadow-lg border border-slate-600">
-        <div className="p-6 border-b border-slate-600">
-          <h3 className="text-lg font-semibold text-white">Actividad Reciente</h3>
+        {/* Card de Mi Perfil */}
+        <div 
+          className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
+          onClick={() => navigate('/admin/perfil')}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white group-hover:text-purple-400 transition-colors">
+              Mi Perfil
+            </h3>
+            <div className="w-10 h-10 bg-[#a855f7] rounded-full flex items-center justify-center group-hover:bg-[#9333ea] transition-colors">
+              <span className="text-white font-bold text-xl">👤</span>
+            </div>
+          </div>
+          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+            Visualiza y edita tu información personal
+          </p>
+          <div className="mt-3 flex items-center text-purple-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Ver mi perfil</span>
+            <span className="ml-2">→</span>
+          </div>
         </div>
-        <div className="p-6">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-[#334155] rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-[#0891b2] rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">👤</span>
-                </div>
-                <div>
-                  <p className="text-white font-medium">Nuevo usuario registrado</p>
-                  <p className="text-gray-400 text-sm">hace 5 minutos</p>
-                </div>
-              </div>
-              <span className="text-green-400 text-sm">✓ Completado</span>
-            </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#334155] rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-[#06b6d4] rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">⚡</span>
-                </div>
-                <div>
-                  <p className="text-white font-medium">Metahumano activado</p>
-                  <p className="text-gray-400 text-sm">hace 15 minutos</p>
-                </div>
-              </div>
-              <span className="text-green-400 text-sm">✓ Completado</span>
+        {/* Card de Trámites */}
+        <div 
+          className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
+          onClick={() => navigate('/admin/tramites')}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white group-hover:text-green-400 transition-colors">
+              Trámites
+            </h3>
+            <div className="w-10 h-10 bg-[#10b981] rounded-full flex items-center justify-center group-hover:bg-[#059669] transition-colors">
+              <span className="text-white font-bold text-xl">📋</span>
             </div>
+          </div>
+          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+            Gestiona poderes, multas y otros trámites administrativos
+          </p>
+          <div className="mt-3 flex items-center text-green-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Ver trámites</span>
+            <span className="ml-2">→</span>
+          </div>
+        </div>
 
-            <div className="flex items-center justify-between p-4 bg-[#334155] rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-[#0ea5e9] rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">📋</span>
-                </div>
-                <div>
-                  <p className="text-white font-medium">Trámite procesado</p>
-                  <p className="text-gray-400 text-sm">hace 30 minutos</p>
-                </div>
-              </div>
-              <span className="text-yellow-400 text-sm">⏳ En proceso</span>
+        {/* Card de Soporte */}
+        <div 
+          className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600 cursor-pointer hover:bg-[#334155] transition-colors group"
+          onClick={() => navigate('/admin/soporte')}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-white group-hover:text-orange-400 transition-colors">
+              Soporte
+            </h3>
+            <div className="w-10 h-10 bg-[#f97316] rounded-full flex items-center justify-center group-hover:bg-[#ea580c] transition-colors">
+              <span className="text-white font-bold text-xl">�</span>
             </div>
+          </div>
+          <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+            Centro de ayuda y asistencia técnica
+          </p>
+          <div className="mt-3 flex items-center text-orange-400 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+            <span>Acceder a soporte</span>
+            <span className="ml-2">→</span>
           </div>
         </div>
       </div>
