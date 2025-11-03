@@ -406,7 +406,9 @@ const GestionarPoderes = () => {
                               {metapoder.metahumano?.alias || `Metahumano ID: ${metapoder.metahumanoId}`}
                             </h4>
                             <p className="text-gray-300 text-sm">
-                              Solicitud #{metapoder.id} • Poder ID: {metapoder.poderId || 'N/A'}
+                              Solicitud #{metapoder.id}
+                              {metapoder.poderId && ` • Poder ID: ${metapoder.poderId}`}
+                              {poder && ` • ${poder.nomPoder}`}
                             </p>
                           </div>
                           <span className={`px-3 py-1 rounded-full text-sm font-bold ${getEstadoColor(metapoder.estado)}`}>
@@ -420,7 +422,7 @@ const GestionarPoderes = () => {
                           <span className="text-3xl">{categoriaInfo.icon}</span>
                           <div className="flex-1">
                             <h5 className="font-bold text-white">
-                              {poder ? poder.nomPoder : `Poder ID: ${metapoder.poderId || 'INDEFINIDO'}`}
+                              {poder ? poder.nomPoder : (metapoder.poderId ? `Poder ID: ${metapoder.poderId}` : 'Poder no identificado')}
                             </h5>
                             <span className="text-gray-400 text-sm">
                               {poder ? poder.categoria : 'Categoría desconocida'}
@@ -452,8 +454,10 @@ const GestionarPoderes = () => {
                               ⚠️ Información del poder no disponible
                             </p>
                             <p className="text-yellow-100 text-xs">
-                              poderId: {metapoder.poderId || 'undefined'} | 
-                              Poderes cargados: {poderes.length}
+                              {metapoder.poderId 
+                                ? `El poder con ID ${metapoder.poderId} no se encuentra en el catálogo` 
+                                : 'Esta solicitud no tiene un poderId asignado'}
+                              {' • '}Poderes cargados: {poderes.length}
                             </p>
                           </div>
                         )}

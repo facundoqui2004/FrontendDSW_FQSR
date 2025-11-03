@@ -13,6 +13,8 @@
     GestionarMetahumanos, 
     GestionarBurocratas,
     Tramites,
+    MiPerfil as MiPerfilAdmin,
+    Soporte as SoporteAdmin,
 
     // 🧍 Metahumanos
     HomeMeta, 
@@ -57,6 +59,8 @@ import MiPerfil from "./pages/burocrata/MiPerfil";
             <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
             <Route path="/admin/tramites/gestionar-poderes" element={<GestionarPoderes />} />
             <Route path="/admin/tramites/gestionar-multas" element={<GestionarMultas />} />
+            <Route path="/admin/perfil" element={<MiPerfilAdmin />} />
+            <Route path="/admin/soporte" element={<SoporteAdmin />} />
 
             {/* 🧍 Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
