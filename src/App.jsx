@@ -2,12 +2,12 @@
 
   // PAGES
   import { 
-    // 🌐 Generales
+    // Generales
     Home, 
     LoginPage, 
     RegisterPage,
 
-    // 👑 Admin
+    // Admin
     HomeAdmin, 
     GestionarUsuarios, 
     GestionarMetahumanos, 
@@ -16,27 +16,28 @@
     MiPerfil as MiPerfilAdmin,
     Soporte as SoporteAdmin,
 
-    // 🧍 Metahumanos
+    // Metahumanos
     HomeMeta, 
     TramitesMetaHumano, 
     CarpetasMeta,
     CrearPoderes,
     SoporteMeta,
 
-    // 🧾 Burócratas
+    // Burócratas
     HomeBurocrata,
     CarpetasList,
     CrearCarpeta,
     CarpetaDetalle,
     SoporteBuro
-  } from './pages';
 
+  } from './pages';
+  import MiPerfilBuro from './pages/burocrata/MiPerfil';
+  import MiPerfilMeta from './pages/meta/PerfilMeta';
   // Importar componentes adicionales
   import GestionarPoderes from './pages/admin/tramites/gestionar-poderes';
   import GestionarMultas from './pages/admin/tramites/gestionar-multas';
 
   import { AuthProvider } from './context/AuthContext';
-import MiPerfil from "./pages/burocrata/MiPerfil";
   // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
 
   function App() {
@@ -68,14 +69,15 @@ import MiPerfil from "./pages/burocrata/MiPerfil";
             <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
             <Route path="/metahumano/poderes/crear" element={<CrearPoderes />} />
             <Route path="/metahumano/soporte" element={<SoporteMeta/>}/>
+            <Route path="/metahumano/perfil" element={<MiPerfilMeta/>}/>
 
             {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
             <Route path="/homeBurocrata" element={<HomeBurocrata />} />
             <Route path="/burocrata/carpetas" element={<CarpetasList />} />
             <Route path="/burocrata/carpeta/crear" element={<CrearCarpeta />} />
             <Route path="/burocrata/carpeta/:id" element={<CarpetaDetalle />} />
-            <Route path="/burocrata/perfil" element = {<MiPerfil/>}/>
-            <Route path="/burocrata/soporte" element={<SoporteBuro/>}/>
+            <Route path="/burocrata/perfil" element = {<MiPerfilBuro />}/>
+            <Route path="/burocrata/soporte" element={<SoporteBuro />}/>
           </Routes>
         </AuthProvider>
       </BrowserRouter>

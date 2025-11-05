@@ -30,7 +30,7 @@ function HomeBurocrata() {
 
   return (
    
-   <BurocrataLayout>
+    <BurocrataLayout>
       {/* Contenido principal */}
         {/* Encabezado */}
         <section className="text-center text-white mt-8 mb-8">
@@ -58,7 +58,7 @@ function HomeBurocrata() {
             <div className="text-right mt-3 text-2xl font-light">→</div>
           </div>
 
-          {/* 👤 Mi Perfil */}
+          {/* Mi Perfil */}
           <div
             onClick={goToPerfil}
             className="cursor-pointer bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-700 hover:to-teal-600 
@@ -73,7 +73,7 @@ function HomeBurocrata() {
             <div className="text-right mt-3 text-2xl font-light">→</div>
           </div>
 
-          {/* 🛠️ Soporte */}
+          {/* Soporte */}
           <div
             onClick={goToSoporte}
             className="cursor-pointer bg-gradient-to-r from-purple-600 to-fuchsia-500 hover:from-purple-700 hover:to-fuchsia-600 
