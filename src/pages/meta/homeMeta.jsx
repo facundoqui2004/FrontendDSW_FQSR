@@ -73,35 +73,16 @@ function Home() {
             ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
             ${showUser ? "opacity-90" : "opacity-100"}`}
         >
-          <div className="flex-1 min-h-full">
-            <h1 className="text-3xl font-bold mb-6">🦸‍♀️ Portal Metahumano</h1>
-            <p className="text-gray-300 mb-6">Bienvenido al panel de control para usuarios Metahumanos.</p>
-            
-            {/* Aquí puedes agregar contenido específico para Metahumanos */}
-            <div className="text-center py-8">
-              <p className="text-gray-400">Panel de control Metahumano en desarrollo...</p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-              {/* Botón Mis Proyectos */}
-              <button className="group relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-blue-500/30">
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-left">📋 Mis Proyectos</h2>
-                    <div className="w-8 h-8 bg-blue-500/30 rounded-full flex items-center justify-center group-hover:bg-blue-400/50 transition-colors">
-                      <span className="text-sm">→</span>
-                    </div>
-                  </div>
-                  <p className="text-blue-100 text-sm text-left leading-relaxed">
-                    Gestiona y supervisa todos tus proyectos Metahumanos en un solo lugar.
-                  </p>
-                </div>
-              </button>
+          <div className="text-center text-white mt-8 mb-8">
+            <h1 className="text-3xl font-extrabold tracking-tight mb-2">🦸‍♀️ Portal Metahumano</h1>
+            <p className="opacity-90 text-base">Bienvenido al panel de control para usuarios Metahumanos.</p>
+            <br></br>
+            <div className="flex flex-col items-center gap-6">
 
               {/* Botón Mis Trámites */}
               <button 
                 onClick={goToTramites}
-                className="group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
+                className="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30 h-full w-full max-w-md max-h-md"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
@@ -120,7 +101,7 @@ function Home() {
               {/* Botón Mis Carpetas */}
               <button 
                 onClick={goToCarpetas}
-                className="group relative overflow-hidden bg-gradient-to-br from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
+                className="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-yellow-600 to-yellow-800 hover:from-yellow-700 hover:to-yellow-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30 h-full w-full max-w-md max-h-md"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
