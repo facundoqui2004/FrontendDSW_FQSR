@@ -20,7 +20,7 @@ export const AuthProvider = ({children}) => {
             let userData = getUserFromCookie();
             
             if (userData) {
-                console.log('🍪 Usuario encontrado en cookies:', userData);
+                console.log('Usuario encontrado en cookies:', userData);
                 return userData;
             }
             
@@ -28,11 +28,11 @@ export const AuthProvider = ({children}) => {
             const savedUser = localStorage.getItem('user_info'); // Cambiado a user_info
             if (savedUser) {
                 userData = JSON.parse(savedUser);
-                console.log('💾 Usuario encontrado en localStorage:', userData);
+                console.log('Usuario encontrado en localStorage:', userData);
                 return userData;
             }
             
-            console.log('❌ No se encontró usuario en cookies ni localStorage');
+            console.log('No se encontró usuario en cookies ni localStorage');
             return null;
         } catch (error) {
             console.error('Error al recuperar usuario:', error);
@@ -43,7 +43,7 @@ export const AuthProvider = ({children}) => {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         // Verificar si hay usuario válido
         const hasUser = getUserFromCookie() !== null || localStorage.getItem('user_info') !== null;
-        console.log('🔐 Estado de autenticación inicial:', hasUser);
+        console.log('Estado de autenticación inicial:', hasUser);
         return hasUser;
     });
     
@@ -54,8 +54,8 @@ export const AuthProvider = ({children}) => {
         if (user && isAuthenticated) {
             // Guardar en localStorage como respaldo
             localStorage.setItem('user_info', JSON.stringify(user));
-            console.log('💾 Sesión guardada en localStorage');
-            console.log('👤 Datos del usuario guardados:', {
+            console.log('Sesión guardada en localStorage');
+            console.log('Datos del usuario guardados:', {
                 id: user.id,
                 role: user.role,
                 alias: user.alias,
@@ -72,7 +72,7 @@ export const AuthProvider = ({children}) => {
 
     // Función para guardar usuario completo
     const saveUserData = (userData) => {
-        console.log('💾 Guardando datos completos del usuario:', userData);
+        console.log('Guardando datos completos del usuario:', userData);
         
         // Estructurar datos completos para guardar
         const completeUserData = {
@@ -88,7 +88,7 @@ export const AuthProvider = ({children}) => {
             ...userData
         };
         
-        console.log('📦 Estructura completa a guardar:', completeUserData);
+        console.log('Estructura completa a guardar:', completeUserData);
         
         // Guardar en localStorage (las cookies se manejan automáticamente por el backend)
         localStorage.setItem('user_info', JSON.stringify(completeUserData));
@@ -105,7 +105,7 @@ export const AuthProvider = ({children}) => {
         if (!role) return null;
         
         const roleUpper = role.toUpperCase();
-        console.log('🔄 Normalizando rol:', role, '→', roleUpper);
+        console.log('Normalizando rol:', role, '→', roleUpper);
         
         switch (roleUpper) {
             case 'METAHUMANO':
@@ -118,34 +118,34 @@ export const AuthProvider = ({children}) => {
             case 'ADMINISTRATOR':
                 return 'ADMIN';
             default:
-                console.log('⚠️ Rol no reconocido, usando valor original:', role);
+                console.log('Rol no reconocido, usando valor original:', role);
                 return role;
         }
     };
     
     // Función para obtener la ruta según el rol
     const getHomeRouteByRole = () => {
-        console.log('🔍 Obteniendo ruta para usuario:', user);
+        console.log('Obteniendo ruta para usuario:', user);
         if (!user || !user.role) {
-            console.log('❌ No hay usuario o rol, redirigiendo a /');
+            console.log('No hay usuario o rol, redirigiendo a /');
             return '/';
         }
         
         const normalizedRole = normalizeRole(user.role);
-        console.log('👤 Rol original:', user.role, '→ Rol normalizado:', normalizedRole);
+        console.log('Rol original:', user.role, '→ Rol normalizado:', normalizedRole);
         
         switch (normalizedRole) {
             case 'METAHUMANO':
-                console.log('🦸‍♂️ Redirigiendo a /metahumano');
+                console.log('Redirigiendo a /metahumano');
                 return '/metahumano';
             case 'BUROCRATA':
-                console.log('📋 Redirigiendo a /homeBurocrata');
-                return '/homeBurocrata';
+                console.log('Redirigiendo a /homeBurocrata');
+                return '/burocrata';
             case 'ADMIN':
-                console.log('👑 Redirigiendo a /admin');
+                console.log('Redirigiendo a /admin');
                 return '/admin';
             default:
-                console.log('❓ Rol desconocido, redirigiendo a /', normalizedRole);
+                console.log('Rol desconocido, redirigiendo a /', normalizedRole);
                 return '/';
         }
     };
@@ -153,8 +153,8 @@ export const AuthProvider = ({children}) => {
     const signup = async (userData, userType = 'metahumano') => {
         try {
             setError(null);
-            console.log('🔄 Iniciando registro como:', userType);
-            console.log('📦 Datos para registro:', userData);
+            console.log('Iniciando registro como:', userType);
+            console.log('Datos para registro:', userData);
             
             let registerFunc;
             if (userType === 'metahumano') {
@@ -166,13 +166,13 @@ export const AuthProvider = ({children}) => {
             }
             
             const res = await registerFunc(userData);
-            console.log('🌐 Respuesta del servidor para registro:', res.data);
+            console.log('Respuesta del servidor para registro:', res.data);
             
             const userDataFromServer = res.data.data || res.data;
-            console.log('✅ Registro exitoso (sin login automático)');
+            console.log('Registro exitoso (sin login automático)');
             return { success: true, data: userDataFromServer };
         } catch (error) {
-            console.error('❌ Error en registro:', error);
+            console.error('Error en registro:', error);
             
             let errorMessage = 'Error en el registro';
             
@@ -194,24 +194,24 @@ export const AuthProvider = ({children}) => {
     const login = async (userData) => {
         try {
             setError(null);
-            console.log('🔄 Iniciando login con datos:', userData);
-            console.log('🌐 Consultando endpoint: POST /api/auth/login');
+            console.log('Iniciando login con datos:', userData);
+            console.log('Consultando endpoint: POST /api/auth/login');
             
             const res = await loginRequest(userData);
-            console.log('🌐 Respuesta del servidor completa:', res.data);
+            console.log('Respuesta del servidor completa:', res.data);
             
             // Extraer datos del usuario del servidor
             const userDataFromServer = res.data.usuario || res.data.user || res.data;
-            console.log('👤 Datos del usuario del servidor:', userDataFromServer);
-            console.log('🎭 Rol del usuario:', userDataFromServer?.role);
+            console.log('Datos del usuario del servidor:', userDataFromServer);
+            console.log('Rol del usuario:', userDataFromServer?.role);
             
             // Guardar datos completos
             const completeUser = saveUserData(userDataFromServer);
             
-            console.log('🔐 Login exitoso, sesión iniciada. Usuario completo:', completeUser);
+            console.log('Login exitoso, sesión iniciada. Usuario completo:', completeUser);
             return { success: true, data: completeUser };
         } catch (error) {
-            console.error('❌ Error en login:', error);
+            console.error('Error en login:', error);
             
             let errorMessage = 'Error en el login';
             
@@ -236,13 +236,13 @@ export const AuthProvider = ({children}) => {
                         errorMessage = serverMessage || `Error del servidor: ${status}`;
                 }
                 
-                console.log(`🚨 Error ${status}: ${errorMessage}`);
+                console.log(`Error ${status}: ${errorMessage}`);
             } else if (error.request) {
                 errorMessage = 'No se pudo conectar con el servidor. Verifica que esté ejecutándose en http://localhost:3000';
-                console.log('🌐 Error de conexión - servidor no disponible');
+                console.log('Error de conexión - servidor no disponible');
             } else {
                 errorMessage = error.message || 'Error desconocido';
-                console.log('❓ Error desconocido:', error.message);
+                console.log('Error desconocido:', error.message);
             }
             
             setError(errorMessage);
@@ -252,11 +252,11 @@ export const AuthProvider = ({children}) => {
 
     const logout = async () => {
         try {
-            console.log('🚪 Cerrando sesión...');
+            console.log('Cerrando sesión...');
             
             // Intentar logout en servidor (con cookies)
             await logoutRequest();
-            console.log('✅ Logout exitoso en servidor');
+            console.log('Logout exitoso en servidor');
         } catch (error) {
             console.error('Error al hacer logout en el servidor:', error);
             // Continuar con el logout local aunque falle el servidor
@@ -273,7 +273,7 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('token');
         
-        console.log('✅ Sesión cerrada correctamente, estado local limpiado');
+        console.log('Sesión cerrada correctamente, estado local limpiado');
     };
 
     // Función para refrescar el perfil del usuario
@@ -284,7 +284,7 @@ export const AuthProvider = ({children}) => {
             
             // Actualizar con datos completos del servidor
             const updatedUser = saveUserData(profileData);
-            console.log('🔄 Perfil actualizado desde el servidor:', updatedUser);
+            console.log('Perfil actualizado desde el servidor:', updatedUser);
             return { success: true, data: updatedUser };
         } catch (error) {
             console.error('Error al refrescar perfil:', error);
@@ -292,7 +292,7 @@ export const AuthProvider = ({children}) => {
         }
     };
 
-    // Función para obtener datos específicos del usuario
+    // obtener datos específicos del usuario
     const getUserId = () => user?.id || user?.usuarioId || null;
     const getPerfilId = () => user?.perfilId || null;
     const getUserRole = () => user?.role || user?.rol || null;
@@ -308,7 +308,6 @@ export const AuthProvider = ({children}) => {
             isAuthenticated,
             error,
             getHomeRouteByRole,
-            // Nuevas funciones de utilidad
             getUserId,
             getPerfilId,
             getUserRole,

@@ -90,22 +90,22 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-[#ec7c6a]">Enlaces Rápidos</h4>
             <ul className="space-y-2">
               <li>
-                <button onClick={() => navigate(basePath)} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                <button onClick={() => navigate(basePath)} className="cursor-pointer text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                   Inicio
                 </button>
               </li>
               <li>
-                <button onClick={goToCarpetas} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                <button onClick={goToCarpetas} className="cursor-pointer text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                   Carpetas
                 </button>
               </li>
               <li>
-                <button onClick={goToPerfil} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                <button onClick={goToPerfil} className="cursor-pointer text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                   Perfil
                 </button>
               </li>
               <li>
-                <button onClick={goToSoporte} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                <button onClick={goToSoporte} className="cursor-pointer text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                   Soporte
                 </button>
               </li>
