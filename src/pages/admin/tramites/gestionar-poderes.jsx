@@ -373,15 +373,14 @@ const GestionarPoderes = () => {
             <div className="p-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {metapoderesFiltrados.map((metapoder) => {
-                  // Intentar obtener el poder de múltiples formas
                   let poder = null;
                   
-                  // 1. Si el metapoder ya incluye la información del poder (relación del backend)
+                  // metapoder información del poder
                   if (metapoder.poder) {
                     poder = metapoder.poder;
                     console.log('✅ Usando poder incluido en metapoder:', poder);
                   } 
-                  // 2. Si no, buscar en el array de poderes usando poderId
+                  // si no, buscar en el array de poderes con poderId
                   else if (metapoder.poderId) {
                     poder = poderes.find(p => p.id === metapoder.poderId);
                     if (poder) {
@@ -391,7 +390,6 @@ const GestionarPoderes = () => {
                     }
                   }
                   
-                  // Si no se encuentra el poder, mostrar información limitada pero no ocultar la solicitud
                   const categoriaInfo = poder ? getCategoriaInfo(poder.categoria) : { icon: '❓', color: 'from-gray-500 to-slate-600' };
                   
                   return (

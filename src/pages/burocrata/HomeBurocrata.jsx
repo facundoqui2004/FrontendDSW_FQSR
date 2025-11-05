@@ -31,8 +31,8 @@ function HomeBurocrata() {
   return (
    
    <BurocrataLayout>
-      {/* 📌 Contenido principal */}
-        {/* 🏛️ Encabezado centrado */}
+      {/* Contenido principal */}
+        {/* Encabezado */}
         <section className="text-center text-white mt-8 mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight mb-2">
             🏛️ Portal Burócrata
@@ -42,9 +42,8 @@ function HomeBurocrata() {
           </p>
         </section>
 
-        {/* 🧭 Cards en columna */}
         <section className="flex flex-col items-center gap-6">
-          {/* 📂 Gestión Carpetas */}
+          {/* Carpetas */}
           <div
             onClick={goToCarpetas}
             className="cursor-pointer bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 

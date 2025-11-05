@@ -52,7 +52,7 @@ export default function SoporteMeta() {
             <li className="bg-white/10 p-5 rounded-xl hover:bg-white/15 transition">
               <strong>¿Cómo recupero mi contraseña?</strong>
               <p className="text-white/70 text-sm mt-1">
-                Podés restablecer tu contraseña desde la pantalla de inicio de sesión, haciendo clic en “¿Olvidaste tu contraseña?” y siguiendo las instrucciones.
+                Para recuperar tu contraseña, contactanos a nuestro e-mail (soporte@metagov.org), donde te comunicaremos los pasos a seguir para recuperar tus credenciales.
               </p>
             </li>
             <li className="bg-white/10 p-5 rounded-xl hover:bg-white/15 transition">

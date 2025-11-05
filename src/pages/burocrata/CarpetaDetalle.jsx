@@ -16,11 +16,11 @@
     const [fechaRecoleccion, setFechaRecoleccion] = useState("");
     const[metahumanoNombre, setMetahumanoNombre]= useState(null);
 
-    // Actualizar estado carpeta
+    // Actualizar estado de la carpeta
     const [estadoEdit, setEstadoEdit] = useState("");
     const [savingEstado, setSavingEstado] = useState(false);
     
-    // Multas (por evidencia)
+    // Multas
     const [multaForms, setMultaForms] = useState({});
 
     const fetchCarpeta = async () => {
@@ -34,7 +34,7 @@
         const metahumanoFounded = await obtenerMetahumanoById(c.metahumano)
         setMetahumanoNombre(metahumanoFounded.data.data.nombre)
       } catch (err) {
-        console.error("❌ Error al obtener carpeta:", err);
+        console.error("Error al obtener carpeta:", err);
       } finally {
         setLoading(false);
       }
@@ -43,6 +43,9 @@
     useEffect(() => {
       fetchCarpeta();
     }, [id]);
+
+    const isReadOnly = (carpeta?.estado === 'cerrada');
+
 
     // Cambiar estado carpeta
     const handleGuardarEstado = async () => {
@@ -56,14 +59,14 @@
         await fetchCarpeta();
 
       } catch (err) {
-        console.error("❌ Error al actualizar estado:", err);
+        console.error("Error al actualizar estado:", err);
         alert("No se pudo actualizar el estado.");
       } finally {
         setSavingEstado(false);
       }
     };
 
-    // 📝 Crear evidencia
+    // Crear evidencia
     const handleCrearEvidencia = async (e) => {
       e.preventDefault();
       try {
@@ -76,24 +79,24 @@
         setFechaRecoleccion("");
         fetchCarpeta();
       } catch (err) {
-        console.error("❌ Error al crear evidencia:", err);
+        console.error("Error al crear evidencia:", err);
       }
     };
 
 
     
-    // 🗑️ Eliminar evidencia
+    // Eliminar evidencia
     const handleEliminarEvidencia = async (evidenciaId) => {
-      if (!confirm("¿Eliminar esta evidencia?")) return;
+      if (!confirm("Eliminar evidencia?")) return;
       try {
         await deleteEvidenciaRequest(evidenciaId);
         fetchCarpeta();
       } catch (err) {
-        console.error("❌ Error al eliminar evidencia:", err);
+        console.error("Error al eliminar evidencia:", err);
       }
     };
 
-    // 📌 Cambiar campos de multa
+    // Cambiar campos de multa
     const handleMultaChange = (evidenciaId, field, value) => {
       setMultaForms(prev => ({
         ...prev,
@@ -115,7 +118,7 @@
           ...formData,
           montoMulta: Number(formData.montoMulta),
           evidenciaId: evidenciaId,
-          estado: "PENDIENTE", // 🟡 Estado por defecto al crear multa
+          estado: "PENDIENTE", // Estado por defecto
         });
 
         setMultaForms(prev => ({
@@ -133,19 +136,19 @@
         fetchCarpeta();
         alert("✅ Multa creada exitosamente con estado PENDIENTE");
       } catch (err) {
-        console.error("❌ Error al crear multa:", err);
-        alert("❌ Error al crear la multa: " + err.message);
+        console.error("Error al crear multa:", err);
+        alert("Error al crear la multa: " + err.message);
       }
     };
 
-    // 🗑️ Eliminar multa
+    // Eliminar multa
     const handleEliminarMulta = async (multaId) => {
       if (!confirm("¿Eliminar esta multa?")) return;
       try {
         await deleteMultaRequest(multaId);
         fetchCarpeta();
       } catch (err) {
-        console.error("❌ Error al eliminar multa:", err);
+        console.error("Error al eliminar multa:", err);
       }
     };
 
@@ -170,7 +173,7 @@
         <div className="p-6 text-white flex flex-col items-center">
           <div className="w-full max-w-2xl">
 
-            {/* 🟡 Cabecera */}
+            {/* Cabecera */}
             <div className="flex items-center gap-2 mb-4">
               <span className="text-3xl">📁</span>
               <h1 className="text-3xl font-extrabold text-white drop-shadow">
@@ -178,7 +181,6 @@
               </h1>
             </div>
 
-            {/* 🧾 Panel de datos */}
               <div className="bg-[#2e2e2e] rounded-xl shadow-xl p-6 mb-8">
             <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
               📋 Información de la Carpeta
@@ -225,8 +227,8 @@
                 </div>
               </div>
 
-              {/* 🔹 Metahumano */}
-              <div className="-mt-3 "> {/* 👈 Este margen negativo lo sube visualmente */}
+              {/* Metahumano */}
+              <div className="-mt-3 ">
                 <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-1">
                   Metahumano
                 </p>
@@ -258,8 +260,9 @@
           </div>
 
 
-            {/* ✍️ Formulario evidencia */}
-            <div className="bg-[#2e2e2e] rounded-xl shadow-xl p-5 mb-8">
+            {/* crear evidencia */}
+
+            {!isReadOnly && (<div className="bg-[#2e2e2e] rounded-xl shadow-xl p-5 mb-8">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 ✍️ Nueva Evidencia
               </h2>
@@ -291,9 +294,9 @@
                   Crear Evidencia
                 </button>
               </form>
-            </div>
+            </div>)}
 
-            {/* 📜 Lista de evidencias */}
+            {/* evidencias */}
             {carpeta.evidencias?.length > 0 ? (
               <ul className="space-y-6">
                 {carpeta.evidencias.map((ev) => (
@@ -303,15 +306,15 @@
                         <p className="font-semibold text-lg">{ev.descripcion}</p>
                         <p className="text-sm text-gray-400">{ev.fechaRecoleccion}</p>
                       </div>
-                      <button
+                      {!isReadOnly && (<button
                         onClick={() => handleEliminarEvidencia(ev.id)}
                         className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded"
                       >
                         Eliminar
-                      </button>
+                      </button>)}
+                      {isReadOnly && (<p className="text-sm text-gray-300"><i>Cambiar estado de carpeta para modificar...</i></p>)}
                     </div>
 
-                    {/* 💰 Multas */}
                     <div className="border-t border-gray-600 pt-3 mt-3">
                       <h3 className="font-semibold mb-2 flex items-center gap-2">
                         💰 Multas
@@ -343,12 +346,12 @@
                                   {m.estado}
                                 </div>
 
-                                <button
+                                {!isReadOnly && (<button
                                   onClick={() => handleEliminarMulta(m.id)}
                                   className="bg-red-600 hover:bg-red-700 text-white rounded font-semibold text-sm h-10 w-28"
                                 >
                                   Eliminar
-                                </button>
+                                </button>)}
                               </div>
                             </li>
                           ))}
@@ -357,8 +360,8 @@
                         <p className="text-white/70 mb-4">No hay multas.</p>
                       )}
 
-                      {/* ➕ Crear multa */}
-                      <form
+                      {/* crear multa */}
+                      {!isReadOnly && (<form
                         onSubmit={(e) => handleCrearMulta(e, ev.id)}
                         className="space-y-2"
                       >
@@ -433,7 +436,7 @@
                         >
                           Crear Multa
                         </button>
-                      </form>
+                      </form>)}
                     </div>
                   </li>
                 ))}
