@@ -1,13 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-// Estructura de la aplicación
-import Sidebar from "../../components/shared/SidebarMetaHum";
-import Footer from "../../components/footer";
-// Context para autenticación
 import { useAuth } from "../../context/AuthContext";
-// Iconos
-import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
-import { RiHome6Line, RiCloseFill } from "react-icons/ri";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout"
 import { Meta } from "react-router-dom";
 
@@ -22,7 +14,7 @@ function Home() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  // Obtener datos del usuario desde el contexto
+  // Obtener datos del usuario
   const { 
     user, 
     isAuthenticated, 
@@ -32,13 +24,13 @@ function Home() {
     getUserAlias 
   } = useAuth();
 
-  // Función para obtener poderes del backend
+  // obtener poderes del backend
   const fetchPoderes = useCallback(async () => {
     try {
       setLoading(true);
       setError("");
       
-      // Obtener todos los poderes disponibles
+      // Obtener todos los poderes
       const response = await fetch('http://localhost:3000/api/poderes', {
         credentials: 'include'
       });
@@ -50,7 +42,7 @@ function Home() {
       const data = await response.json();
       let todosLosPoderes = data.data || [];
       
-      // Obtener los poderes que ya tiene el usuario para filtrarlos
+      // Obtener los poderes que ya tiene el usuario
       try {
         const userId = getUserId();
         if (userId) {
@@ -84,7 +76,6 @@ function Home() {
         }
       } catch (filterError) {
         console.log('Error filtrando poderes:', filterError);
-        // Si hay error filtrando, mostrar todos los poderes
       }
       
       setPoderes(todosLosPoderes);
@@ -96,7 +87,7 @@ function Home() {
     }
   }, [getUserId]);
 
-  // Función para obtener los metapoderes del usuario
+  // obtener los metapoderes del usuario
   const fetchMisPoderes = useCallback(async () => {
     try {
       setLoading(true);
@@ -182,7 +173,7 @@ const solicitarPoder = async (poder) => {
       return;
     }
 
-    // Obtener datos del usuario desde el contexto
+    // Obtener datos del usuario
     const userId = getUserId();
     const alias = getUserAlias();
 
@@ -198,7 +189,7 @@ const solicitarPoder = async (poder) => {
       return;
     }
 
-    // Obtener el ID del metahumano desde la API
+    // Obtener el ID del metahumano
     console.log('Obteniendo datos del usuario...');
     const userResponse = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
       credentials: 'include'
@@ -211,7 +202,6 @@ const solicitarPoder = async (poder) => {
     const userData = await userResponse.json();
     console.log('Datos completos del usuario:', userData);
 
-    // Extraer el ID del metahumano
     const metahumanoId = userData.usuario?.metahumano?.id;
     
     if (!metahumanoId) {
@@ -245,24 +235,23 @@ const solicitarPoder = async (poder) => {
 
     // Preparar los datos completos para la asignación de metapoder
     const asignacionData = {
-      metahumanoId: parseInt(metahumanoId), // Usar el ID correcto del metahumano
+      metahumanoId: parseInt(metahumanoId),
       poderId: parseInt(poder.id),
-      dominio: "NOVATO", // Nivel inicial para nuevos poderes
-      nivelControl: 25, // Nivel de control inicial (0-100)
-      estado: "SOLICITADO", // Estado del poder
-      fechaAdquisicion: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
+      dominio: "NOVATO", 
+      nivelControl: 25, 
+      estado: "SOLICITADO", 
+      fechaAdquisicion: new Date().toISOString().split('T')[0] 
     };
 
     console.log('Enviando solicitud de metapoder:', asignacionData);
     console.log('Poder seleccionado:', poder.nomPoder);
     
-    // Enviar petición al backend
     const response = await fetch('http://localhost:3000/api/metapoderes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      credentials: 'include', // Incluir cookies para autenticación
+      credentials: 'include', // incluye cookies
       body: JSON.stringify(asignacionData),
     });
 

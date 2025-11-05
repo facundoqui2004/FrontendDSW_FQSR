@@ -1,12 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// 🧱 Estructura
-import Sidebar from "../../components/shared/SidebarBurocrata";
-import Footer from "../../components/footer";
-// 🔸 Iconos
-import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle } from "react-icons/fa";
-import { RiCloseFill } from "react-icons/ri";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 
 function HomeBurocrata() {
@@ -14,12 +7,12 @@ function HomeBurocrata() {
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
 
-  // 📌 Navegación
+  // Navegación
   const goToCarpetas = () => navigate("/burocrata/carpetas");
   const goToPerfil = () => navigate("/burocrata/perfil");
   const goToSoporte = () => navigate("/burocrata/soporte");
 
-  // 📌 Menú lateral y usuario
+  // Menú lateral y usuario
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) setShowUser(false);

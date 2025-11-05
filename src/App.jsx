@@ -38,7 +38,6 @@
   import GestionarMultas from './pages/admin/tramites/gestionar-multas';
 
   import { AuthProvider } from './context/AuthContext';
-  // import ProtectedRoute from './components/ProtectedRoute'; // si lo usás, lo vemos luego
 
   function App() {
     return (
@@ -46,12 +45,12 @@
         <AuthProvider>
           <Routes>
 
-            {/* 🌐 Generales */}
+            {/* Generales */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
-            {/* 👑 Admin */}
+            {/* Admin */}
             <Route path="/admin" element={<HomeAdmin />} />
             <Route path="/admin/usuarios" element={<GestionarUsuarios />} />
             <Route path="/admin/metahumanos" element={<GestionarMetahumanos />} />
@@ -63,7 +62,7 @@
             <Route path="/admin/perfil" element={<MiPerfilAdmin />} />
             <Route path="/admin/soporte" element={<SoporteAdmin />} />
 
-            {/* 🧍 Metahumanos */}
+            {/* Metahumanos */}
             <Route path="/metahumano" element={<HomeMeta />} />
             <Route path="/metahumano/tramites" element={<TramitesMetaHumano />} />
             <Route path="/metahumano/carpetas" element={<CarpetasMeta />} />
@@ -71,8 +70,8 @@
             <Route path="/metahumano/soporte" element={<SoporteMeta/>}/>
             <Route path="/metahumano/perfil" element={<MiPerfilMeta/>}/>
 
-            {/* 🧾 Burócratas (ruta nueva y alias para compatibilidad) */}
-            <Route path="/homeBurocrata" element={<HomeBurocrata />} />
+            {/* Burócratas */}
+            <Route path="/burocrata" element={<HomeBurocrata />} />
             <Route path="/burocrata/carpetas" element={<CarpetasList />} />
             <Route path="/burocrata/carpeta/crear" element={<CrearCarpeta />} />
             <Route path="/burocrata/carpeta/:id" element={<CarpetaDetalle />} />

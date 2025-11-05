@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Footer from '../../components/footer';
 import Sidebar from '../../components/shared/SidebarUser';
 import { useAuth } from '../../context/AuthContext';
+import UserLayout from "../../components/layouts/UserLayout";
 
 export default function RegistroForm() {
   const [selectedRole, setSelectedRole] = useState('');
@@ -20,11 +21,11 @@ export default function RegistroForm() {
   const password = watch('password');
   
   useEffect(() => { 
-    console.log('🔄 useEffect Register - isAuthenticated:', isAuthenticated, 'user:', user);
+    console.log('useEffect Register - isAuthenticated:', isAuthenticated, 'user:', user);
     if (isAuthenticated && user) {
-      console.log('✅ Usuario registrado y autenticado, obteniendo ruta...');
+      console.log('Usuario registrado y autenticado, obteniendo ruta...');
       const homeRoute = getHomeRouteByRole();
-      console.log('🏠 Navegando a:', homeRoute);
+      console.log('Navegando a:', homeRoute);
       navigate(homeRoute);
     }
   }, [isAuthenticated, user, navigate, getHomeRouteByRole]);
@@ -32,16 +33,16 @@ export default function RegistroForm() {
   // Función para registro automático + login
   const registerAndLogin = async (payload, rol) => {
     try {
-      console.log('🚀 Iniciando registro para rol:', rol);
-      console.log('📦 Datos del payload:', payload);
+      console.log('Iniciando registro para rol:', rol);
+      console.log('Datos del payload:', payload);
       
       // 1. Registrar usuario
       const userType = rol === 'METAHUMANO' ? 'metahumano' : 'burocrata';
       const registerResult = await signup(payload, userType);
       
       if (registerResult.success) {
-        console.log('✅ Registro exitoso:', registerResult.data);
-        console.log('🔄 Iniciando login automático...');
+        console.log('Registro exitoso:', registerResult.data);
+        console.log('Iniciando login automático...');
         
         // 2. Login automático
         const loginResult = await login({
@@ -50,31 +51,31 @@ export default function RegistroForm() {
         });
         
         if (loginResult.success) {
-          console.log('✅ Login automático exitoso:', loginResult.data);
+          console.log('Login automático exitoso:', loginResult.data);
           // La redirección se manejará en el useEffect
           return { success: true, data: loginResult.data };
         } else {
-          console.error('❌ Error en login automático:', loginResult.error);
+          console.error('Error en login automático:', loginResult.error);
           // Si el registro fue exitoso pero el login falló, redirigir a login manual
           navigate('/login');
           return { success: false, error: 'Cuenta creada. Por favor, inicia sesión manualmente.' };
         }
       } else {
-        console.error('❌ Error en registro:', registerResult.error);
+        console.error('Error en registro:', registerResult.error);
         return registerResult;
       }
     } catch (error) {
-      console.error('❌ Error en registerAndLogin:', error);
+      console.error('Error en registerAndLogin:', error);
       return { success: false, error: error.message || 'Error desconocido' };
     }
   };
 
   const onSubmit = async (data) => {
-    console.log('🚀 Intentando registro con:', data);
+    console.log('Intentando registro con:', data);
     
     // Validar que las contraseñas coincidan
     if (data.password !== data.confirmPassword) {
-      console.error('❌ Las contraseñas no coinciden');
+      console.error('Las contraseñas no coinciden');
       return;
     }
     
@@ -89,10 +90,10 @@ export default function RegistroForm() {
     };
     
     const result = await registerAndLogin(backendData, selectedRole);
-    console.log('📊 Resultado del proceso completo:', result);
+    console.log('Resultado del proceso completo:', result);
     
     if (!result.success) {
-      console.error('❌ Error en el proceso:', result.error);
+      console.error('Error en el proceso:', result.error);
     }
   };
 
@@ -156,14 +157,8 @@ export default function RegistroForm() {
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Sidebar fijo */}
-      <div className="fixed left-0 top-0 h-full z-20">
-        <Sidebar />
-      </div>
-      
-      {/* Contenido principal con offset para el sidebar */}
-      <main className="ml-28 bg-[#262837] min-h-screen flex items-center justify-center p-4">
+    <UserLayout>
+      <main className="bg-[#262837] min-h-screen flex items-center justify-center p-4">
         <div className="bg-[#1F1D2B] rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-[#ec7c6a] rounded-full flex items-center justify-center mx-auto mb-4">
@@ -382,11 +377,6 @@ export default function RegistroForm() {
           </div>
         </div>
       </main>
-
-      {/* Footer normal (no fijo) */}
-      <footer className="ml-28">
-        <Footer />
-      </footer>
-    </div>
+    </UserLayout>
   );
 }
