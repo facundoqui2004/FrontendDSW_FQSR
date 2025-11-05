@@ -48,7 +48,6 @@ const LoginPage = () => {
     if (result.success) {
       console.log('LoginPage - Login exitoso:', result.data);
       console.log('LoginPage - Rol asignado:', result.data?.role);
-      // La redirección se manejará en el useEffect
     } else {
       console.error('LoginPage - Error en login:', result.error);
     }

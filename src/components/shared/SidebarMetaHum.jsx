@@ -61,10 +61,10 @@ const Sidebar = (props) => {
         {/* Lista de enlaces */}
       <div>
         <ul className="pl-4">
-            <li className="bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl">
+            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/metahumano")}
-              className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
+              className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}

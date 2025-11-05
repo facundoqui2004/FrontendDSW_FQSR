@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { getMetaId, getUserFromCookie}  from "../../utils/cookies";
+import { FaFolder, FaExclamationCircle } from "react-icons/fa";
 import { getBurocrataByIdRequest } from "../../api/burocratas";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
 

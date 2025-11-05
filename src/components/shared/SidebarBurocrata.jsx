@@ -59,10 +59,10 @@ const Sidebar = (props) => {
       <div>
         <ul className="pl-4">
           {/* Inicio */}
-          <li className="bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl">
+          <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata")}
-              className="bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white relative group cursor-pointer"
+              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <RiHome6Line className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#f1a035] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">

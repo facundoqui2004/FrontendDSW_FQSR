@@ -64,10 +64,10 @@ const Sidebar = (props) => {
         {/* Lista de enlaces - Con scroll si es necesario */}
       <div className="flex-1 overflow-y-auto py-2 scrollbar-thin overflow-x-hidden w-full">
         <ul className="pl-4 space-y-1 w-full overflow-x-hidden">
-            <li className="bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl">
+            <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button 
                 onClick={() => navigate('/admin')}
-                className="bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-white relative group"
+                className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}
@@ -82,7 +82,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/usuarios')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <FaUsers className="text-2xl" />
                     {/* Tooltip */}
@@ -97,7 +97,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/metahumanos')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <span className="text-2xl">⚡</span>
                     {/* Tooltip */}
@@ -112,7 +112,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/burocratas')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <span className="text-2xl">🏢</span>
                     {/* Tooltip */}
@@ -127,7 +127,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/tramites')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <FaWpforms className="text-2xl" />
                     {/* Tooltip */}
@@ -143,7 +143,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/perfil')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <FaRegUserCircle className="text-2xl" />
                     {/* Tooltip */}
@@ -158,7 +158,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/admin/soporte')}
-                    className="group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#0891b2] p-4 flex justify-center w-full rounded-xl text-[#06b6d4] group-hover:text-white relative"
                 >
                     <MdContactSupport className="text-2xl" />
                     {/* Tooltip */}
@@ -177,23 +177,22 @@ const Sidebar = (props) => {
       {/* Logout - Siempre visible al final */}
       <div className="flex-shrink-0 pb-2">
         <ul className="pl-4">
-                            <li className="hover:bg-[#075985] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                                <button
-                                    onClick={handleLogout}
-                                    className="group-hover:bg-[#0ea5e9] p-4 flex justify-center w-full rounded-xl text-[#67e8f9] group-hover:text-white relative"
-                                >
-                                    <CiLogout className="text-2xl" />
-                                    {/* Tooltip */}
-                                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                                    Cerrar Sesión
-                                    {/* Flecha del tooltip */}
-                                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
-                                    </div>
-                                </button>
-                            </li>
-                        </ul>
+            <li className="hover:bg-[#075985] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                <button
+                    onClick={handleLogout}
+                     className="cursor-pointer group-hover:bg-[#0ea5e9] p-4 flex justify-center w-full rounded-xl text-[#67e8f9] group-hover:text-white relative"
+                >
+                    <CiLogout className="text-2xl" />
+                    {/* Tooltip */}
+                    <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-[#0891b2] text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                        Cerrar Sesión
+                        {/* Flecha del tooltip */}
+                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
+                    </div>
+                </button>
+            </li>
+        </ul>
       </div>
-      
     </div>
   );
 };
