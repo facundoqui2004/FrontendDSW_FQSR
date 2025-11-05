@@ -11,7 +11,6 @@ const Sidebar = (props) => {
     const { showMenu, toggleUser } = props;
     const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
-
     const handleLoginClick = () => {
         navigate('/login');
     };
@@ -31,9 +30,9 @@ const Sidebar = (props) => {
     ${showMenu ? 'left-0' : '-left-full'}`}>
       <div className="text-center my-4 relative group">
             <img
-                src="/public/Logo.png" // reemplaza con la ruta real del logo
+                src="/public/Logo.png"
                 alt="Logo El Súper Gestor"
-                className="mx-auto w-25 h-auto cursor-pointer" // ancho fijo, altura automática para mantener proporción
+                className="mx-auto w-25 h-auto cursor-pointer" 
             />
             {/* Tooltip estilo cómic para el logo */}
             <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
@@ -65,8 +64,8 @@ const Sidebar = (props) => {
       <div>
         <ul className="pl-4">
             <li className="bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl">
-            <a 
-                href="#" 
+            <button
+                onClick={() => navigate("/")}
                 className="bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-white relative group"
             >
                 <RiHome6Line className="text-2xl" />
@@ -76,55 +75,8 @@ const Sidebar = (props) => {
                 {/* Flecha del tooltip */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
                 </div>
-            </a>
+            </button>
             </li>
-
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <a
-                    href="#"
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-[#ec7c6a] group-hover:text-white relative"
-                >
-                    <FaWpforms className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Tramites
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </a>
-            </li>
-
-
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <button
-                    onClick={toggleUser}
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center w-full rounded-xl text-[#ec7c6a] group-hover:text-white relative"
-                >
-                    <FaRegUserCircle className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Usuario
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </button>
-            </li>
-
-            <li className="hover:bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <a
-                    href="#"
-                    className="group-hover:bg-[#ec7c6a] p-4 flex justify-center block rounded-xl text-[#ec7c6a] group-hover:text-white relative"
-                >
-                    <MdContactSupport className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Soporte
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </a>
-            </li>
-
                         
         </ul>
       </div>

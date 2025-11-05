@@ -1,13 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
-// Estructura de la aplicación
-import Sidebar from "../../components/shared/SidebarMetaHum";
-import Footer from "../../components/footer";
 import { getMetaId, getUserFromCookie}  from "../../utils/cookies";
-// Iconos
-import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle, FaPlus, FaWindowClose, FaFolder, FaExclamationCircle } from "react-icons/fa";
-import { RiHome6Line, RiCloseFill } from "react-icons/ri";
-import { getBurocrataByIdRequest} from "../../api/burocratas";
+import { getBurocrataByIdRequest } from "../../api/burocratas";
+import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
 
 
 function Home() {
@@ -50,29 +44,29 @@ function Home() {
         }
     }, []);
 
-   useEffect(() => {
-  async function fetchData() {
-    try {
-      if (getMetaId()) {
-        await fetchCarpetas();
-      }
-      const user = getUserFromCookie();
-      const burocrataId = user?.perfilId;
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        if (getMetaId()) {
+          await fetchCarpetas();
+        }
+        const user = getUserFromCookie();
+        const burocrataId = user?.perfilId;
 
-      if (burocrataId) {
-        const res = await getBurocrataByIdRequest(burocrataId);
-        setBurocrataNombre(res.data.data.nombre);
-        console.log("nombre del burócrata:", res.data.data.nombre);
-      } else {
-        console.warn("No se encontró perfilId en la cookie");
+        if (burocrataId) {
+          const res = await getBurocrataByIdRequest(burocrataId);
+          setBurocrataNombre(res.data.data.nombre);
+          console.log("nombre del burócrata:", res.data.data.nombre);
+        } else {
+          console.warn("No se encontró perfilId en la cookie");
+        }
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
       }
-    } catch (error) {
-      console.error("Error al obtener datos:", error);
     }
-  }
 
-  fetchData();
-}, [fetchCarpetas]);
+    fetchData();
+  }, [fetchCarpetas]);
 
 
 
@@ -80,7 +74,7 @@ function Home() {
     const toggleUser = () => setShowUser(!showUser);
     const closeUser = () => setShowUser(false);
     
-    // Función para alternar la visibilidad de las multas de una carpeta específica
+    // alternar la visibilidad de las multas de una carpeta
     const toggleMultas = (carpetaId) => {
         setExpandedCarpetas(prev => ({
             ...prev,
@@ -88,7 +82,7 @@ function Home() {
         }));
     };
 
-    // Función para alternar los detalles de una multa específica
+    // alternar detalles de una multa
     const toggleDetallesMulta = (multaId) => {
         setExpandedMultas(prev => ({
             ...prev,
@@ -96,23 +90,23 @@ function Home() {
         }));
     };
     
-    // Función para obtener todas las multas de una carpeta
-const obtenerMultasDeCarpeta = (carpeta) => {
-  const totalMultas = [];
-  console.log("CARPETA:", carpeta)
-  if (carpeta.evidencias && Array.isArray(carpeta.evidencias)) {
-    console.log("EVIDENCIAS: ", carpeta.evidencias)
-    for (const evidencia of carpeta.evidencias) {
-      if (evidencia.multas && Array.isArray(evidencia.multas)) {
-        totalMultas.push(...evidencia.multas);
+    // todas las multas de una carpeta
+  const obtenerMultasDeCarpeta = (carpeta) => {
+    const totalMultas = [];
+    console.log("CARPETA:", carpeta)
+    if (carpeta.evidencias && Array.isArray(carpeta.evidencias)) {
+      console.log("EVIDENCIAS: ", carpeta.evidencias)
+      for (const evidencia of carpeta.evidencias) {
+        if (evidencia.multas && Array.isArray(evidencia.multas)) {
+          totalMultas.push(...evidencia.multas);
+        }
       }
     }
-  }
 
-  return totalMultas;
-};
+    return totalMultas;
+  };
 
-    // Función para obtener la evidencia correspondiente a una multa
+    // obtener la evidencia correspondiente a una multa
     const obtenerEvidenciaDeMulta = (carpeta, multaId) => {
         if (carpeta.evidencias) {
             for (const evidencia of carpeta.evidencias) {
@@ -125,39 +119,7 @@ const obtenerMultasDeCarpeta = (carpeta) => {
     };
 
   return (
-    <div className="bg-[#545877] w-full min-h-screen transition-colors duration-300">
-      <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
-
-      {/* MENU */}
-      <nav className="bg-[#1F1D2B] lg:hidden fixed w-full bottom-0 left-0 text-4xl text-gray-500 py-2 px-8 flex items-center rounded-tl-xl rounded-tr-xl shadow-lg justify-between transition-all duration-300 ease-in-out transform">
-        
-        <button 
-          onClick={toggleUser} 
-          className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <FaRegUserCircle />
-        </button>
-        
-        <button className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95">
-          <RiHome6Line />
-        </button>
-        
-        <button className="text-white p-2 transition-all duration-200 ease-in-out hover:scale-110 active:scale-95 hover:bg-[#ec7c6a] rounded-full">
-          <FaPlus />
-        </button>
-        
-        <button 
-          onClick={toggleMenu} 
-          className="p-2 transition-all duration-300 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <div className="transition-transform duration-300 ease-in-out">
-            {showMenu ? <FaWindowClose /> : <CgMenuRound />}
-          </div>
-        </button>
-      </nav>
-
-      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0 h-full">
-
+    <MetahumanoLayout>
         {/* Contenido principal */}
         <div
           className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
@@ -231,7 +193,7 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                           className={`bg-[#1F1D2B] rounded-lg p-6 border border-gray-700 hover:border-gray-600 hover:bg-[#2A2738] transition-all duration-300 
                             ${isExpanded ? 'col-span-2' : ''}`}
                         >
-                          {/* 🗂️ Cabecera de la carpeta */}
+                          {/* Cabecera de la carpeta */}
                           <div className="flex items-start justify-between mb-4">
                             <FaFolder className="text-2xl text-[#ec7c6a]" />
                             <span
@@ -254,7 +216,7 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                             {carpeta.descripcion || 'Sin descripción disponible'}
                           </p>
 
-                          {/* 📊 Resumen de multas */}
+                          {/* Resumen de multas */}
                           <div className="bg-gray-800/50 rounded-lg p-3 mb-3">
                             <div className="flex justify-between items-center text-sm">
                               <span className="text-gray-300">Total de multas:</span>
@@ -280,7 +242,7 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                             )}
                           </div>
 
-                          {/* 🔘 Botón para expandir multas */}
+                          {/* Botón para expandir multas */}
                           <button
                             onClick={() => toggleMultas(carpeta.id)}
                             disabled={multas.length === 0}
@@ -293,7 +255,7 @@ const obtenerMultasDeCarpeta = (carpeta) => {
                               : `Ver ${multas.length} Multa${multas.length !== 1 ? 's' : ''}`}
                           </button>
 
-                          {/* 💰 Sección expandible de multas */}
+                          {/* Sección expandible de multas */}
                           {isExpanded && (
                             <div className="mt-4 border-t border-gray-700 pt-4">
                               <h4 className="text-lg font-semibold text-white mb-3">
@@ -372,58 +334,8 @@ const obtenerMultasDeCarpeta = (carpeta) => {
               </>
             )}
           </div>
-          
-
-
         </div>
-
-
-
-        {/* Panel de usuario */}
-        <div
-          className={`fixed lg:static top-0 right-0 w-full lg:w-auto h-full z-50
-            ${showUser 
-              ? "translate-x-0 opacity-100 lg:col-span-2" 
-              : "translate-x-full opacity-0 lg:translate-x-0 lg:opacity-0 lg:w-0 lg:overflow-hidden"
-            }`}
-        >
-          <div className="p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full">
-            <div className="relative pt-16 text-gray-300 p-8">
-              <RiCloseFill
-                onClick={closeUser}
-                className="text-3xl absolute left-4 top-4 p-2 box-content text-gray-300 bg-[#ec7c6a] rounded-full cursor-pointer hover:scale-110 hover:bg-[#d66b59] active:scale-95 hover:shadow-lg"
-              />
-              <h1 className="text-2xl font-bold mb-4 flex items-center">
-                Mi Perfil
-              </h1>
-              <div className="space-y-4">
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Información Personal</h2>
-                  <p className="text-sm text-gray-400">Gestiona tu información</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Configuración</h2>
-                  <p className="text-sm text-gray-400">Ajusta tus preferencias</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Notificaciones</h2>
-                  <p className="text-sm text-gray-400">Controla las notificaciones</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-      <footer
-          className={`
-            ${showMenu 
-              ? "pl-4 lg:pl-28" 
-              : "pl-0"
-            }`}
-        >
-        <Footer />
-      </footer>
-    </div>
+    </MetahumanoLayout>
   );
 }
 

@@ -3,8 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash, FaEnvelope, FaLock, FaSignInAlt, FaHome } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
-import Sidebar from "../../components/shared/SidebarUser";
-import Footer from "../../components/footer";
+import UserLayout from "../../components/layouts/UserLayout";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,46 +23,40 @@ const LoginPage = () => {
 
   // Redirigir si ya está autenticado
   useEffect(() => {
-    console.log('🔄 LoginPage useEffect - isAuthenticated:', isAuthenticated);
-    console.log('🔄 LoginPage useEffect - user:', user);
+    console.log('LoginPage useEffect - isAuthenticated:', isAuthenticated);
+    console.log('LoginPage useEffect - user:', user);
     if (isAuthenticated && user) {
-      console.log('✅ Usuario autenticado, obteniendo ruta...');
+      console.log('Usuario autenticado, obteniendo ruta...');
       const homeRoute = getHomeRouteByRole();
-      console.log('🏠 Navegando a:', homeRoute);
-      console.log('🎭 Rol del usuario para redirección:', user.role);
+      console.log('Navegando a:', homeRoute);
+      console.log('Rol del usuario para redirección:', user.role);
       navigate(homeRoute);
     } else {
-      console.log('❌ No se puede redirigir - isAuthenticated:', isAuthenticated, 'user:', user);
+      console.log('No se puede redirigir - isAuthenticated:', isAuthenticated, 'user:', user);
     }
   }, [isAuthenticated, user, navigate, getHomeRouteByRole]);
 
   const onSubmit = async (data) => {
-    console.log('🚀 LoginPage - Intentando login con:', data);
+    console.log('LoginPage - Intentando login con:', data);
     const result = await login({
       email: data.email,
       password: data.password
     });
     
-    console.log('📊 LoginPage - Resultado del login:', result);
+    console.log('LoginPage - Resultado del login:', result);
     
     if (result.success) {
-      console.log('✅ LoginPage - Login exitoso:', result.data);
-      console.log('🎭 LoginPage - Rol asignado:', result.data?.role);
+      console.log('LoginPage - Login exitoso:', result.data);
+      console.log('LoginPage - Rol asignado:', result.data?.role);
       // La redirección se manejará en el useEffect
     } else {
-      console.error('❌ LoginPage - Error en login:', result.error);
+      console.error('LoginPage - Error en login:', result.error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#262837]">
-      {/* Sidebar fijo */}
-      <div className="fixed left-0 top-0 h-full z-20">
-        <Sidebar />
-      </div>
-      
-      {/* Contenido principal con offset para el sidebar */}
-      <main className="ml-28 bg-[#262837] min-h-screen flex items-center justify-center p-4">
+    <UserLayout>
+      <main className="bg-[#262837] min-h-screen flex items-center justify-center p-4">
         <div className="bg-[#1F1D2B] rounded-2xl shadow-2xl p-8 w-full max-w-md border border-gray-700">
           
           {/* Header */}
@@ -181,12 +174,7 @@ const LoginPage = () => {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="ml-28">
-        <Footer />
-      </footer>
-    </div>
+    </UserLayout>
   );
 };
 

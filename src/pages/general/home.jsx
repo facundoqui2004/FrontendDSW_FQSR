@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// Estructura de la aplicación
-import Sidebar from "../../components/shared/SidebarUser";
-import Footer from "../../components/footer";
-// Iconos
-import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle, FaPlus, FaWindowClose, FaSignInAlt, FaUserPlus } from "react-icons/fa";
-import { RiHome6Line, RiCloseFill } from "react-icons/ri";
+import { FaSignInAlt, FaUserPlus } from "react-icons/fa";
+import UserLayout from "../../components/layouts/UserLayout";
 
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
@@ -33,42 +28,7 @@ function Home() {
   };
 
   return (
-    <div className="bg-[#262837] w-full min-h-screen transition-colors duration-300">
-      <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
-
-      {/* MENU */}
-      <nav className="bg-[#1F1D2B] lg:hidden fixed w-full bottom-0 left-0 text-4xl text-gray-500 py-2 px-8 flex items-center rounded-tl-xl rounded-tr-xl shadow-lg justify-between transition-all duration-300 ease-in-out transform">
-        
-        <button 
-          onClick={toggleUser} 
-          className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <FaRegUserCircle />
-        </button>
-        
-        <button className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95">
-          <RiHome6Line />
-        </button>
-        
-        <button 
-          onClick={goToLogin}
-          className="text-white p-2 transition-all duration-200 ease-in-out hover:scale-110 active:scale-95 hover:bg-[#ec7c6a] rounded-full"
-        >
-          <FaSignInAlt />
-        </button>
-        
-        <button 
-          onClick={toggleMenu} 
-          className="p-2 transition-all duration-300 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <div className="transition-transform duration-300 ease-in-out">
-            {showMenu ? <FaWindowClose /> : <CgMenuRound />}
-          </div>
-        </button>
-      </nav>
-
-      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0">
-
+    <UserLayout>
         {/* Contenido principal */}
         <div
           className={`p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full hover:shadow-xl
@@ -118,65 +78,7 @@ function Home() {
             </div>
           </div>
         </div>
-
-        {/* Panel de usuario */}
-        <div
-          className={`fixed lg:static top-0 right-0 w-full lg:w-auto h-full z-50
-            ${showUser 
-              ? "translate-x-0 opacity-100 lg:col-span-2" 
-              : "translate-x-full opacity-0 lg:translate-x-0 lg:opacity-0 lg:w-0 lg:overflow-hidden"
-            }`}
-        >
-          <div className="p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full">
-            <div className="relative pt-16 text-gray-300 p-8">
-              <RiCloseFill
-                onClick={closeUser}
-                className="text-3xl absolute left-4 top-4 p-2 box-content text-gray-300 bg-[#ec7c6a] rounded-full cursor-pointer hover:scale-110 hover:bg-[#d66b59] active:scale-95 hover:shadow-lg"
-              />
-              <h1 className="text-2xl font-bold mb-4 flex items-center">
-                Acceso Rápido
-              </h1>
-              <div className="space-y-4">
-                <button 
-                  onClick={goToLogin}
-                  className="w-full text-left border border-gray-600 rounded-lg p-3 hover:bg-[#262837] transition-colors duration-200 flex items-center space-x-3"
-                >
-                  <FaSignInAlt className="text-[#ec7c6a]" />
-                  <div>
-                    <h2 className="text-lg font-semibold">Iniciar Sesión</h2>
-                    <p className="text-sm text-gray-400">Accede a tu cuenta</p>
-                  </div>
-                </button>
-                
-                <button 
-                  onClick={goToRegister}
-                  className="w-full text-left border border-gray-600 rounded-lg p-3 hover:bg-[#262837] transition-colors duration-200 flex items-center space-x-3"
-                >
-                  <FaUserPlus className="text-[#0891b2]" />
-                  <div>
-                    <h2 className="text-lg font-semibold">Registrarse</h2>
-                    <p className="text-sm text-gray-400">Crear cuenta nueva</p>
-                  </div>
-                </button>
-                
-                <div className="border-t border-gray-600 pt-4 mt-4">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-2">INFORMACIÓN</h3>
-                  <div className="space-y-2 text-sm text-gray-500">
-                    <p>• Sistema para metahumanos</p>
-                    <p>• Gestión de burócratas</p>
-                    <p>• Trámites oficiales</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-      
-      <footer>
-        <Footer />
-      </footer>
-    </div>
+    </UserLayout>
   );
 }
 

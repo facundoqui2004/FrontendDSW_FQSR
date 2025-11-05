@@ -1,10 +1,5 @@
 import { useState } from "react";
-import Sidebar from "../../components/shared/SidebarMetaHum";
-import Footer from "../../components/footer";
 import { useNavigate } from "react-router-dom";
-import { CgMenuRound } from "react-icons/cg";
-import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
-import { RiHome6Line, RiCloseFill } from "react-icons/ri";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
 
 function Home() {

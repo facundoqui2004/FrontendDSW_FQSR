@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import {
   FaFacebook,
   FaTwitter,
@@ -9,8 +9,51 @@ import {
   FaMapMarkerAlt,
   FaHeart,
 } from "react-icons/fa";
+import { getMe } from "../api/usuarios";
+import { useNavigate, Link } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await getMe();
+        const u = data?.data || data?.usuario
+        setUser(u ?? null);
+      } catch (e) {
+        setUser(null);
+      } finally {
+        setLoadingUser(false);
+      }
+    })();
+  }, []);
+
+  const role = user?.role;
+  const basePath =
+    role === "BUROCRATA"
+      ? "/burocrata"
+      : role === "METAHUMANO"
+      ? "/metahumano"
+      : role === "ADMIN"
+      ? "/admin"
+      : null;
+
+  const goTo = (segment) => () => navigate(basePath ? `${basePath}/${segment}` : "/login");
+
+  var location;
+
+  if (role === "ADMIN"){
+    location = "tramites";
+  }else{
+    location = "carpetas";
+  }
+  const goToCarpetas = goTo(location);
+  const goToPerfil = goTo("perfil");
+  const goToSoporte = goTo("soporte");
+
   return (
     <footer className="bg-[#1F1D2B] text-white mt-auto">
       {/* Sección principal del footer */}
@@ -47,19 +90,24 @@ const Footer = () => {
             <h4 className="text-lg font-semibold text-[#ec7c6a]">Enlaces Rápidos</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">Inicio</a>
+                <button onClick={() => navigate(basePath)} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                  Inicio
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">Trámites</a>
+                <button onClick={goToCarpetas} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                  Carpetas
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">Servicios</a>
+                <button onClick={goToPerfil} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                  Perfil
+                </button>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">Soporte</a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">Acerca de</a>
+                <button onClick={goToSoporte} className="text-left text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                  Soporte
+                </button>
               </li>
             </ul>
           </div>

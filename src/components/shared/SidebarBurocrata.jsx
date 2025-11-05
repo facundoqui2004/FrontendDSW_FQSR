@@ -61,7 +61,7 @@ const Sidebar = (props) => {
           {/* Inicio */}
           <li className="bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl">
             <button
-              onClick={() => navigate("/homeBurocrata")}
+              onClick={() => navigate("/burocrata")}
               className="bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white relative group cursor-pointer"
             >
               <RiHome6Line className="text-2xl" />
