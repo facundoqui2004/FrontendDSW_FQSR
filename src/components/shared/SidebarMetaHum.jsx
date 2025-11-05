@@ -64,7 +64,7 @@ const Sidebar = (props) => {
             <li className="bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl">
             <button
               onClick={() => navigate("/metahumano")}
-              className="bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
+              className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
             >
                 <RiHome6Line className="text-2xl" />
                 {/* Tooltip */}
@@ -79,7 +79,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                 onClick={() => navigate("/metahumano/tramites")}
-                className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
                 >
                     <FaWpforms className="text-2xl" />
                     {/* Tooltip */}
@@ -94,8 +94,8 @@ const Sidebar = (props) => {
 
             <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
-                    onClick={toggleUser}
-                    className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                    onClick={() => navigate('/metahumano/perfil')}
+                    className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
                 >
                     <FaRegUserCircle className="text-2xl" />
                     {/* Tooltip */}
@@ -110,7 +110,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={() => navigate('/metahumano/soporte')}
-                    className="bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
+                    className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
                 >
                     <MdContactSupport className="text-2xl" />
                     {/* Tooltip */}
@@ -130,7 +130,7 @@ const Sidebar = (props) => {
             <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
                     onClick={handleLogout}
-                    className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                    className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
                 >
                     <CiLogout className="text-2xl" />
                     {/* Tooltip */}

@@ -8,6 +8,8 @@ import { useAuth } from "../../context/AuthContext";
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle, FaPlus, FaWindowClose } from "react-icons/fa";
 import { RiHome6Line, RiCloseFill } from "react-icons/ri";
+import MetahumanoLayout from "../../components/layouts/MetahumanoLayout"
+import { Meta } from "react-router-dom";
 
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
@@ -125,11 +127,11 @@ function Home() {
       
       if (!metahumanoId) {
         setError('No se encontró el perfil de metahumano. Verifica que tu cuenta esté configurada correctamente.');
-        console.error('❌ No se encontró metahumano.id en:', userData);
+        console.error('No se encontró metahumano.id en:', userData);
         return;
       }
 
-      console.log('🦸‍♂️ Obteniendo metapoderes para metahumanoId:', metahumanoId);
+      console.log('Obteniendo metapoderes para metahumanoId:', metahumanoId);
 
       // Obtener los metapoderes del usuario
       const response = await fetch(`http://localhost:3000/api/metapoderes/${metahumanoId}`, {
@@ -139,7 +141,7 @@ function Home() {
       if (!response.ok) {
         if (response.status === 404) {
           // Si no encuentra metapoderes, establecer array vacío
-          console.log('ℹ️ No se encontraron metapoderes para este usuario');
+          console.log('No se encontraron metapoderes para este usuario');
           setMisPoderes([]);
           return;
         }
@@ -147,7 +149,7 @@ function Home() {
       }
       
       const data = await response.json();
-      console.log('📡 Metapoderes obtenidos:', data);
+      console.log('Metapoderes obtenidos:', data);
       
       const poderes = data.data || data || [];
       setMisPoderes(Array.isArray(poderes) ? poderes : []);
@@ -184,7 +186,7 @@ const solicitarPoder = async (poder) => {
     const userId = getUserId();
     const alias = getUserAlias();
 
-    console.log('👤 Datos del usuario para solicitud:', {
+    console.log('Datos del usuario para solicitud:', {
       userId,
       userRole,
       alias,
@@ -197,7 +199,7 @@ const solicitarPoder = async (poder) => {
     }
 
     // Obtener el ID del metahumano desde la API
-    console.log('🔍 Obteniendo datos completos del usuario desde la API...');
+    console.log('Obteniendo datos del usuario...');
     const userResponse = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
       credentials: 'include'
     });
@@ -207,21 +209,21 @@ const solicitarPoder = async (poder) => {
     }
 
     const userData = await userResponse.json();
-    console.log('📡 Datos completos del usuario:', userData);
+    console.log('Datos completos del usuario:', userData);
 
     // Extraer el ID del metahumano
     const metahumanoId = userData.usuario?.metahumano?.id;
     
     if (!metahumanoId) {
       setError('No se pudo obtener el ID del metahumano. Verifica que tu perfil esté completo.');
-      console.error('❌ No se encontró metahumano.id en:', userData);
+      console.error('No se encontró metahumano.id en:', userData);
       return;
     }
 
-    console.log('🦸‍♂️ ID del metahumano obtenido:', metahumanoId);
+    console.log('ID del metahumano obtenido:', metahumanoId);
 
     // Verificar si el metahumano ya tiene este poder
-    console.log('🔍 Verificando si ya tienes este poder...');
+    console.log('Verificando si ya tienes este poder...');
     const checkResponse = await fetch(`http://localhost:3000/api/metapoderes/${metahumanoId}`, {
       credentials: 'include'
     });
@@ -251,8 +253,8 @@ const solicitarPoder = async (poder) => {
       fechaAdquisicion: new Date().toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
     };
 
-    console.log('📤 Enviando solicitud de metapoder:', asignacionData);
-    console.log('⚡ Poder seleccionado:', poder.nomPoder);
+    console.log('Enviando solicitud de metapoder:', asignacionData);
+    console.log('Poder seleccionado:', poder.nomPoder);
     
     // Enviar petición al backend
     const response = await fetch('http://localhost:3000/api/metapoderes', {
@@ -264,13 +266,13 @@ const solicitarPoder = async (poder) => {
       body: JSON.stringify(asignacionData),
     });
 
-    console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+    console.log('Respuesta del servidor:', response.status, response.statusText);
 
     if (!response.ok) {
       let errorMessage = `Error ${response.status}: ${response.statusText}`;
       try {
         const errorData = await response.json();
-        console.log('❌ Error del servidor:', errorData);
+        console.log('Error del servidor:', errorData);
         errorMessage = errorData.message || errorData.error || errorMessage;
       } catch {
         console.log('No se pudo parsear el error como JSON');
@@ -279,11 +281,11 @@ const solicitarPoder = async (poder) => {
     }
 
     const result = await response.json();
-    console.log('✅ Metapoder asignado exitosamente:', result);
+    console.log('Metapoder asignado exitosamente:', result);
     
     // Mostrar mensaje de éxito con más detalles
     setSuccessMessage(
-      `¡Éxito! Has solicitado el poder "${poder.nomPoder}". Estado: SOLICITADO 🎉`
+      `¡Éxito! Has solicitado el poder "${poder.nomPoder}". Estado: SOLICITADO`
     );
     setError(""); // Limpiar errores previos
     
@@ -309,7 +311,7 @@ const solicitarPoder = async (poder) => {
       setLoading(true);
       setError("");
       
-      console.log('🗑️ Desactivando metapoder ID:', metapoderId);
+      console.log('Desactivando metapoder ID:', metapoderId);
       
       if (!metapoderId) {
         setError('ID del metapoder no válido');
@@ -334,13 +336,13 @@ const solicitarPoder = async (poder) => {
         }),
       });
 
-      console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+      console.log('Respuesta del servidor:', response.status, response.statusText);
 
       if (!response.ok) {
         let errorMessage = `Error ${response.status}: ${response.statusText}`;
         try {
           const errorData = await response.json();
-          console.log('❌ Error del servidor:', errorData);
+          console.log('Error del servidor:', errorData);
           errorMessage = errorData.message || errorData.error || errorMessage;
         } catch {
           console.log('No se pudo parsear el error como JSON');
@@ -349,10 +351,10 @@ const solicitarPoder = async (poder) => {
       }
 
       const result = await response.json();
-      console.log('✅ Poder desactivado exitosamente:', result);
+      console.log('Poder desactivado exitosamente:', result);
       
       // Mostrar mensaje de éxito
-      setSuccessMessage(`¡Poder "${nombrePoder}" desactivado exitosamente! 🗑️`);
+      setSuccessMessage(`¡Poder "${nombrePoder}" desactivado exitosamente!`);
       setError(""); // Limpiar errores previos
       
       // Recargar la lista de poderes
@@ -464,39 +466,7 @@ const solicitarPoder = async (poder) => {
   }
 
   return (
-    <div className="bg-[#545877] w-full min-h-screen transition-colors duration-300">
-      <Sidebar showMenu={showMenu} toggleUser={toggleUser} />
-
-      {/* MENU */}
-      <nav className="bg-[#1F1D2B] lg:hidden fixed w-full bottom-0 left-0 text-4xl text-gray-500 py-2 px-8 flex items-center rounded-tl-xl rounded-tr-xl shadow-lg justify-between transition-all duration-300 ease-in-out transform">
-        
-        <button 
-          onClick={toggleUser} 
-          className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <FaRegUserCircle />
-        </button>
-        
-        <button className="p-2 transition-all duration-200 ease-in-out hover:text-white hover:scale-110 active:scale-95">
-          <RiHome6Line />
-        </button>
-        
-        <button className="text-white p-2 transition-all duration-200 ease-in-out hover:scale-110 active:scale-95 hover:bg-[#ec7c6a] rounded-full">
-          <FaPlus />
-        </button>
-        
-        <button 
-          onClick={toggleMenu} 
-          className="p-2 transition-all duration-300 ease-in-out hover:text-white hover:scale-110 active:scale-95"
-        >
-          <div className="transition-transform duration-300 ease-in-out">
-            {showMenu ? <FaWindowClose /> : <CgMenuRound />}
-          </div>
-        </button>
-      </nav>
-
-      <main className="lg:pl-28 grid grid-cols-1 lg:grid-cols-8 flex-1 min-h-screen pb-0 lg:pb-0">
-
+      <MetahumanoLayout>
         {/* Contenido principal */}
         <div
           className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
@@ -943,70 +913,7 @@ const solicitarPoder = async (poder) => {
             )}
           </div>
         </div>
-
-        {/* Panel de usuario */}
-        <div
-          className={`fixed lg:static top-0 right-0 w-full lg:w-auto h-full z-50
-            ${showUser 
-              ? "translate-x-0 opacity-100 lg:col-span-2" 
-              : "translate-x-full opacity-0 lg:translate-x-0 lg:opacity-0 lg:w-0 lg:overflow-hidden"
-            }`}
-        >
-          <div className="p-4 bg-[#1F1D2B] text-white rounded-lg shadow-lg h-full">
-            <div className="relative pt-16 text-gray-300 p-8">
-              <RiCloseFill
-                onClick={closeUser}
-                className="text-3xl absolute left-4 top-4 p-2 box-content text-gray-300 bg-[#ec7c6a] rounded-full cursor-pointer hover:scale-110 hover:bg-[#d66b59] active:scale-95 hover:shadow-lg"
-              />
-              <h1 className="text-2xl font-bold mb-4 flex items-center">
-                Mi Perfil
-              </h1>
-              
-              {/* Mostrar información del usuario en el panel */}
-              {user && (
-                <div className="space-y-4 mb-6">
-                  <div className="bg-slate-800 rounded-lg p-4">
-                    <h3 className="text-lg font-semibold text-white mb-2">Información de Usuario</h3>
-                    <div className="space-y-2 text-sm">
-                      <p><span className="text-gray-400">ID:</span> {getUserId()}</p>
-                      <p><span className="text-gray-400">Alias:</span> {getUserAlias() || 'Sin alias'}</p>
-                      <p><span className="text-gray-400">Rol:</span> {getUserRole()}</p>
-                      {getPerfilId() && (
-                        <p><span className="text-gray-400">Perfil ID:</span> {getPerfilId()}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              <div className="space-y-4">
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Información Personal</h2>
-                  <p className="text-sm text-gray-400">Gestiona tu información</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Configuración</h2>
-                  <p className="text-sm text-gray-400">Ajusta tus preferencias</p>
-                </div>
-                <div className="border-b border-gray-600 pb-2">
-                  <h2 className="text-lg font-semibold">Notificaciones</h2>
-                  <p className="text-sm text-gray-400">Controla las notificaciones</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
-      <footer
-          className={`
-            ${showMenu 
-              ? "pl-4 lg:pl-28" 
-              : "pl-0"
-            }`}
-        >
-        <Footer />
-      </footer>
-    </div>
+    </MetahumanoLayout>
   );
 }
 

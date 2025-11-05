@@ -26,7 +26,7 @@ const Sidebar = (props) => {
       className={`bg-[#f1a035] fixed lg:left-0 top-0 w-28 h-full flex flex-col justify-between py-6 rounded-tr-xl rounded-br-xl z-50 transition-all duration-300 ease-in-out shadow-lg
       ${showMenu ? "left-0" : "-left-full"} lg:left-0`}
     >
-      {/* 🧠 Logo con tooltip */}
+      {/* Logo */}
       <div className="text-center my-4 relative group">
         <img
           src="/Images/burocrataLogo.png"
@@ -55,10 +55,10 @@ const Sidebar = (props) => {
         </div>
       </div>
 
-      {/* 📌 Lista de enlaces */}
+      {/* Lista de enlaces */}
       <div>
         <ul className="pl-4">
-          {/* 🏠 Inicio */}
+          {/* Inicio */}
           <li className="bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl">
             <button
               onClick={() => navigate("/homeBurocrata")}
@@ -72,7 +72,7 @@ const Sidebar = (props) => {
             </button>
           </li>
 
-          {/* 🗂️ Carpetas */}
+          {/* Carpetas */}
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/carpetas")}
@@ -86,7 +86,7 @@ const Sidebar = (props) => {
             </button>
           </li>
 
-          {/* 👤 Mi Perfil */}
+          {/* Mi Perfil */}
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/perfil")}
@@ -100,7 +100,7 @@ const Sidebar = (props) => {
             </button>
           </li>
 
-          {/* 🛠️ Soporte */}
+          {/* Soporte */}
           <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={() => navigate("/burocrata/soporte")}
@@ -116,13 +116,13 @@ const Sidebar = (props) => {
         </ul>
       </div>
 
-      {/* 🚪 Logout */}
+      {/* Logout */}
       <div>
         <ul className="pl-4">
-          <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+          <li className="hover:bg-[#f8d19d] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
             <button
               onClick={handleLogout}
-              className="group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
+              className="group-hover:bg-[#f1a035] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative cursor-pointer"
             >
               <CiLogout className="text-2xl" />
               <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
