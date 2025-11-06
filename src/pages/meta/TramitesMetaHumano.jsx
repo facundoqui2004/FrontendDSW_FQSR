@@ -222,14 +222,16 @@ const solicitarPoder = async (poder) => {
       const existingPowers = await checkResponse.json();
       const poderes = existingPowers.data || existingPowers || [];
       
-      // Verificar si ya tiene el poder APROBADO o SOLICITADO
-      const yaTienePoder = poderes.some(mp => 
-        mp.poder?.id === poder.id && (mp.estado === 'APROBADO' || mp.estado === 'SOLICITADO')
-      );
+      // Verifica si ya tiene el poder (aprobado o solicitado)
+      if (misPoderes.length > 0){
+          const yaTienePoder = poderes.some(mp => 
+          mp.poder?.id === poder.id && (mp.estado === 'APROBADO' || mp.estado === 'SOLICITADO')
+        );
 
-      if (yaTienePoder) {
-        setError(`Ya tienes el poder "${poder.nomPoder}" asignado o en proceso de solicitud.`);
-        return;
+        if (yaTienePoder) {
+          setError(`Ya tienes el poder "${poder.nomPoder}" asignado o en proceso de solicitud.`);
+          return;
+        }
       }
     }
 
