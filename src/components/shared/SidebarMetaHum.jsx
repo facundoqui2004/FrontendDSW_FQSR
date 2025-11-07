@@ -28,11 +28,11 @@ const Sidebar = (props) => {
     ${showMenu ? 'left-0' : '-left-full'}`}>
       <div className="text-center my-4 relative group">
             <img
-                src="/Images/metahumano.png" // reemplaza con la ruta real del logo
+                src="/Images/metahumano.png"
                 alt="Logo El Súper Gestor MetaHumano"
-                className="mx-auto w-25 h-auto cursor-pointer" // ancho fijo, altura automática para mantener proporción
+                className="mx-auto w-25 h-auto cursor-pointer"
             />
-            {/* Tooltip estilo cómic para el logo */}
+            {/* Tooltip logo */}
             <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 <div className="relative bg-red-500 text-white px-4 py-3 rounded-lg text-sm font-bold border-4 border-black shadow-lg transform rotate-1 whitespace-nowrap">
                 <div className="relative z-10">
@@ -40,109 +40,104 @@ const Sidebar = (props) => {
                     EL SUPER GESTOR!
                     </div>
                 </div>
-                {/* Puntos de estilo cómic */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="w-2 h-2 bg-yellow-300 rounded-full absolute top-2 left-2"></div>
                     <div className="w-1 h-1 bg-yellow-300 rounded-full absolute top-4 left-6"></div>
                     <div className="w-1.5 h-1.5 bg-yellow-300 rounded-full absolute bottom-3 right-3"></div>
                     <div className="w-1 h-1 bg-yellow-300 rounded-full absolute bottom-2 right-6"></div>
                 </div>
-                {/* Flecha del tooltip estilo cómic */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                     <div className="border-8 border-transparent border-r-red-500"></div>
                     <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1 border-4 border-transparent border-r-black"></div>
                 </div>
-                {/* Efecto de sombra */}
                 <div className="absolute inset-0 bg-black rounded-lg transform translate-x-1 translate-y-1 -z-10"></div>
                 </div>
             </div>
-      </div>
+        </div>
 
         {/* Lista de enlaces */}
-      <div>
-        <ul className="pl-4">
-            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-            <button
-              onClick={() => navigate("/metahumano")}
-              className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
-            >
-                <RiHome6Line className="text-2xl" />
-                {/* Tooltip */}
-                <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                Inicio
-                {/* Flecha del tooltip */}
-                <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                </div>
-            </button>
-            </li>
-
-            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+        <div>
+            <ul className="pl-4">
+                <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
                 <button
-                onClick={() => navigate("/metahumano/tramites")}
+                onClick={() => navigate("/metahumano")}
                 className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
                 >
-                    <FaWpforms className="text-2xl" />
+                    <RiHome6Line className="text-2xl" />
                     {/* Tooltip */}
                     <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Tramites
+                    Inicio
                     {/* Flecha del tooltip */}
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
                     </div>
                 </button>
-            </li>
+                </li>
 
-
-            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <button
-                    onClick={() => navigate('/metahumano/perfil')}
-                    className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
-                >
-                    <FaRegUserCircle className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Usuario
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </button>
-            </li>
-
-            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <button
-                    onClick={() => navigate('/metahumano/soporte')}
-                    className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
-                >
-                    <MdContactSupport className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Soporte
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </button>
-            </li>
-
-                        
-        </ul>
-      </div>
-      <div>
-        <ul className="pl-4">
-            <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
-                <button
-                    onClick={handleLogout}
+                <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                    <button
+                    onClick={() => navigate("/metahumano/tramites")}
                     className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
-                >
-                    <CiLogout className="text-2xl" />
-                    {/* Tooltip */}
-                    <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
-                    Cerrar Sesión
-                    {/* Flecha del tooltip */}
-                    <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
-                    </div>
-                </button>
-            </li>
-        </ul>
-      </div>
+                    >
+                        <FaWpforms className="text-2xl" />
+                        {/* Tooltip */}
+                        <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                        Tramites
+                        {/* Flecha del tooltip */}
+                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                        </div>
+                    </button>
+                </li>
+
+
+                <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                    <button
+                        onClick={() => navigate('/metahumano/perfil')}
+                        className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
+                    >
+                        <FaRegUserCircle className="text-2xl" />
+                        {/* Tooltip */}
+                        <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                        Usuario
+                        {/* Flecha del tooltip */}
+                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                        </div>
+                    </button>
+                </li>
+
+                <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                    <button
+                        onClick={() => navigate('/metahumano/soporte')}
+                        className="cursor-pointer bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white relative group"
+                    >
+                        <MdContactSupport className="text-2xl" />
+                        {/* Tooltip */}
+                        <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                        Soporte
+                        {/* Flecha del tooltip */}
+                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                        </div>
+                    </button>
+                </li>    
+            </ul>
+        </div>
+        <div>
+            <ul className="pl-4">
+                <li className="hover:bg-[#b8cbd6] p-4 block rounded-tl-xl rounded-bl-xl group transition-colors">
+                    <button
+                        onClick={handleLogout}
+                        className="cursor-pointer group-hover:bg-[#317196] p-4 flex justify-center w-full rounded-xl text-white group-hover:text-white relative"
+                    >
+                        <CiLogout className="text-2xl" />
+                        {/* Tooltip */}
+                        <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                        Cerrar Sesión
+                        {/* Flecha del tooltip */}
+                        <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-red-500"></div>
+                        </div>
+                    </button>
+                </li>
+            </ul>
+        </div>
       
     </div>
   );

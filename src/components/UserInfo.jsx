@@ -5,11 +5,10 @@ import { getUserFromCookie, isAuthenticated as checkCookieAuth } from '../utils/
 const UserInfo = () => {
   const { user: contextUser, isAuthenticated: contextAuth, getHomeRouteByRole, refreshProfile } = useAuth();
 
-  // Obtener información tanto del contexto como de las cookies
+  // Obtener de las cookies
   const cookieUser = getUserFromCookie();
   const cookieAuth = checkCookieAuth();
   
-  // Usar cookie como fuente de verdad principal
   const user = cookieUser || contextUser;
   const isAuthenticated = cookieAuth || contextAuth;
 
@@ -78,7 +77,7 @@ const UserInfo = () => {
         <div>
           <label className="font-semibold text-gray-700">Estado:</label>
           <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-            ✓ Autenticado {cookieUser ? '(Cookie)' : '(Local)'}
+            Autenticado {cookieUser ? '(Cookie)' : '(Local)'}
           </span>
         </div>
         

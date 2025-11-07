@@ -86,63 +86,33 @@ export default function GestionarMetahumanos() {
     }
   };
 
-  // Filtrar metahumanos según búsqueda y filtro
-  const metahumanosFiltrados = metahumanos.filter(metahumano => {
-    const coincideBusqueda = !busqueda || 
-      metahumano.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      metahumano.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      metahumano.nomMetahumano?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      metahumano.nomVillano?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      metahumano.nomHeroe?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      metahumano.nomPersonaje?.toLowerCase().includes(busqueda.toLowerCase());
-
-    const coincideFiltro = filtro === 'todos' || 
-      (filtro === 'activos' && metahumano.estado === 'ACTIVO') ||
-      (filtro === 'inactivos' && metahumano.estado === 'INACTIVO') ||
-      (filtro === 'heroes' && metahumano.categoria === 'heroe') ||
-      (filtro === 'villanos' && metahumano.categoria === 'villano');
-
-    return coincideBusqueda && coincideFiltro;
-  });
-
+  // Funciones auxiliares
   const obtenerNombreCompleto = (metahumano) => {
-    return metahumano.nomMetahumano || 
+    return metahumano.alias ||
+           metahumano._original?.alias ||
+           metahumano._original?.nombre ||
+           metahumano.nomMetahumano || 
            metahumano.nomPersonaje || 
            metahumano.nomHeroe || 
            metahumano.nomVillano || 
+           metahumano.nomUsuario ||
            'Sin nombre';
   };
 
-  const obtenerCategoria = (metahumano) => {
-    if (metahumano.categoria) return metahumano.categoria;
-    if (metahumano.nomHeroe) return 'héroe';
-    if (metahumano.nomVillano) return 'villano';
-    return 'desconocida';
-  };
+  // Filtrar metahumanos según búsqueda y filtro
+  const metahumanosFiltrados = metahumanos.filter(metahumano => {
+    const nombreCompleto = obtenerNombreCompleto(metahumano);
+    
+    const coincideBusqueda = !busqueda || 
+      metahumano.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      nombreCompleto?.toLowerCase().includes(busqueda.toLowerCase());
 
-  const obtenerIconoCategoria = (categoria) => {
-    switch (categoria?.toLowerCase()) {
-      case 'heroe':
-      case 'héroe':
-        return '🦸‍♂️';
-      case 'villano':
-        return '🦹‍♂️';
-      default:
-        return '⚡';
-    }
-  };
+    const coincideFiltro = filtro === 'todos' || 
+      (filtro === 'activos' && metahumano.estado === 'ACTIVO') ||
+      (filtro === 'inactivos' && metahumano.estado === 'INACTIVO');
 
-  const obtenerColorCategoria = (categoria) => {
-    switch (categoria?.toLowerCase()) {
-      case 'heroe':
-      case 'héroe':
-        return 'text-blue-400';
-      case 'villano':
-        return 'text-red-400';
-      default:
-        return 'text-purple-400';
-    }
-  };
+    return coincideBusqueda && coincideFiltro;
+  });
 
   if (loading) {
     return (
@@ -175,12 +145,12 @@ export default function GestionarMetahumanos() {
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
               <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">🦸‍♂️</span>
+                <span className="text-white font-bold">📱</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Héroes</p>
+                <p className="text-sm text-gray-400">Inactivos</p>
                 <p className="text-2xl font-bold text-white">
-                  {metahumanos.filter(m => obtenerCategoria(m).toLowerCase().includes('hero')).length}
+                  {metahumanos.filter(m => m.estado === 'INACTIVO').length}
                 </p>
               </div>
             </div>
@@ -188,13 +158,13 @@ export default function GestionarMetahumanos() {
           
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">🦹‍♂️</span>
+              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold">✅</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Villanos</p>
+                <p className="text-sm text-gray-400">Activos</p>
                 <p className="text-2xl font-bold text-white">
-                  {metahumanos.filter(m => obtenerCategoria(m).toLowerCase().includes('villano')).length}
+                  {metahumanos.filter(m => m.estado === 'ACTIVO').length}
                 </p>
               </div>
             </div>
@@ -226,8 +196,6 @@ export default function GestionarMetahumanos() {
                 <option value="todos">Todos</option>
                 <option value="activos">Activos</option>
                 <option value="inactivos">Inactivos</option>
-                <option value="heroes">Héroes</option>
-                <option value="villanos">Villanos</option>
               </select>
             </div>
 
@@ -277,24 +245,21 @@ export default function GestionarMetahumanos() {
                 <thead className="bg-[#334155]">
                   <tr>
                     <th className="text-left p-4 text-gray-300 font-medium">Usuario</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Nombre Metahumano</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Categoría</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Email</th>
+                    <th className="text-left p-4 text-gray-300 font-medium">Nombre Completo</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Estado</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {metahumanosFiltrados.map((metahumano, index) => {
-                    const categoria = obtenerCategoria(metahumano);
+                    const nombreCompleto = obtenerNombreCompleto(metahumano);
+                    
                     return (
                       <tr key={metahumano.id || index} className="border-t border-slate-600 hover:bg-[#334155] transition-colors">
                         <td className="p-4">
                           <div className="flex items-center">
                             <div className="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold">
-                                {obtenerIconoCategoria(categoria)}
-                              </span>
+                              <span className="text-white font-bold">⚡</span>
                             </div>
                             <div className="ml-3">
                               <p className="text-white font-medium">{metahumano.nomUsuario}</p>
@@ -303,15 +268,7 @@ export default function GestionarMetahumanos() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <p className="text-white">{obtenerNombreCompleto(metahumano)}</p>
-                        </td>
-                        <td className="p-4">
-                          <span className={`font-medium capitalize ${obtenerColorCategoria(categoria)}`}>
-                            {categoria}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <p className="text-gray-300">{metahumano.email}</p>
+                          <p className="text-white">{nombreCompleto}</p>
                         </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${

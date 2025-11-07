@@ -13,10 +13,9 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = ({children}) => {
-    // Inicializar con cookies primero, localStorage como respaldo
     const [user, setUser] = useState(() => {
         try {
-            // PRIORIDAD 1: Intentar obtener de cookies
+            // obtener cookies
             let userData = getUserFromCookie();
             
             if (userData) {
@@ -24,8 +23,7 @@ export const AuthProvider = ({children}) => {
                 return userData;
             }
             
-            // PRIORIDAD 2: Respaldo en localStorage
-            const savedUser = localStorage.getItem('user_info'); // Cambiado a user_info
+            const savedUser = localStorage.getItem('user_info');
             if (savedUser) {
                 userData = JSON.parse(savedUser);
                 console.log('Usuario encontrado en localStorage:', userData);
@@ -41,7 +39,6 @@ export const AuthProvider = ({children}) => {
     });
     
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        // Verificar si hay usuario válido
         const hasUser = getUserFromCookie() !== null || localStorage.getItem('user_info') !== null;
         console.log('Estado de autenticación inicial:', hasUser);
         return hasUser;
@@ -49,10 +46,9 @@ export const AuthProvider = ({children}) => {
     
     const [error, setError] = useState(null);
 
-    // Efecto para sincronizar cambios y guardar en ambos lugares
+    // sincronizar cambios y guardar en ambos lugares (local y cookie)
     useEffect(() => {
         if (user && isAuthenticated) {
-            // Guardar en localStorage como respaldo
             localStorage.setItem('user_info', JSON.stringify(user));
             console.log('Sesión guardada en localStorage');
             console.log('Datos del usuario guardados:', {
@@ -65,47 +61,41 @@ export const AuthProvider = ({children}) => {
         } else {
             // Limpiar localStorage
             localStorage.removeItem('user_info');
-            localStorage.removeItem('user'); // Limpiar el anterior también
+            localStorage.removeItem('user');
             localStorage.removeItem('isAuthenticated');
         }
     }, [user, isAuthenticated]);
 
-    // Función para guardar usuario completo
+    // guardar usuario completo
     const saveUserData = (userData) => {
         console.log('Guardando datos completos del usuario:', userData);
         
-        // Estructurar datos completos para guardar
         const completeUserData = {
             id: userData.id || userData.usuarioId,
             role: userData.role || userData.rol,
             alias: userData.alias,
             perfil: userData.perfil,
             perfilId: userData.perfilId,
-            // Agregar más campos que necesites
             nombre: userData.nombre,
             email: userData.email || userData.mail,
-            // Datos adicionales del backend
             ...userData
         };
         
         console.log('Estructura completa a guardar:', completeUserData);
         
-        // Guardar en localStorage (las cookies se manejan automáticamente por el backend)
         localStorage.setItem('user_info', JSON.stringify(completeUserData));
         
-        // Actualizar estado
         setUser(completeUserData);
         setIsAuthenticated(true);
         
         return completeUserData;
     };
     
-    // Función para normalizar roles que vienen del backend
     const normalizeRole = (role) => {
         if (!role) return null;
         
         const roleUpper = role.toUpperCase();
-        console.log('Normalizando rol:', role, '→', roleUpper);
+        console.log('Normalizando rol:', role, '>', roleUpper);
         
         switch (roleUpper) {
             case 'METAHUMANO':
@@ -123,7 +113,6 @@ export const AuthProvider = ({children}) => {
         }
     };
     
-    // Función para obtener la ruta según el rol
     const getHomeRouteByRole = () => {
         console.log('Obteniendo ruta para usuario:', user);
         if (!user || !user.role) {
@@ -200,12 +189,10 @@ export const AuthProvider = ({children}) => {
             const res = await loginRequest(userData);
             console.log('Respuesta del servidor completa:', res.data);
             
-            // Extraer datos del usuario del servidor
             const userDataFromServer = res.data.usuario || res.data.user || res.data;
             console.log('Datos del usuario del servidor:', userDataFromServer);
             console.log('Rol del usuario:', userDataFromServer?.role);
             
-            // Guardar datos completos
             const completeUser = saveUserData(userDataFromServer);
             
             console.log('Login exitoso, sesión iniciada. Usuario completo:', completeUser);
@@ -254,20 +241,18 @@ export const AuthProvider = ({children}) => {
         try {
             console.log('Cerrando sesión...');
             
-            // Intentar logout en servidor (con cookies)
+            // logout en servidor (con cookies)
             await logoutRequest();
             console.log('Logout exitoso en servidor');
         } catch (error) {
             console.error('Error al hacer logout en el servidor:', error);
-            // Continuar con el logout local aunque falle el servidor
         }
         
-        // Limpiar estado local
         setUser(null);
         setIsAuthenticated(false);
         setError(null);
         
-        // Limpiar todo el localStorage relacionado
+        // Limpiar localStorage
         localStorage.removeItem('user_info');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
@@ -276,13 +261,12 @@ export const AuthProvider = ({children}) => {
         console.log('Sesión cerrada correctamente, estado local limpiado');
     };
 
-    // Función para refrescar el perfil del usuario
+    // refrescar perfil del usuario
     const refreshProfile = async () => {
         try {
             const res = await getPerfilRequest();
             const profileData = res.data;
             
-            // Actualizar con datos completos del servidor
             const updatedUser = saveUserData(profileData);
             console.log('Perfil actualizado desde el servidor:', updatedUser);
             return { success: true, data: updatedUser };

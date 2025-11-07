@@ -2,7 +2,7 @@
 import { api } from './client';
 // Obtener todas las carpetas
 export const getAllCarpetasRequest = () => api.get('/carpetas');
-// Obtener una carpeta por ID
+// Obtener carpeta x ID
 export const getCarpetaByIdRequest = (id) => api.get(`/carpetas/${id}`);
 // Crear una nueva carpeta
 export const createCarpetaRequest = (data) => api.post('/carpetas', data);

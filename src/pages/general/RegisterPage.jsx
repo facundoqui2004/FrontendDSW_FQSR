@@ -30,21 +30,19 @@ export default function RegistroForm() {
     }
   }, [isAuthenticated, user, navigate, getHomeRouteByRole]);
 
-  // Función para registro automático + login
   const registerAndLogin = async (payload, rol) => {
     try {
       console.log('Iniciando registro para rol:', rol);
       console.log('Datos del payload:', payload);
       
-      // 1. Registrar usuario
+      // registrar usuario
       const userType = rol === 'METAHUMANO' ? 'metahumano' : 'burocrata';
       const registerResult = await signup(payload, userType);
       
       if (registerResult.success) {
         console.log('Registro exitoso:', registerResult.data);
-        console.log('Iniciando login automático...');
         
-        // 2. Login automático
+        // login automatico
         const loginResult = await login({
           email: payload.email,
           password: payload.password
@@ -52,11 +50,12 @@ export default function RegistroForm() {
         
         if (loginResult.success) {
           console.log('Login automático exitoso:', loginResult.data);
-          // La redirección se manejará en el useEffect
+
+          // redireccion en el useEffect
           return { success: true, data: loginResult.data };
         } else {
           console.error('Error en login automático:', loginResult.error);
-          // Si el registro fue exitoso pero el login falló, redirigir a login manual
+          // Si el registro es exitoso pero el login falla, redirigir a login manual
           navigate('/login');
           return { success: false, error: 'Cuenta creada. Por favor, inicia sesión manualmente.' };
         }
@@ -79,14 +78,14 @@ export default function RegistroForm() {
       return;
     }
     
-    // Preparar datos según el contrato del backend
+    // preparar datos según backend
     const backendData = {
       email: data.email,
       telefono: data.telefono,
       password: data.password,
       nombre: data.nombre,
-      alias: data.alias || data.nombre, // Usar nombre como alias si no se proporciona
-      origen: data.origen || "Registro Web" // Valor por defecto
+      alias: data.alias || data.nombre,
+      origen: data.origen || "Registro Web"
     };
     
     const result = await registerAndLogin(backendData, selectedRole);
@@ -97,13 +96,12 @@ export default function RegistroForm() {
     }
   };
 
-  // Campos específicos por rol
+  // Campos de rol
   const getRoleSpecificFields = () => {
     if (!selectedRole) return null;
     
     return (
       <>
-        {/* Alias - requerido para ambos roles */}
         <div>
           <label htmlFor="alias" className="block text-sm font-medium text-gray-300 mb-2">
             Alias {selectedRole === 'METAHUMANO' ? '(nombre héroe)' : '(nombre profesional)'}
@@ -128,7 +126,6 @@ export default function RegistroForm() {
           )}
         </div>
 
-        {/* Origen - requerido para ambos roles */}
         <div>
           <label htmlFor="origen" className="block text-sm font-medium text-gray-300 mb-2">
             Origen {selectedRole === 'METAHUMANO' ? '(origen de poderes)' : '(departamento/institución)'}
@@ -179,7 +176,7 @@ export default function RegistroForm() {
           )}
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Selector de Rol - Segmented Control */}
+            {/* Selector de Rol */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-3">
                 Selecciona tu rol
@@ -189,7 +186,7 @@ export default function RegistroForm() {
                   type="button"
                   onClick={() => {
                     setSelectedRole('METAHUMANO');
-                    reset(); // Limpiar campos cuando cambies de rol
+                    reset();
                   }}
                   className={`p-4 rounded-lg border-2 transition-all duration-200 ${
                     selectedRole === 'METAHUMANO'
@@ -208,7 +205,7 @@ export default function RegistroForm() {
                   type="button"
                   onClick={() => {
                     setSelectedRole('BUROCRATA');
-                    reset(); // Limpiar campos cuando cambies de rol
+                    reset();
                   }}
                   className={`p-4 rounded-lg border-2 transition-all duration-200 ${
                     selectedRole === 'BUROCRATA'
@@ -228,10 +225,9 @@ export default function RegistroForm() {
               )}
             </div>
 
-            {/* Campos del formulario - solo se muestran después de seleccionar rol */}
+            {/* formulario */}
             {selectedRole && (
               <>
-                {/* Campo Nombre */}
                 <div>
                   <label htmlFor="nombre" className="block text-sm font-medium text-gray-300 mb-2">
                     Nombre completo
@@ -256,7 +252,6 @@ export default function RegistroForm() {
                   )}
                 </div>
 
-                {/* Campo Email */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
                     Correo electrónico
@@ -281,7 +276,6 @@ export default function RegistroForm() {
                   )}
                 </div>
 
-                {/* Campo Teléfono */}
                 <div>
                   <label htmlFor="telefono" className="block text-sm font-medium text-gray-300 mb-2">
                     Teléfono
@@ -306,7 +300,6 @@ export default function RegistroForm() {
                   )}
                 </div>
                 
-                {/* Campo Contraseña */}
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
                     Contraseña
@@ -331,7 +324,6 @@ export default function RegistroForm() {
                   )}
                 </div>
 
-                {/* Campo Confirmar Contraseña */}
                 <div>
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
                     Confirmar contraseña
@@ -353,10 +345,10 @@ export default function RegistroForm() {
                   )}
                 </div>
 
-                {/* Campos específicos por rol */}
+                {/* campos de rol */}
                 {getRoleSpecificFields()}
 
-                {/* Botón de envío */}
+                {/* submit */}
                 <button
                   type="submit"
                   className="w-full bg-[#ec7c6a] text-white py-3 px-4 rounded-lg hover:bg-[#d66b59] focus:outline-none focus:ring-2 focus:ring-[#ec7c6a] focus:ring-offset-2 transition duration-200 font-medium transform hover:scale-105 active:scale-95"
