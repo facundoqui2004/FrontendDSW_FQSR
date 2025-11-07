@@ -120,7 +120,6 @@ export default function CrearCarpeta() {
                 <option value="general">General</option>
                 <option value="penal">Penal</option>
                 <option value="civil">Civil</option>
-                <option value="metahumano">Metahumano</option>
               </select>
             </div>
 
