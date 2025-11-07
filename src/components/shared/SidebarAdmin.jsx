@@ -35,7 +35,7 @@ const Sidebar = (props) => {
                 alt="Logo El Súper Gestor"
                 className="mx-auto w-20 h-auto cursor-pointer max-w-full"
             />
-            {/* Tooltip estilo cómic para el logo */}
+            {/* Tooltip logo */}
             <div className="tooltip-desktop absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 <div className="relative bg-[#0891b2] text-white px-4 py-3 rounded-lg text-sm font-bold border-4 border-black shadow-lg transform rotate-1 whitespace-nowrap">
                 <div className="relative z-10">
@@ -43,25 +43,21 @@ const Sidebar = (props) => {
                     EL SUPER GESTOR!
                     </div>
                 </div>
-                {/* Puntos de estilo cómic */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="w-2 h-2 bg-[#bfdbfe] rounded-full absolute top-2 left-2"></div>
                     <div className="w-1 h-1 bg-[#bfdbfe] rounded-full absolute top-4 left-6"></div>
                     <div className="w-1.5 h-1.5 bg-[#bfdbfe] rounded-full absolute bottom-3 right-3"></div>
                     <div className="w-1 h-1 bg-[#bfdbfe] rounded-full absolute bottom-2 right-6"></div>
                 </div>
-                {/* Flecha del tooltip estilo cómic */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                     <div className="border-8 border-transparent border-r-[#0891b2]"></div>
                     <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1 border-4 border-transparent border-r-black"></div>
                 </div>
-                {/* Efecto de sombra */}
                 <div className="absolute inset-0 bg-black rounded-lg transform translate-x-1 translate-y-1 -z-10"></div>
                 </div>
             </div>
       </div>
 
-        {/* Lista de enlaces - Con scroll si es necesario */}
       <div className="flex-1 overflow-y-auto py-2 scrollbar-thin overflow-x-hidden w-full">
         <ul className="pl-4 space-y-1 w-full overflow-x-hidden">
             <li className="hover:bg-[#0f4958] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">
@@ -168,13 +164,11 @@ const Sidebar = (props) => {
                     <div className="absolute right-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-r-[#0891b2]"></div>
                     </div>
                 </button>
-            </li>
-
-                        
+            </li>    
         </ul>
       </div>
       
-      {/* Logout - Siempre visible al final */}
+      {/* Logout */}
       <div className="flex-shrink-0 pb-2">
         <ul className="pl-4">
             <li className="hover:bg-[#075985] p-1.5 block rounded-tl-xl rounded-bl-xl group transition-colors">

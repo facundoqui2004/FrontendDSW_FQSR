@@ -50,7 +50,7 @@ export default function MiPerfilBuro() {
 
   return (
     <BurocrataLayout>
-      {/* 🏛️ Encabezado */}
+      {/* Encabezado */}
       <section className="text-center text-white mt-8 mb-10">
         <h1 className="text-3xl font-extrabold tracking-tight mb-2">
           👤 Mi Perfil
@@ -60,7 +60,7 @@ export default function MiPerfilBuro() {
         </p>
       </section>
 
-      {/* 🧾 Tarjeta de perfil */}
+      {/*  Tarjeta de perfil */}
       <div className="max-w-2xl mx-auto bg-[#1e293b]/80 backdrop-blur-md rounded-2xl p-8 text-white shadow-xl border border-white/10">
         {/* Avatar */}
         <div className="flex flex-col items-center mb-8">

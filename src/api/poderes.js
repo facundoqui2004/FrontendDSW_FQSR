@@ -4,10 +4,10 @@ import { api } from './client';
 // Obtener todos los poderes
 export const getPoderes = async () => {
   const res = await api.get('/poderes');
-  return res.data; // si tu backend devuelve { message, data }, quizás quieras res.data.data
+  return res.data;
 };
 
-// Obtener poder por ID
+// Obtener poder x ID
 export const getPoderById = async (id) => {
   const res = await api.get(`/poderes/${id}`);
   return res.data;

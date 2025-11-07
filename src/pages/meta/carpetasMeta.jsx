@@ -177,9 +177,6 @@ function Home() {
                     <FaFolder className="text-6xl text-gray-400 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-300 mb-2">No tienes carpetas</h3>
                     <p className="text-gray-400 mb-6">Aún no se han creado carpetas para tu perfil de metahumano.</p>
-                    <button className="px-6 py-3 bg-[#ec7c6a] hover:bg-[#d66b59] rounded-lg text-white font-medium transition-colors">
-                      Solicitar Nueva Carpeta
-                    </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

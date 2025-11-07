@@ -24,7 +24,6 @@ function HomeBurocrata() {
   return (
    
     <BurocrataLayout>
-      {/* Contenido principal */}
         {/* Encabezado */}
         <section className="text-center text-white mt-8 mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight mb-2">

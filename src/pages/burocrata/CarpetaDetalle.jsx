@@ -107,7 +107,7 @@
       }));
     };
 
-    // 📝 Crear multa
+    //  Crear multa
     const handleCrearMulta = async (e, evidenciaId) => {
       e.preventDefault();
       const formData = multaForms[evidenciaId];

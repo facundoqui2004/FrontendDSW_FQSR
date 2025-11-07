@@ -90,8 +90,7 @@ export default function GestionarUsuarios() {
   };
 
   const usuariosFiltrados = usuarios.filter(usuario => {
-    const coincideBusqueda = usuario.nomUsuario.toLowerCase().includes(busqueda.toLowerCase()) ||
-                            usuario.email.toLowerCase().includes(busqueda.toLowerCase());
+    const coincideBusqueda = usuario.nomUsuario.toLowerCase().includes(busqueda.toLowerCase());
     
     if (filtro === 'todos') return coincideBusqueda;
     return coincideBusqueda && usuario.rol === filtro;
@@ -183,7 +182,7 @@ export default function GestionarUsuarios() {
             
             <input
               type="text"
-              placeholder="Buscar por nombre o email..."
+              placeholder="Buscar usuarios..."
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="bg-[#334155] border border-slate-600 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
@@ -236,9 +235,6 @@ export default function GestionarUsuarios() {
                     Usuario
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Rol
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
@@ -262,9 +258,6 @@ export default function GestionarUsuarios() {
                           <div className="text-sm text-gray-400">ID: {usuario.id}</div>
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                      {usuario.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRolColor(usuario.rol)}`}>

@@ -15,15 +15,14 @@ export default function GestionarBurocratas() {
       setLoading(true);
       setError(null);
       
-      console.log('🚀 Cargando burócratas desde endpoints disponibles...');
+      console.log('Cargando burócratas desde endpoints disponibles...');
       
-      // Usar la función combinada y filtrar solo burócratas
       const response = await obtenerTodosLosUsuariosCombinados();
-      console.log('✅ Usuarios obtenidos:', response.data);
+      console.log('Usuarios obtenidos:', response.data);
       
       const usuariosData = response.data || [];
       
-      // Filtrar solo burócratas
+      // solo burócratas
       const burocratazData = usuariosData.filter(usuario => usuario.rol === 'BUROCRATA');
       
       if (burocratazData.length === 0) {
@@ -57,7 +56,7 @@ export default function GestionarBurocratas() {
     cargarBurocratas();
   }, []);
 
-  // Manejar eliminación de burócrata
+  // eliminación de burócrata
   const handleEliminar = async (id, tipo) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar este burócrata?')) {
       return;
@@ -65,7 +64,7 @@ export default function GestionarBurocratas() {
 
     try {
       await eliminarUsuario(id, tipo);
-      await cargarBurocratas(); // Recargar la lista
+      await cargarBurocratas();
       alert('Burócrata eliminado exitosamente');
     } catch (error) {
       console.error('Error al eliminar burócrata:', error);
@@ -73,12 +72,12 @@ export default function GestionarBurocratas() {
     }
   };
 
-  // Manejar cambio de estado
+  // cambio de estado
   const handleCambiarEstado = async (id, tipo, estadoActual) => {
     try {
       const nuevoEstado = estadoActual === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
       await cambiarEstadoUsuario(id, tipo, nuevoEstado);
-      await cargarBurocratas(); // Recargar la lista
+      await cargarBurocratas();
       alert(`Estado cambiado a ${nuevoEstado} exitosamente`);
     } catch (error) {
       console.error('Error al cambiar estado:', error);
@@ -86,55 +85,30 @@ export default function GestionarBurocratas() {
     }
   };
 
-  // Filtrar burócratas según búsqueda y filtro
+  // Funciones auxiliares
+  const obtenerNombreCompleto = (burocrata) => {
+    return burocrata.nomBurocrata || 
+           burocrata._original?.nomBurocrata || 
+           burocrata._original?.nombreBuro ||
+           burocrata._original?.nombre ||
+           burocrata.nomUsuario || 
+           'Sin nombre';
+  };
+
+  // Filtrar burócratas filtro
   const burocratazFiltrados = burocratas.filter(burocrata => {
+    const nombreCompleto = obtenerNombreCompleto(burocrata);
+    
     const coincideBusqueda = !busqueda || 
       burocrata.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.email?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.nomBurocrata?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.departamento?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      burocrata.cargo?.toLowerCase().includes(busqueda.toLowerCase());
+      nombreCompleto?.toLowerCase().includes(busqueda.toLowerCase());
 
     const coincideFiltro = filtro === 'todos' || 
       (filtro === 'activos' && burocrata.estado === 'ACTIVO') ||
-      (filtro === 'inactivos' && burocrata.estado === 'INACTIVO') ||
-      (filtro === 'supervisores' && burocrata.cargo?.toLowerCase().includes('supervisor')) ||
-      (filtro === 'empleados' && !burocrata.cargo?.toLowerCase().includes('supervisor'));
+      (filtro === 'inactivos' && burocrata.estado === 'INACTIVO');
 
     return coincideBusqueda && coincideFiltro;
   });
-
-  const obtenerNombreCompleto = (burocrata) => {
-    return burocrata.nomBurocrata || burocrata.nomUsuario || 'Sin nombre';
-  };
-
-  const obtenerDepartamento = (burocrata) => {
-    return burocrata.departamento || 'Sin departamento';
-  };
-
-  const obtenerCargo = (burocrata) => {
-    return burocrata.cargo || 'Sin cargo';
-  };
-
-  const obtenerIconoDepartamento = (departamento) => {
-    const dept = departamento?.toLowerCase();
-    if (dept?.includes('admin')) return '👨‍💼';
-    if (dept?.includes('legal')) return '⚖️';
-    if (dept?.includes('registro')) return '📋';
-    if (dept?.includes('licencia')) return '📄';
-    if (dept?.includes('tramite')) return '📝';
-    return '🏢';
-  };
-
-  const obtenerColorCargo = (cargo) => {
-    if (cargo?.toLowerCase().includes('supervisor') || cargo?.toLowerCase().includes('jefe')) {
-      return 'text-yellow-400';
-    }
-    if (cargo?.toLowerCase().includes('coordinador')) {
-      return 'text-green-400';
-    }
-    return 'text-blue-400';
-  };
 
   if (loading) {
     return (
@@ -150,7 +124,6 @@ export default function GestionarBurocratas() {
   return (
     <AdminLayout title="Gestionar Burócratas">
       <div className="space-y-6">
-        {/* Header con estadísticas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
@@ -170,9 +143,9 @@ export default function GestionarBurocratas() {
                 <span className="text-white font-bold">👨‍💼</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Supervisores</p>
+                <p className="text-sm text-gray-400">Inactivos</p>
                 <p className="text-2xl font-bold text-white">
-                  {burocratas.filter(b => obtenerCargo(b).toLowerCase().includes('supervisor')).length}
+                  {burocratas.filter(b => b.estado === 'INACTIVO').length}
                 </p>
               </div>
             </div>
@@ -218,8 +191,6 @@ export default function GestionarBurocratas() {
                 <option value="todos">Todos</option>
                 <option value="activos">Activos</option>
                 <option value="inactivos">Inactivos</option>
-                <option value="supervisores">Supervisores</option>
-                <option value="empleados">Empleados</option>
               </select>
             </div>
 
@@ -270,25 +241,20 @@ export default function GestionarBurocratas() {
                   <tr>
                     <th className="text-left p-4 text-gray-300 font-medium">Usuario</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Nombre Completo</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Departamento</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Cargo</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Email</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Estado</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {burocratazFiltrados.map((burocrata, index) => {
-                    const departamento = obtenerDepartamento(burocrata);
-                    const cargo = obtenerCargo(burocrata);
+                    const nombreCompleto = obtenerNombreCompleto(burocrata);
+                    
                     return (
                       <tr key={burocrata.id || index} className="border-t border-slate-600 hover:bg-[#334155] transition-colors">
                         <td className="p-4">
                           <div className="flex items-center">
                             <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold">
-                                {obtenerIconoDepartamento(departamento)}
-                              </span>
+                              <span className="text-white font-bold">🏢</span>
                             </div>
                             <div className="ml-3">
                               <p className="text-white font-medium">{burocrata.nomUsuario}</p>
@@ -297,18 +263,7 @@ export default function GestionarBurocratas() {
                           </div>
                         </td>
                         <td className="p-4">
-                          <p className="text-white">{obtenerNombreCompleto(burocrata)}</p>
-                        </td>
-                        <td className="p-4">
-                          <p className="text-gray-300">{departamento}</p>
-                        </td>
-                        <td className="p-4">
-                          <span className={`font-medium ${obtenerColorCargo(cargo)}`}>
-                            {cargo}
-                          </span>
-                        </td>
-                        <td className="p-4">
-                          <p className="text-gray-300">{burocrata.email}</p>
+                          <p className="text-white">{nombreCompleto}</p>
                         </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${

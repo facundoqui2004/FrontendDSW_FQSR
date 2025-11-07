@@ -11,19 +11,19 @@ const GestionarMultas = () => {
   const [filtroEstado, setFiltroEstado] = useState('todos');
 
   useEffect(() => {
-    console.log('🚀 Iniciando carga de multas...');
+    console.log('Iniciando carga de multas...');
     cargarMultas();
   }, []);
 
   const cargarMultas = async () => {
     try {
       setLoading(true);
-      console.log('🔄 Obteniendo multas del backend...');
+      console.log('Obteniendo multas del backend...');
       
       const response = await getAllMultasRequest();
       const multasData = response.data?.data || response.data || [];
       
-      // 📅 Ordenar multas por fecha de emisión (de más antigua a más nueva)
+      // Ordenar multas
       const multasOrdenadas = multasData.sort((a, b) => {
         const fechaA = new Date(a.fechaEmision || a.createdAt || 0);
         const fechaB = new Date(b.fechaEmision || b.createdAt || 0);
@@ -31,11 +31,11 @@ const GestionarMultas = () => {
       });
       
       setMultas(multasOrdenadas);
-      console.log('✅ Multas cargadas y ordenadas:', multasOrdenadas);
-      console.log('📊 Total de multas:', multasOrdenadas.length);
-      console.log('⏳ Pendientes:', multasOrdenadas.filter(m => m.estado === 'PENDIENTE').length);
+      console.log('Multas cargadas y ordenadas:', multasOrdenadas);
+      console.log('Total de multas:', multasOrdenadas.length);
+      console.log('Pendientes:', multasOrdenadas.filter(m => m.estado === 'PENDIENTE').length);
     } catch (error) {
-      console.error('❌ Error al cargar multas:', error);
+      console.error('Error al cargar multas:', error);
       setMultas([]);
     } finally {
       setLoading(false);
@@ -60,10 +60,10 @@ const GestionarMultas = () => {
           throw new Error('Error al aprobar la multa');
         }
 
-        alert('✅ Multa aprobada exitosamente');
+        alert('Multa aprobada exitosamente');
         await cargarMultas();
       } catch (error) {
-        console.error('❌ Error al aprobar multa:', error);
+        console.error('Error al aprobar multa:', error);
         alert('Error al aprobar la multa: ' + error.message);
       }
     }
@@ -87,10 +87,10 @@ const GestionarMultas = () => {
           throw new Error('Error al rechazar la multa');
         }
 
-        alert('✅ Multa rechazada exitosamente');
+        alert('Multa rechazada exitosamente');
         await cargarMultas();
       } catch (error) {
-        console.error('❌ Error al rechazar multa:', error);
+        console.error('Error al rechazar multa:', error);
         alert('Error al rechazar la multa: ' + error.message);
       }
     }
@@ -343,13 +343,11 @@ const GestionarMultas = () => {
                           {getEstadoIcon(multa.estado)} {multa.estado}
                         </span>
                       </div>
-                      {/* Alias del metahumano en el header - NO FUNCIONA porque no vienen las relaciones */}
-                      {/* El backend solo devuelve IDs, no objetos anidados */}
                     </div>
 
                     {/* Contenido */}
                     <div className="p-4 space-y-3">
-                      {/* 🦸 METAHUMANO - Ahora SÍ disponible */}
+                      {/* METAHUMANO */}
                       <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 border-2 border-blue-600/50 rounded-lg p-3">
                         <p className="text-blue-200 text-xs font-bold mb-2 flex items-center gap-1">
                           <span>🦸</span>
@@ -399,7 +397,7 @@ const GestionarMultas = () => {
                         )}
                       </div>
 
-                      {/* Monto - CORREGIDO para usar montoMulta */}
+                      {/* Monto */}
                       <div className="bg-gradient-to-r from-amber-900/40 to-orange-900/40 border border-amber-600/30 rounded-lg p-3">
                         <p className="text-amber-200 text-xs font-medium mb-1">MONTO</p>
                         <p className="text-2xl font-bold text-amber-100">
@@ -415,7 +413,7 @@ const GestionarMultas = () => {
                         </p>
                       </div>
 
-                      {/* Info de la carpeta - Ahora disponible */}
+                      {/* Info de la carpeta */}
                       <div className="bg-slate-800 rounded-lg p-3">
                         <p className="text-gray-400 text-xs font-medium mb-1">CARPETA ASOCIADA</p>
                         {multa.evidencia?.carpeta ? (
@@ -435,7 +433,7 @@ const GestionarMultas = () => {
                         )}
                       </div>
 
-                      {/* Burócrata y Evidencia (compactos) */}
+                      {/* Burócrata y Evidencia */}
                       <div className="grid grid-cols-2 gap-2">
                         {/* Burócrata */}
                         {multa.burocrata && (

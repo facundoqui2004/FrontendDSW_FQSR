@@ -12,7 +12,7 @@ const LogoutButton = ({ className = '', children = 'Cerrar Sesión' }) => {
             navigate('/login');
         } catch (error) {
             console.error('Error durante el logout:', error);
-            // Aún así navegar al login
+            // navegar al login
             navigate('/login');
         }
     };
