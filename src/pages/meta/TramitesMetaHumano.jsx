@@ -100,7 +100,7 @@ function Home() {
         return;
       }
 
-      console.log('🔍 Obteniendo datos del usuario ID:', userId);
+      console.log(' Obteniendo datos del usuario ID:', userId);
 
       // Obtener datos completos del usuario para extraer metahumanoId
       const userResponse = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
@@ -112,7 +112,7 @@ function Home() {
       }
 
       const userData = await userResponse.json();
-      console.log('📡 Datos del usuario:', userData);
+      console.log('Datos del usuario:', userData);
       
       const metahumanoId = userData.usuario?.metahumano?.id;
       

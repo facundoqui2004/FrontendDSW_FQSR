@@ -10,5 +10,5 @@ export const deleteEvidenciaRequest = (id) => api.delete(`/evidencias/${id}`);
 // Obtener una evidencia
 export const getEvidenciaByIdRequest = (id) => api.get(`/evidencias/${id}`);
 
-// Obtener todas (si lo usás)
+// Obtener todas
 export const getAllEvidenciasRequest = () => api.get('/evidencias');

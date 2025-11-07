@@ -75,3 +75,4 @@ export const getFormattedUserInfo = () => {
     perfilId: userInfo.perfilId,
   };
 };
+

@@ -13,22 +13,22 @@ export const obtenerMetahumanoById = (id) => api.get(`/metahumanos/${id}`);
 export const obtenerBurocratas = () => api.get('/Burocratas');
 export const obtenerTodosLosUsuariosCombinados = async () => {
   try {
-    console.log('🔍 Obteniendo usuarios de endpoints disponibles...');
+    console.log('Obteniendo usuarios de endpoints disponibles...');
 
     const promesas = [];
 
-    // Intentar obtener metahumanos y burócratas
+    // obtener metahumanos y burócratas
     promesas.push(
       api.get('/metahumanos').catch((error) => {
         console.log(
-          '⚠️ Error en /metahumanos:',
+          'Error en /metahumanos:',
           error.response?.status || error.message
         );
         return { data: { data: [] } };
       }),
       api.get('/Burocratas').catch((error) => {
         console.log(
-          '⚠️ Error en /Burocratas:',
+          'Error en /Burocratas:',
           error.response?.status || error.message
         );
         return { data: { data: [] } };
@@ -36,19 +36,16 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
     );
 
     const resultados = await Promise.all(promesas);
-    console.log('📊 Resultados obtenidos:', resultados);
+    console.log('Resultados obtenidos:', resultados);
 
     // Combinar todos los resultados
     let todosLosUsuarios = [];
 
     resultados.forEach((resultado, index) => {
-      console.log(`📋 Procesando resultado ${index}:`, resultado);
 
-      // La estructura de respuesta puede variar
       let usuarios = [];
 
       if (resultado.data) {
-        // Intentar diferentes estructuras de respuesta
         if (Array.isArray(resultado.data)) {
           usuarios = resultado.data;
         } else if (resultado.data.data && Array.isArray(resultado.data.data)) {
@@ -66,18 +63,15 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
         }
       }
 
-      console.log(`📦 Usuarios extraídos del resultado ${index}:`, usuarios);
-
       if (Array.isArray(usuarios) && usuarios.length > 0) {
         const tipoUsuario = index === 0 ? 'METAHUMANO' : 'BUROCRATA';
 
-        // Convertir a formato estándar de usuario
+        // Convertir a formato de usuario
         const usuariosConvertidos = usuarios.map((usuario) => {
-          console.log(`🔄 Convirtiendo ${tipoUsuario}:`, usuario);
+          console.log(`Convirtiendo ${tipoUsuario}:`, usuario);
 
           return {
             id: usuario.id,
-            // Para metahumanos: usar 'nombre', para burócratas: usar 'nombreBuro' o 'nomBurocrata'
             nomUsuario:
               usuario.nombre ||
               usuario.nombreBuro ||
@@ -95,7 +89,7 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
               usuario.activo !== false &&
               usuario.estado !== 'fugitivo' &&
               usuario.estado !== 'inactivo',
-            // Campos adicionales específicos de metahumanos
+            // metahumanos
             ...(usuario.alias && { alias: usuario.alias }),
             ...(usuario.origen && { origen: usuario.origen }),
             ...(usuario.telefono && { telefono: usuario.telefono }),
@@ -104,34 +98,33 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
               nivelPeligrosidad: usuario.nivelPeligrosidad,
             }),
             ...(usuario.recompensa && { recompensa: usuario.recompensa }),
-            // Campos adicionales específicos de burócratas
+            // burocratas
             ...(usuario.nomBurocrata && { nomBurocrata: usuario.nomBurocrata }),
             ...(usuario.departamento && { departamento: usuario.departamento }),
             ...(usuario.cargo && { cargo: usuario.cargo }),
-            // Guardar el objeto original por si acaso
             _original: usuario,
           };
         });
 
         todosLosUsuarios = [...todosLosUsuarios, ...usuariosConvertidos];
         console.log(
-          `✅ Agregados ${usuariosConvertidos.length} usuarios de tipo: ${tipoUsuario}`
+          `Agregados ${usuariosConvertidos.length} usuarios de tipo: ${tipoUsuario}`
         );
       } else {
         console.log(
-          `ℹ️ No se encontraron usuarios en el endpoint: ${
+          `No se encontraron usuarios en el endpoint: ${
             index === 0 ? '/metahumanos' : '/Burocratas'
           }`
         );
       }
     });
 
-    console.log(`✅ Total usuarios combinados: ${todosLosUsuarios.length}`);
-    console.log('👥 Usuarios finales:', todosLosUsuarios);
+    console.log(`Total usuarios combinados: ${todosLosUsuarios.length}`);
+    console.log('Usuarios finales:', todosLosUsuarios);
 
     return { data: todosLosUsuarios };
   } catch (error) {
-    console.error('❌ Error al obtener usuarios combinados:', error);
+    console.error('Error al obtener usuarios combinados:', error);
     throw error;
   }
 };

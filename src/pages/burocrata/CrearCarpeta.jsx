@@ -124,7 +124,7 @@ export default function CrearCarpeta() {
               </select>
             </div>
 
-            {/* ✅ Autocompletado de Metahumano */}
+            {/* Busqueda de metahumanos */}
             <div className="relative">
               <label className="block mb-1 font-semibold">Metahumano</label>
 
@@ -146,7 +146,7 @@ export default function CrearCarpeta() {
                 className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
               />
 
-              {/* Lista desplegable */}
+              {/* Lista */}
               {mostrarOpciones && !cargando && (
                 <div className="absolute z-10 mt-1 w-full max-h-48 overflow-y-auto bg-[#1F1F1F] border border-gray-700 rounded-lg shadow-lg">
                   {metahumanosFiltrados.length > 0 ? (

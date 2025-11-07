@@ -30,7 +30,7 @@ const CrearPoderes = () => {
     'Otro'
   ];
 
-  // Cargar poderes desde la API
+  // Cargar poderes desde API
   useEffect(() => {
     const cargarPoderes = async () => {
       try {
@@ -61,7 +61,6 @@ const CrearPoderes = () => {
     setLoading(true);
 
     try {
-      // Preparar datos para enviar a la API
       const nuevoPoderData = {
         nomPoder: formData.nomPoder,
         descPoder: formData.descPoder,
@@ -73,7 +72,6 @@ const CrearPoderes = () => {
 
       const response = await createPoder(nuevoPoderData);
       
-      // Actualizar la lista local con el nuevo poder
       setPoderes(prev => [...prev, response.data || response]);
       
       // Limpiar formulario

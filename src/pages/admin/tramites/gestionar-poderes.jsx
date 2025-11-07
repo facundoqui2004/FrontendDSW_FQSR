@@ -38,7 +38,7 @@ const GestionarPoderes = () => {
   ];
 
   useEffect(() => {
-    console.log('🚀 Iniciando carga de datos del panel de poderes...');
+    console.log('Iniciando carga de datos del panel de poderes...');
     cargarPoderes();
     cargarMetapoderes();
   }, []);
@@ -48,9 +48,9 @@ const GestionarPoderes = () => {
       setLoadingPoderes(true);
       const response = await getPoderes();
       setPoderes(response.data || response || []);
-      console.log('✅ Poderes cargados:', response.data || response);
+      console.log('Poderes cargados:', response.data || response);
     } catch (error) {
-      console.error('❌ Error al cargar poderes:', error);
+      console.error('Error al cargar poderes:', error);
     } finally {
       setLoadingPoderes(false);
     }
@@ -58,7 +58,7 @@ const GestionarPoderes = () => {
 
   const cargarMetapoderes = async () => {
     try {
-      console.log('🔄 Iniciando carga de metapoderes...');
+      console.log('Iniciando carga de metapoderes...');
       const response = await fetch('http://localhost:3000/api/metapoderes', {
         credentials: 'include'
       });
@@ -70,28 +70,23 @@ const GestionarPoderes = () => {
       const data = await response.json();
       const metapoderesData = data.data || data || [];
       
-      // Log detallado de cada metapoder
-      console.log('✅ Metapoderes cargados:', metapoderesData);
-      console.log('📊 Total de metapoderes:', metapoderesData.length);
-      
       if (metapoderesData.length > 0) {
-        console.log('📝 Estructura del primer metapoder:', metapoderesData[0]);
-        console.log('🔑 Claves disponibles:', Object.keys(metapoderesData[0]));
+        console.log('Estructura del primer metapoder:', metapoderesData[0]);
+        console.log('Claves disponibles:', Object.keys(metapoderesData[0]));
         
-        // Verificar si ya incluye información del poder
         if (metapoderesData[0].poder) {
-          console.log('✅ Los metapoderes YA incluyen la información del poder');
+          console.log('Los metapoderes YA incluyen la información del poder');
         } else {
-          console.log('⚠️ Los metapoderes NO incluyen información del poder, solo tienen poderId:', metapoderesData[0].poderId);
+          console.log('Los metapoderes NO incluyen información del poder, solo tienen poderId:', metapoderesData[0].poderId);
         }
       }
       
-      console.log('⏳ Pendientes:', metapoderesData.filter(mp => mp.estado === 'SOLICITADO').length);
+      console.log('Pendientes:', metapoderesData.filter(mp => mp.estado === 'SOLICITADO').length);
       
       setMetapoderes(metapoderesData);
     } catch (error) {
-      console.error('❌ Error al cargar metapoderes:', error);
-      setMetapoderes([]); // Asegurar que sea un array vacío
+      console.error('Error al cargar metapoderes:', error);
+      setMetapoderes([]);
     }
   };
 
@@ -117,10 +112,10 @@ const GestionarPoderes = () => {
           throw new Error('Error al aprobar el poder');
         }
 
-        alert('✅ Poder aprobado exitosamente');
+        alert('Poder aprobado exitosamente');
         await cargarMetapoderes();
       } catch (error) {
-        console.error('❌ Error al aprobar poder:', error);
+        console.error('Error al aprobar poder:', error);
         alert('Error al aprobar el poder: ' + error.message);
       }
     }
@@ -144,27 +139,26 @@ const GestionarPoderes = () => {
           throw new Error('Error al rechazar el poder');
         }
 
-        alert('✅ Poder rechazado exitosamente');
+        alert('Poder rechazado exitosamente');
         await cargarMetapoderes();
       } catch (error) {
-        console.error('❌ Error al rechazar poder:', error);
+        console.error('Error al rechazar poder:', error);
         alert('Error al rechazar el poder: ' + error.message);
       }
     }
   };
 
   const metapoderesFiltrados = metapoderes.filter(metapoder => {
-    // Obtener el poder de múltiples formas
+    // Obtener el poder
     const poder = metapoder.poder || poderes.find(p => p.id === metapoder.poderId);
     
-    // Log para debugging
     if (!poder && metapoder.poderId) {
-      console.warn(`⚠️ No se encontró poder con ID ${metapoder.poderId} para metapoder ${metapoder.id}`);
+      console.warn(`No se encontró poder con ID ${metapoder.poderId} para metapoder ${metapoder.id}`);
       console.log('Poderes disponibles:', poderes.map(p => ({ id: p.id, nombre: p.nomPoder })));
     }
     
     if (!metapoder.poderId) {
-      console.error(`❌ Metapoder ${metapoder.id} NO tiene poderId definido:`, metapoder);
+      console.error(`Metapoder ${metapoder.id} NO tiene poderId definido:`, metapoder);
     }
     
     const coincideBusqueda = !busqueda || 
@@ -179,12 +173,12 @@ const GestionarPoderes = () => {
   });
 
   // Log para debugging
-  console.log('🔍 Metapoderes totales:', metapoderes.length);
-  console.log('🔍 Metapoderes filtrados:', metapoderesFiltrados.length);
-  console.log('🔍 Poderes disponibles:', poderes.length);
+  console.log('Metapoderes totales:', metapoderes.length);
+  console.log('Metapoderes filtrados:', metapoderesFiltrados.length);
+  console.log('Poderes disponibles:', poderes.length);
   
   if (metapoderes.length > 0) {
-    console.log('🔍 Primer metapoder completo:', metapoderes[0]);
+    console.log('Primer metapoder completo:', metapoderes[0]);
   }
 
   const totalSolicitudes = metapoderes.length;
@@ -384,9 +378,9 @@ const GestionarPoderes = () => {
                   else if (metapoder.poderId) {
                     poder = poderes.find(p => p.id === metapoder.poderId);
                     if (poder) {
-                      console.log('✅ Encontrado poder en array local:', poder);
+                      console.log('Encontrado poder en array local:', poder);
                     } else {
-                      console.warn(`⚠️ No se encontró poder con ID ${metapoder.poderId}`);
+                      console.warn(`No se encontró poder con ID ${metapoder.poderId}`);
                     }
                   }
                   

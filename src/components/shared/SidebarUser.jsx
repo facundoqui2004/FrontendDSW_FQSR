@@ -34,7 +34,7 @@ const Sidebar = (props) => {
                 alt="Logo El Súper Gestor"
                 className="mx-auto w-25 h-auto cursor-pointer" 
             />
-            {/* Tooltip estilo cómic para el logo */}
+            {/* Tooltip logo */}
             <div className="absolute left-full ml-2 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                 <div className="relative bg-red-500 text-white px-4 py-3 rounded-lg text-sm font-bold border-4 border-black shadow-lg transform rotate-1 whitespace-nowrap">
                 <div className="relative z-10">
@@ -42,26 +42,23 @@ const Sidebar = (props) => {
                     EL SUPER GESTOR!
                     </div>
                 </div>
-                {/* Puntos de estilo cómic */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="w-2 h-2 bg-yellow-300 rounded-full absolute top-2 left-2"></div>
                     <div className="w-1 h-1 bg-yellow-300 rounded-full absolute top-4 left-6"></div>
                     <div className="w-1.5 h-1.5 bg-yellow-300 rounded-full absolute bottom-3 right-3"></div>
                     <div className="w-1 h-1 bg-yellow-300 rounded-full absolute bottom-2 right-6"></div>
                 </div>
-                {/* Flecha del tooltip estilo cómic */}
                 <div className="absolute right-full top-1/2 transform -translate-y-1/2">
                     <div className="border-8 border-transparent border-r-red-500"></div>
                     <div className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1 border-4 border-transparent border-r-black"></div>
                 </div>
-                {/* Efecto de sombra */}
                 <div className="absolute inset-0 bg-black rounded-lg transform translate-x-1 translate-y-1 -z-10"></div>
                 </div>
             </div>
-      </div>
+        </div>
 
         {/* Lista de enlaces */}
-      <div>
+        <div>
         <ul className="pl-4">
             <li className="bg-[#262837] p-4 block rounded-tl-xl rounded-bl-xl">
             <button
