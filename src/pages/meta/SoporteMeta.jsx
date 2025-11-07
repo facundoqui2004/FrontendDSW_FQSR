@@ -5,7 +5,7 @@ import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
 export default function SoporteMeta() {
   return (
     <MetahumanoLayout>
-      {/* 🏛️ Encabezado */}
+      {/* Encabezado */}
       <section className="text-center text-white mt-8 mb-10">
         <h1 className="text-3xl font-extrabold tracking-tight mb-2">
           🛠️ Centro de Soporte
@@ -15,10 +15,9 @@ export default function SoporteMeta() {
         </p>
       </section>
 
-      {/* 📦 Contenedor principal */}
+      {/* Contenedor principal */}
       <div className="max-w-3xl mx-auto bg-[#1e293b]/80 backdrop-blur-md rounded-2xl p-8 text-white shadow-xl border border-white/10 mt-20 space-y-10">
         
-        {/* Sección de contacto directo */}
         <section>
           <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-blue-400">
             <MdSupportAgent className="text-2xl" /> Contacto directo

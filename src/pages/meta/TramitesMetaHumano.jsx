@@ -596,7 +596,7 @@ const solicitarPoder = async (poder) => {
                   </button>
                 </div>
                 
-                {/* Lista de Poderes Disponibles - Solo cuando se selecciona "solicitar" */}
+                {/* Lista de Poderes Disponibles */}
                 {tipoSolicitud === "solicitar" && (
                   <div className="mt-6">
                     <h4 className="text-xl font-bold text-white mb-4 flex items-center">
