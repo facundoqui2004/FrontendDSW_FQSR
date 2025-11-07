@@ -66,10 +66,10 @@ export default function CrearCarpeta() {
         metahumanoId: Number(metahumanoId),
         burocrataId: Number(burocrataId),
       });
-      alert("✅ Carpeta creada con éxito");
+      alert("Carpeta creada con éxito");
       navigate("/burocrata/carpetas");
     } catch (err) {
-      console.error("❌ Error al crear carpeta:", err);
+      console.error("Error al crear carpeta:", err);
       alert("Ocurrió un error al crear la carpeta.");
     }
   };

@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  deleteCarpetaRequest
-} from "../../api/carpetas";
+import { deleteCarpetaRequest } from "../../api/carpetas";
 import { getCarpetasByBurocrataId } from "../../api/burocratas";
 import BurocrataLayout from "../../components/layouts/BurocrataLayout";
 import { getMe } from "../../api/usuarios";
