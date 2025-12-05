@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../../api/usuarios';
+import { obtenerTodosLosUsuariosCombinados, eliminarUsuario } from '../../api/usuarios';
 
 export default function GestionarBurocratas() {
   const [burocratas, setBurocratas] = useState([]);
@@ -72,18 +72,7 @@ export default function GestionarBurocratas() {
     }
   };
 
-  // cambio de estado
-  const handleCambiarEstado = async (id, tipo, estadoActual) => {
-    try {
-      const nuevoEstado = estadoActual === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
-      await cambiarEstadoUsuario(id, tipo, nuevoEstado);
-      await cargarBurocratas();
-      alert(`Estado cambiado a ${nuevoEstado} exitosamente`);
-    } catch (error) {
-      console.error('Error al cambiar estado:', error);
-      alert('Error al cambiar el estado del burócrata');
-    }
-  };
+
 
   // Funciones auxiliares
   const obtenerNombreCompleto = (burocrata) => {
@@ -103,9 +92,7 @@ export default function GestionarBurocratas() {
       burocrata.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
       nombreCompleto?.toLowerCase().includes(busqueda.toLowerCase());
 
-    const coincideFiltro = filtro === 'todos' || 
-      (filtro === 'activos' && burocrata.estado === 'ACTIVO') ||
-      (filtro === 'inactivos' && burocrata.estado === 'INACTIVO');
+    const coincideFiltro = true;
 
     return coincideBusqueda && coincideFiltro;
   });
@@ -137,33 +124,6 @@ export default function GestionarBurocratas() {
             </div>
           </div>
           
-          <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">👨‍💼</span>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-400">Inactivos</p>
-                <p className="text-2xl font-bold text-white">
-                  {burocratas.filter(b => b.estado === 'INACTIVO').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">✅</span>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-400">Activos</p>
-                <p className="text-2xl font-bold text-white">
-                  {burocratas.filter(b => b.estado === 'ACTIVO').length}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Controles de filtrado */}
@@ -189,8 +149,6 @@ export default function GestionarBurocratas() {
                 className="bg-[#334155] text-white px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
               >
                 <option value="todos">Todos</option>
-                <option value="activos">Activos</option>
-                <option value="inactivos">Inactivos</option>
               </select>
             </div>
 
@@ -241,7 +199,6 @@ export default function GestionarBurocratas() {
                   <tr>
                     <th className="text-left p-4 text-gray-300 font-medium">Usuario</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Nombre Completo</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Estado</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Acciones</th>
                   </tr>
                 </thead>
@@ -266,28 +223,9 @@ export default function GestionarBurocratas() {
                           <p className="text-white">{nombreCompleto}</p>
                         </td>
                         <td className="p-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            burocrata.estado === 'ACTIVO' 
-                              ? 'bg-green-900 text-green-300' 
-                              : 'bg-red-900 text-red-300'
-                          }`}>
-                            {burocrata.estado || 'ACTIVO'}
-                          </span>
-                        </td>
-                        <td className="p-4">
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => handleCambiarEstado(burocrata.id, 'burocrata', burocrata.estado)}
-                              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                burocrata.estado === 'ACTIVO'
-                                  ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-                                  : 'bg-green-600 hover:bg-green-700 text-white'
-                              }`}
-                            >
-                              {burocrata.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
-                            </button>
-                            <button
-                              onClick={() => handleEliminar(burocrata.id, 'burocrata')}
+                              onClick={() => handleEliminar(burocrata.idUsuario, 'burocrata')}
                               className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
                             >
                               Eliminar

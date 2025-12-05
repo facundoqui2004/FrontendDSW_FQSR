@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../../api/usuarios';
+import { obtenerTodosLosUsuariosCombinados, eliminarUsuario } from '../../api/usuarios';
 
 export default function GestionarMetahumanos() {
   const [metahumanos, setMetahumanos] = useState([]);
@@ -73,16 +73,19 @@ export default function GestionarMetahumanos() {
     }
   };
 
-  // Manejar cambio de estado
-  const handleCambiarEstado = async (id, tipo, estadoActual) => {
+  // Función para formatear fecha
+  const formatearFecha = (fecha) => {
+    if (!fecha) return 'N/A';
     try {
-      const nuevoEstado = estadoActual === 'ACTIVO' ? 'INACTIVO' : 'ACTIVO';
-      await cambiarEstadoUsuario(id, tipo, nuevoEstado);
-      await cargarMetahumanos(); // Recargar la lista
-      alert(`Estado cambiado a ${nuevoEstado} exitosamente`);
+      const fechaObj = new Date(fecha);
+      if (isNaN(fechaObj.getTime())) return 'Fecha inválida';
+      return fechaObj.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
     } catch (error) {
-      console.error('Error al cambiar estado:', error);
-      alert('Error al cambiar el estado del metahumano');
+      return 'Fecha inválida';
     }
   };
 
@@ -107,9 +110,7 @@ export default function GestionarMetahumanos() {
       metahumano.nomUsuario?.toLowerCase().includes(busqueda.toLowerCase()) ||
       nombreCompleto?.toLowerCase().includes(busqueda.toLowerCase());
 
-    const coincideFiltro = filtro === 'todos' || 
-      (filtro === 'activos' && metahumano.estado === 'ACTIVO') ||
-      (filtro === 'inactivos' && metahumano.estado === 'INACTIVO');
+    const coincideFiltro = true;
 
     return coincideBusqueda && coincideFiltro;
   });
@@ -144,27 +145,13 @@ export default function GestionarMetahumanos() {
           
           <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">📱</span>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-gray-400">Inactivos</p>
-                <p className="text-2xl font-bold text-white">
-                  {metahumanos.filter(m => m.estado === 'INACTIVO').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-[#1e293b] rounded-lg p-4 border border-slate-600">
-            <div className="flex items-center">
               <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold">✅</span>
+                <span className="text-white font-bold">📅</span>
               </div>
               <div className="ml-3">
-                <p className="text-sm text-gray-400">Activos</p>
-                <p className="text-2xl font-bold text-white">
-                  {metahumanos.filter(m => m.estado === 'ACTIVO').length}
+                <p className="text-sm text-gray-400">Último Registro</p>
+                <p className="text-lg font-bold text-white">
+                  {metahumanos.length > 0 ? formatearFecha(metahumanos[metahumanos.length - 1].createdAt) : 'N/A'}
                 </p>
               </div>
             </div>
@@ -194,8 +181,6 @@ export default function GestionarMetahumanos() {
                 className="bg-[#334155] text-white px-4 py-2 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:outline-none"
               >
                 <option value="todos">Todos</option>
-                <option value="activos">Activos</option>
-                <option value="inactivos">Inactivos</option>
               </select>
             </div>
 
@@ -246,7 +231,7 @@ export default function GestionarMetahumanos() {
                   <tr>
                     <th className="text-left p-4 text-gray-300 font-medium">Usuario</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Nombre Completo</th>
-                    <th className="text-left p-4 text-gray-300 font-medium">Estado</th>
+                    <th className="text-left p-4 text-gray-300 font-medium">Fecha Registro</th>
                     <th className="text-left p-4 text-gray-300 font-medium">Acciones</th>
                   </tr>
                 </thead>
@@ -271,28 +256,14 @@ export default function GestionarMetahumanos() {
                           <p className="text-white">{nombreCompleto}</p>
                         </td>
                         <td className="p-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            metahumano.estado === 'ACTIVO' 
-                              ? 'bg-green-900 text-green-300' 
-                              : 'bg-red-900 text-red-300'
-                          }`}>
-                            {metahumano.estado || 'ACTIVO'}
+                          <span className="text-gray-300 text-sm">
+                            {formatearFecha(metahumano.createdAt || metahumano.fechaCreacion)}
                           </span>
                         </td>
                         <td className="p-4">
                           <div className="flex space-x-2">
                             <button
-                              onClick={() => handleCambiarEstado(metahumano.id, 'metahumano', metahumano.estado)}
-                              className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                                metahumano.estado === 'ACTIVO'
-                                  ? 'bg-yellow-600 hover:bg-yellow-700 text-white'
-                                  : 'bg-green-600 hover:bg-green-700 text-white'
-                              }`}
-                            >
-                              {metahumano.estado === 'ACTIVO' ? 'Desactivar' : 'Activar'}
-                            </button>
-                            <button
-                              onClick={() => handleEliminar(metahumano.id, 'metahumano')}
+                              onClick={() => handleEliminar(metahumano.idUsuario, 'metahumano')}
                               className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors"
                             >
                               Eliminar

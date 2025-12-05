@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AdminLayout from '../../components/layouts/AdminLayout';
-import { obtenerTodosLosUsuarios, obtenerTodosLosUsuariosCombinados, eliminarUsuario, cambiarEstadoUsuario } from '../../api/usuarios';
+import { obtenerTodosLosUsuariosCombinados, eliminarUsuario } from '../../api/usuarios';
 
 export default function GestionarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -14,36 +14,36 @@ export default function GestionarUsuarios() {
     try {
       setLoading(true);
       setError(null);
-      
+
       console.log('🚀 Cargando usuarios desde endpoints disponibles...');
-      
+
       // Usar directamente la función combinada que sabemos que funciona
       const response = await obtenerTodosLosUsuariosCombinados();
       console.log('✅ Usuarios obtenidos:', response.data);
-      
+
       const usuariosData = response.data || [];
-      
+
       if (usuariosData.length === 0) {
         setError('No se encontraron usuarios en el sistema. Los endpoints están disponibles pero no hay datos.');
       } else {
         setUsuarios(usuariosData);
-        
+
         // Mostrar información de qué tipos de usuarios se encontraron
         const metahumanos = usuariosData.filter(u => u.rol === 'METAHUMANO').length;
         const burocratas = usuariosData.filter(u => u.rol === 'BUROCRATA').length;
-        
+
         console.log(`🎉 Se cargaron ${usuariosData.length} usuarios exitosamente:`);
         console.log(`   - Metahumanos: ${metahumanos}`);
         console.log(`   - Burócratas: ${burocratas}`);
-        
+
         if (burocratas === 0) {
           console.log('ℹ️ No se encontraron burócratas en la BD. El endpoint /api/Burocratas está vacío.');
         }
       }
-      
+
     } catch (error) {
       console.error('❌ Error al cargar usuarios:', error);
-      
+
       let mensajeError = 'Error al cargar los usuarios.';
       if (error.code === 'ECONNREFUSED') {
         mensajeError += ' El backend no está disponible en http://localhost:3000';
@@ -56,9 +56,9 @@ export default function GestionarUsuarios() {
       } else if (error.response?.data?.message) {
         mensajeError += ` ${error.response.data.message}`;
       }
-      
+
       setError(mensajeError);
-      
+
       // Sin datos de ejemplo - mostrar error real
       setUsuarios([]);
     } finally {
@@ -91,7 +91,7 @@ export default function GestionarUsuarios() {
 
   const usuariosFiltrados = usuarios.filter(usuario => {
     const coincideBusqueda = usuario.nomUsuario.toLowerCase().includes(busqueda.toLowerCase());
-    
+
     if (filtro === 'todos') return coincideBusqueda;
     return coincideBusqueda && usuario.rol === filtro;
   });
@@ -105,35 +105,17 @@ export default function GestionarUsuarios() {
     }
   };
 
-  const handleToggleActivo = async (id) => {
-    try {
-      const usuario = usuarios.find(u => u.id === id);
-      const nuevoEstado = !usuario.activo;
-      
-      // Actualizar en el backend
-      await cambiarEstadoUsuario(id, nuevoEstado);
-      
-      // Actualizar localmente si la petición fue exitosa
-      setUsuarios(usuarios.map(usuario => 
-        usuario.id === id ? { ...usuario, activo: nuevoEstado } : usuario
-      ));
-      
-      console.log(`Usuario ${id} ${nuevoEstado ? 'activado' : 'desactivado'} exitosamente`);
-    } catch (error) {
-      console.error('Error al cambiar estado del usuario:', error);
-      alert('Error al cambiar el estado del usuario. Inténtalo de nuevo.');
-    }
-  };
+
 
   const handleEliminarUsuario = async (id) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este usuario? Esta acción no se puede deshacer.')) {
       try {
         // Eliminar en el backend
         await eliminarUsuario(id);
-        
+
         // Actualizar localmente si la petición fue exitosa
-        setUsuarios(usuarios.filter(usuario => usuario.id !== id));
-        
+        setUsuarios(usuarios.filter(usuario => usuario.idUsuario !== id));
+
         console.log(`Usuario ${id} eliminado exitosamente`);
       } catch (error) {
         console.error('Error al eliminar usuario:', error);
@@ -179,7 +161,7 @@ export default function GestionarUsuarios() {
               <option value="BUROCRATA">Burócratas</option>
               <option value="admin">Administradores</option>
             </select>
-            
+
             <input
               type="text"
               placeholder="Buscar usuarios..."
@@ -188,7 +170,7 @@ export default function GestionarUsuarios() {
               className="bg-[#334155] border border-slate-600 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
             />
           </div>
-          
+
           <div className="text-white flex items-center gap-4">
             <button
               onClick={cargarUsuarios}
@@ -220,7 +202,7 @@ export default function GestionarUsuarios() {
         <div className="p-6 border-b border-slate-600">
           <h3 className="text-lg font-semibold text-white">Lista de Usuarios</h3>
         </div>
-        
+
         {loading ? (
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
@@ -232,7 +214,7 @@ export default function GestionarUsuarios() {
               <thead className="bg-[#334155]">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                    Usuario
+                    Usuario (ID)
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                     Rol
@@ -255,7 +237,8 @@ export default function GestionarUsuarios() {
                         </div>
                         <div className="ml-3">
                           <div className="text-sm font-medium text-white">{usuario.nomUsuario}</div>
-                          <div className="text-sm text-gray-400">ID: {usuario.id}</div>
+                          <div className="text-sm text-gray-400">ID Usuario: {usuario.idUsuario}</div>
+                          <div className="text-xs text-gray-500">ID Rol: {usuario.id}</div>
                         </div>
                       </div>
                     </td>
@@ -269,17 +252,7 @@ export default function GestionarUsuarios() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button
-                        onClick={() => handleToggleActivo(usuario.id)}
-                        className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
-                          usuario.activo 
-                            ? 'bg-yellow-600 hover:bg-yellow-700 text-white' 
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        }`}
-                      >
-                        {usuario.activo ? 'Desactivar' : 'Activar'}
-                      </button>
-                      <button
-                        onClick={() => handleEliminarUsuario(usuario.id)}
+                        onClick={() => handleEliminarUsuario(usuario.idUsuario)}
                         className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs font-medium transition-colors"
                       >
                         Eliminar
@@ -289,7 +262,7 @@ export default function GestionarUsuarios() {
                 ))}
               </tbody>
             </table>
-            
+
             {usuariosFiltrados.length === 0 && (
               <div className="p-8 text-center text-gray-400">
                 <div className="mb-4">
@@ -299,7 +272,7 @@ export default function GestionarUsuarios() {
                 {filtro === 'BUROCRATA' && usuarios.filter(u => u.rol === 'BUROCRATA').length === 0 && (
                   <div className="mt-4 p-4 bg-blue-900/30 rounded-lg border border-blue-600/30">
                     <p className="text-blue-300 text-sm">
-                      <strong>Nota:</strong> No hay burócratas en la base de datos. 
+                      <strong>Nota:</strong> No hay burócratas en la base de datos.
                       El endpoint <code>/api/Burocratas</code> está disponible pero no contiene datos.
                     </p>
                   </div>
@@ -318,14 +291,14 @@ export default function GestionarUsuarios() {
             {usuarios.filter(u => u.rol === 'METAHUMANO').length}
           </p>
         </div>
-        
+
         <div className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600">
           <h4 className="text-lg font-semibold text-white mb-2">Burócratas</h4>
           <p className="text-2xl font-bold text-green-400">
             {usuarios.filter(u => u.rol === 'BUROCRATA').length}
           </p>
         </div>
-        
+
         <div className="bg-[#1e293b] rounded-lg p-6 shadow-lg border border-slate-600">
           <h4 className="text-lg font-semibold text-white mb-2">Total de Usuarios</h4>
           <p className="text-2xl font-bold text-purple-400">
