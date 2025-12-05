@@ -4,7 +4,7 @@ export const obtenerTodosLosUsuarios = () => api.get('/usuarios');
 export const getMe = () => api.get('/usuarios/me');
 export const obtenerUsuarioPorId = (id) => api.get(`/usuarios/${id}`);
 export const actualizarUsuario = (id, d) => api.put(`/usuarios/${id}`, d);
-export const eliminarUsuario = (id) => api.delete(`/usuarios/${id}`);
+export const eliminarUsuario = (id) => api.delete(`/auth/admin/usuarios/${id}`);
 export const cambiarEstadoUsuario = (id, a) =>
   api.patch(`/usuarios/${id}/estado`, { activo: a });
 
@@ -13,118 +13,59 @@ export const obtenerMetahumanoById = (id) => api.get(`/metahumanos/${id}`);
 export const obtenerBurocratas = () => api.get('/Burocratas');
 export const obtenerTodosLosUsuariosCombinados = async () => {
   try {
-    console.log('Obteniendo usuarios de endpoints disponibles...');
+    console.log('Obteniendo usuarios desde /usuarios...');
+    const response = await api.get('/usuarios');
+    
+    // Check if response.data is the array or response.data.usuarios
+    const rawUsers = response.data.usuarios || response.data || [];
+    console.log('Usuarios raw obtenidos:', rawUsers);
 
-    const promesas = [];
+    if (!Array.isArray(rawUsers)) {
+      console.error('Formato de respuesta inesperado:', response.data);
+      return { data: [] };
+    }
 
-    // obtener metahumanos y burócratas
-    promesas.push(
-      api.get('/metahumanos').catch((error) => {
-        console.log(
-          'Error en /metahumanos:',
-          error.response?.status || error.message
-        );
-        return { data: { data: [] } };
-      }),
-      api.get('/Burocratas').catch((error) => {
-        console.log(
-          'Error en /Burocratas:',
-          error.response?.status || error.message
-        );
-        return { data: { data: [] } };
-      })
-    );
+    const todosLosUsuarios = rawUsers.map(user => {
+      // Determine role and role-specific data
+      const isMetahumano = !!user.metahumano;
+      const isBurocrata = !!user.burocrata;
+      const roleData = user.metahumano || user.burocrata || {};
+      
+      // Map to unified structure
+      return {
+        // IDs
+        id: roleData.id || user.id, // Keep role ID as 'id' for compatibility with existing role-based views if needed, OR prefer user.id? 
+        // Wait, the user wants 'idUsuario' for deletion (which is user.id) and 'id' for role display.
+        // Let's map:
+        idUsuario: user.id, // The User ID (14)
+        idRol: roleData.id, // The Role ID (5)
+        id: roleData.id || user.id, // Default ID for tables (usually role ID in role views)
 
-    const resultados = await Promise.all(promesas);
-    console.log('Resultados obtenidos:', resultados);
+        // Basic Info
+        nomUsuario: roleData.alias || roleData.nombre || roleData.nomBurocrata || user.email,
+        email: user.email,
+        telefono: user.telefono,
+        rol: user.role, // 'METAHUMANO' or 'BUROCRATA'
+        
+        // Dates
+        fechaCreacion: user.createdAt,
+        createdAt: user.createdAt,
 
-    // Combinar todos los resultados
-    let todosLosUsuarios = [];
+        // Status
+        estado: user.verificado ? 'ACTIVO' : 'INACTIVO', // Assuming verificado maps to status, or use default
+        activo: user.verificado,
 
-    resultados.forEach((resultado, index) => {
-
-      let usuarios = [];
-
-      if (resultado.data) {
-        if (Array.isArray(resultado.data)) {
-          usuarios = resultado.data;
-        } else if (resultado.data.data && Array.isArray(resultado.data.data)) {
-          usuarios = resultado.data.data;
-        } else if (
-          resultado.data.metahumanos &&
-          Array.isArray(resultado.data.metahumanos)
-        ) {
-          usuarios = resultado.data.metahumanos;
-        } else if (
-          resultado.data.burocratas &&
-          Array.isArray(resultado.data.burocratas)
-        ) {
-          usuarios = resultado.data.burocratas;
-        }
-      }
-
-      if (Array.isArray(usuarios) && usuarios.length > 0) {
-        const tipoUsuario = index === 0 ? 'METAHUMANO' : 'BUROCRATA';
-
-        // Convertir a formato de usuario
-        const usuariosConvertidos = usuarios.map((usuario) => {
-          console.log(`Convirtiendo ${tipoUsuario}:`, usuario);
-
-          return {
-            id: usuario.id,
-            nomUsuario:
-              usuario.nombre ||
-              usuario.nombreBuro ||
-              usuario.nomBurocrata ||
-              usuario.nomUsuario ||
-              `Usuario${usuario.id}`,
-            email: usuario.mail || usuario.email || 'sin-email@ejemplo.com',
-            rol: tipoUsuario,
-            fechaCreacion:
-              usuario.fechaCreacion ||
-              usuario.createdAt ||
-              new Date().toISOString(),
-            estado: usuario.estado || 'ACTIVO',
-            activo:
-              usuario.activo !== false &&
-              usuario.estado !== 'fugitivo' &&
-              usuario.estado !== 'inactivo',
-            // metahumanos
-            ...(usuario.alias && { alias: usuario.alias }),
-            ...(usuario.origen && { origen: usuario.origen }),
-            ...(usuario.telefono && { telefono: usuario.telefono }),
-            ...(usuario.poderes && { poderes: usuario.poderes }),
-            ...(usuario.nivelPeligrosidad && {
-              nivelPeligrosidad: usuario.nivelPeligrosidad,
-            }),
-            ...(usuario.recompensa && { recompensa: usuario.recompensa }),
-            // burocratas
-            ...(usuario.nomBurocrata && { nomBurocrata: usuario.nomBurocrata }),
-            ...(usuario.departamento && { departamento: usuario.departamento }),
-            ...(usuario.cargo && { cargo: usuario.cargo }),
-            _original: usuario,
-          };
-        });
-
-        todosLosUsuarios = [...todosLosUsuarios, ...usuariosConvertidos];
-        console.log(
-          `Agregados ${usuariosConvertidos.length} usuarios de tipo: ${tipoUsuario}`
-        );
-      } else {
-        console.log(
-          `No se encontraron usuarios en el endpoint: ${
-            index === 0 ? '/metahumanos' : '/Burocratas'
-          }`
-        );
-      }
+        // Spread specific data
+        ...roleData,
+        _original: user // Keep original for debug
+      };
     });
 
-    console.log(`Total usuarios combinados: ${todosLosUsuarios.length}`);
-    console.log('Usuarios finales:', todosLosUsuarios);
-
+    console.log(`Total usuarios procesados: ${todosLosUsuarios.length}`);
     return { data: todosLosUsuarios };
+
   } catch (error) {
-    console.error('Error al obtener usuarios combinados:', error);
+    console.error('Error al obtener usuarios:', error);
     throw error;
   }
 };
