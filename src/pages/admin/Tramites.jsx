@@ -41,10 +41,10 @@ const Tramites = () => {
       title: 'Aprobar/Rechazar Trámites',
       description: 'Revisar y gestionar solicitudes pendientes',
       icon: '📋',
-      route: '#',
+      route: '/admin/tramites/aprobar-tramites',
       bgColor: 'bg-gradient-to-r from-green-500 to-emerald-500',
       hoverColor: 'hover:from-green-600 hover:to-emerald-600',
-      available: false
+      available: true
     }
   ];
 

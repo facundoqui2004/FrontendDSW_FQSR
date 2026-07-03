@@ -101,7 +101,8 @@ export default function CrearCarpeta() {
               <select
                 value={estado}
                 onChange={(e) => setEstado(e.target.value)}
-                className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
+                disabled={tipo === "CAPTURA_VILLANO"}
+                className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition disabled:opacity-60"
               >
                 <option value="activa">Activa</option>
                 <option value="pendiente">Pendiente</option>
@@ -114,12 +115,19 @@ export default function CrearCarpeta() {
               <label className="block mb-1 font-semibold">Tipo</label>
               <select
                 value={tipo}
-                onChange={(e) => setTipo(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setTipo(val);
+                  if (val === "CAPTURA_VILLANO") {
+                    setEstado("pendiente");
+                  }
+                }}
                 className="w-full p-3 rounded-lg bg-[#1F1F1F] text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition"
               >
                 <option value="general">General</option>
                 <option value="penal">Penal</option>
                 <option value="civil">Civil</option>
+                <option value="CAPTURA_VILLANO">Captura de Villano</option>
               </select>
             </div>
 

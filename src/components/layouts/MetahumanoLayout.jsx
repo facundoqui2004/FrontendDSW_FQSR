@@ -4,10 +4,21 @@ import Footer from "../footer";
 import { CgMenuRound } from "react-icons/cg";
 import { FaRegUserCircle } from "react-icons/fa";
 import { RiCloseFill } from "react-icons/ri";
+import { useAuth } from "../../context/AuthContext";
 
-export default function MetahumanoLayout({ children }) {
+export default function MetahumanoLayout({ children, theme }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
+  const { user } = useAuth();
+
+  const currentTheme = theme || user?.tipoMeta || "";
+
+  let bgClass = "bg-[#296588]"; // default blue
+  if (currentTheme === "heroe" || currentTheme === "heróe") {
+    bgClass = "bg-gradient-to-br from-[#450a0a] via-[#7f1d1d] to-[#991b1b]";
+  } else if (currentTheme === "villano") {
+    bgClass = "bg-gradient-to-br from-[#09090b] via-[#18181b] to-[#27272a]";
+  }
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
@@ -18,7 +29,7 @@ export default function MetahumanoLayout({ children }) {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className="bg-[#296588] w-full min-h-screen transition-colors duration-300 flex flex-col">
+    <div className={`${bgClass} w-full min-h-screen transition-all duration-500 flex flex-col`}>
       {/* Sidebar */}
       <SidebarMetahum showMenu={showMenu} toggleUser={toggleUser} />
 

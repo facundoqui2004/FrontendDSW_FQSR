@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
+import { useAuth } from "../../context/AuthContext";
 
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
-
+  const { user } = useAuth();
 
   const goToTramites = () => {
     navigate('/metahumano/tramites');
@@ -33,11 +34,18 @@ function Home() {
   
   const closeUser = () => setShowUser(false);
 
+  const currentTheme = user?.tipoMeta || "";
+  const containerBg = currentTheme === 'heroe' || currentTheme === 'heróe'
+    ? 'bg-red-950/45 border border-red-800/30 backdrop-blur-md'
+    : currentTheme === 'villano'
+    ? 'bg-zinc-950/75 border border-zinc-800/40 backdrop-blur-md'
+    : 'bg-[#296588]';
+
   return (
-    <MetahumanoLayout>
+    <MetahumanoLayout theme={currentTheme}>
       {/* Contenido principal */}
       <div
-        className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
+        className={`p-4 ${containerBg} text-white rounded-lg shadow-lg h-full hover:shadow-xl transition-all duration-500
           ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
           ${showUser ? "opacity-90" : "opacity-100"}`}
       >

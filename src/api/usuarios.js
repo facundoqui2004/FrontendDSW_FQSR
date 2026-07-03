@@ -69,3 +69,5 @@ export const obtenerTodosLosUsuariosCombinados = async () => {
     throw error;
   }
 };
+
+export const definirEstiloVidaRequest = (datos) => api.post('/metahumanos/estilo-vida', datos);

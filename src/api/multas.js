@@ -14,3 +14,5 @@ export const getMultaByIdRequest = (id) => api.get(`/multas/${id}`);
 export const deleteMultaRequest = (id) => api.delete(`/multas/${id}`);
 
 export const updateMultaRequest = (id, data) => api.put(`/multas/${id}`, data);
+
+export const pagarMultaRequest = (id) => api.post(`/multas/${id}/pagar`);

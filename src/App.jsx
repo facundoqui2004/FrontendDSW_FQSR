@@ -15,6 +15,7 @@
     Tramites,
     MiPerfil as MiPerfilAdmin,
     Soporte as SoporteAdmin,
+    AprobarTramites,
 
     // Metahumanos
     HomeMeta, 
@@ -59,6 +60,7 @@
             <Route path="/admin/tramites/crear-poderes" element={<CrearPoderes />} />
             <Route path="/admin/tramites/gestionar-poderes" element={<GestionarPoderes />} />
             <Route path="/admin/tramites/gestionar-multas" element={<GestionarMultas />} />
+            <Route path="/admin/tramites/aprobar-tramites" element={<AprobarTramites />} />
             <Route path="/admin/perfil" element={<MiPerfilAdmin />} />
             <Route path="/admin/soporte" element={<SoporteAdmin />} />
 

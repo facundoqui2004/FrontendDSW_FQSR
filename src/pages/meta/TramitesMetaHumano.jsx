@@ -14,6 +14,26 @@ function Home() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Nuevos estados para Estilo de Vida, Solicitud Enemigos y Permiso Destrucción
+  const [metahumanoDetails, setMetahumanoDetails] = useState(null);
+  const [showFormLifestyle, setShowFormLifestyle] = useState(false);
+  const [lifestyleRole, setLifestyleRole] = useState("HEROE");
+  const [nivelFama, setNivelFama] = useState("Bajo");
+  const [mision, setMision] = useState("");
+  const [nivelPeligrosidad, setNivelPeligrosidad] = useState("Baja");
+  const [motivacion, setMotivacion] = useState("");
+  const [recompensa, setRecompensa] = useState("");
+
+  const [showFormEnemy, setShowFormEnemy] = useState(false);
+  const [villanosList, setVillanosList] = useState([]);
+  const [selectedVillanoId, setSelectedVillanoId] = useState("");
+  const [enemyDescription, setEnemyDescription] = useState("");
+
+  const [showFormDestruction, setShowFormDestruction] = useState(false);
+  const [destructionMotivo, setDestructionMotivo] = useState("");
+  const [destructionZona, setDestructionZona] = useState("");
+  const [destructionDanos, setDestructionDanos] = useState("");
+
   // Obtener datos del usuario
   const { 
     user, 
@@ -21,8 +41,197 @@ function Home() {
     getUserId, 
     getPerfilId, 
     getUserRole, 
-    getUserAlias 
+    getUserAlias,
+    refreshProfile
   } = useAuth();
+
+  // Obtener perfil completo del metahumano
+  const fetchPerfilMetahumano = useCallback(async () => {
+    try {
+      const userId = getUserId();
+      if (!userId) return;
+      
+      const response = await fetch(`http://localhost:3000/api/usuarios/${userId}`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMetahumanoDetails(data.usuario?.metahumano || null);
+        console.log('Detalles del Metahumano cargados:', data.usuario?.metahumano);
+      }
+    } catch (err) {
+      console.error('Error fetching metahumano profile details:', err);
+    }
+  }, [getUserId]);
+
+  // Cargar lista de villanos para solicitud de enemigos
+  const fetchVillanos = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/villanos', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setVillanosList(data.data || []);
+      }
+    } catch (err) {
+      console.error('Error fetching villanos:', err);
+    }
+  };
+
+  // Cargar perfil al montar o cambiar autenticacion
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchPerfilMetahumano();
+    }
+  }, [isAuthenticated, fetchPerfilMetahumano]);
+
+  // Definir estilo de vida (Héroe o Villano)
+  const handleDefinirEstiloVida = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError("");
+      setSuccessMessage("");
+      
+      const payload = {
+        tipoMeta: lifestyleRole,
+        ...(lifestyleRole === 'HEROE' 
+          ? { nivelFama, mision, numeroVictorias: 0, estatus: 'activo' }
+          : { nivelPeligrosidad, motivacion, recompensa: Number(recompensa) || 0, estado: 'activo' })
+      };
+      
+      const response = await fetch('http://localhost:3000/api/metahumanos/estilo-vida', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Error al definir estilo de vida');
+      }
+      
+      setSuccessMessage(`🎉 ¡Estilo de vida definido exitosamente como ${lifestyleRole}!`);
+      setShowFormLifestyle(false);
+      await fetchPerfilMetahumano();
+      if (refreshProfile) {
+        await refreshProfile();
+      }
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Solicitar Asignación de Enemigo
+  const handleSolicitarEnemigo = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError("");
+      setSuccessMessage("");
+      
+      if (!selectedVillanoId) {
+        throw new Error("Debes seleccionar un villano");
+      }
+      
+      const response = await fetch('http://localhost:3000/api/heroes/solicitud-enemigos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          villanoId: Number(selectedVillanoId),
+          descripcion: enemyDescription
+        })
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Error al solicitar enemigo');
+      }
+      
+      setSuccessMessage("✅ Solicitud de enemigo enviada exitosamente!");
+      setShowFormEnemy(false);
+      setSelectedVillanoId("");
+      setEnemyDescription("");
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Solicitar Rehabilitación de Villano
+  const handleSolicitarRehabilitacion = async () => {
+    try {
+      const confirmRehab = window.confirm("¿Estás seguro de que deseas iniciar tu trámite de rehabilitación para convertirte en Héroe?");
+      if (!confirmRehab) return;
+      
+      setLoading(true);
+      setError("");
+      setSuccessMessage("");
+      
+      const response = await fetch('http://localhost:3000/api/villanos/tramite-rehabilitacion', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Error al solicitar rehabilitación');
+      }
+      
+      setSuccessMessage("🕊️ ¡Trámite de rehabilitación iniciado con éxito! Tu estado ahora es 'rehabilitando'.");
+      await fetchPerfilMetahumano();
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Solicitar Permiso de Destrucción
+  const handleSolicitarPermisoDestruccion = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      setError("");
+      setSuccessMessage("");
+      
+      const response = await fetch('http://localhost:3000/api/villanos/permisos-destruccion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          motivo: destructionMotivo,
+          zonaAfectada: destructionZona,
+          descripcionDanos: destructionDanos
+        })
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Error al solicitar permiso');
+      }
+      
+      setSuccessMessage("💥 Solicitud de permiso de destrucción enviada exitosamente!");
+      setShowFormDestruction(false);
+      setDestructionMotivo("");
+      setDestructionZona("");
+      setDestructionDanos("");
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // obtener poderes del backend
   const fetchPoderes = useCallback(async () => {
@@ -456,16 +665,28 @@ const solicitarPoder = async (poder) => {
     );
   }
 
+  const currentTheme = showFormLifestyle ? lifestyleRole.toLowerCase() : (metahumanoDetails?.tipoMeta || "");
+  const containerBg = currentTheme === 'heroe' || currentTheme === 'heróe'
+    ? 'bg-red-950/45 border border-red-800/30 backdrop-blur-md'
+    : currentTheme === 'villano'
+    ? 'bg-zinc-950/75 border border-zinc-800/40 backdrop-blur-md'
+    : 'bg-[#296588]';
+  const headerBg = currentTheme === 'heroe' || currentTheme === 'heróe'
+    ? 'bg-red-900/40 border border-red-800/30'
+    : currentTheme === 'villano'
+    ? 'bg-zinc-900/60 border border-zinc-800/20'
+    : 'bg-[#044b97]';
+
   return (
-      <MetahumanoLayout>
+      <MetahumanoLayout theme={currentTheme}>
         {/* Contenido principal */}
         <div
-          className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
+          className={`p-4 ${containerBg} text-white rounded-lg shadow-lg h-full hover:shadow-xl transition-all duration-500
             ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
             ${showUser ? "opacity-90" : "opacity-100"}`}
         >
           <div className="flex-1 min-h-full">
-            <div className="p-6 bg-[#044b97] text-white text-2xl text-bold rounded-lg h-full flex flex-col justify-center items-center">
+            <div className={`p-6 ${headerBg} text-white text-2xl text-bold rounded-lg h-full flex flex-col justify-center items-center transition-all duration-500`}>
                 <h1>Panel de Tramites Metahumano</h1>
                 {/* Mostrar información del usuario */}
                 {user && (
@@ -474,11 +695,38 @@ const solicitarPoder = async (poder) => {
                   </p>
                 )}
             </div>
+            </div>
+            
+            {metahumanoDetails && metahumanoDetails.tipoMeta !== 'metahumano' && (
+              <div className="mt-4 px-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl inline-flex flex-wrap items-center gap-3">
+                <span className="text-sm text-gray-300">Estilo de vida actual:</span>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
+                  metahumanoDetails.tipoMeta === 'heroe' 
+                    ? 'bg-blue-600/30 text-blue-300 border border-blue-500/30' 
+                    : 'bg-red-600/30 text-red-300 border border-red-500/30'
+                }`}>
+                  {metahumanoDetails.tipoMeta === 'heroe' ? '🦸‍♂️ Héroe' : '🦹 Villano'}
+                </span>
+                {metahumanoDetails.tipoMeta === 'heroe' && metahumanoDetails.nivelFama && (
+                  <span className="text-xs text-gray-400 bg-slate-900 px-2 py-0.5 rounded">• Fama: <strong>{metahumanoDetails.nivelFama}</strong></span>
+                )}
+                {metahumanoDetails.tipoMeta === 'heroe' && metahumanoDetails.mision && (
+                  <span className="text-xs text-gray-400 bg-slate-900 px-2 py-0.5 rounded">• Misión: <strong>{metahumanoDetails.mision}</strong></span>
+                )}
+                {metahumanoDetails.tipoMeta === 'villano' && metahumanoDetails.nivelPeligrosidad && (
+                  <span className="text-xs text-gray-400 bg-slate-900 px-2 py-0.5 rounded">• Peligrosidad: <strong>{metahumanoDetails.nivelPeligrosidad}</strong></span>
+                )}
+                {metahumanoDetails.tipoMeta === 'villano' && metahumanoDetails.estado && (
+                  <span className="text-xs text-gray-400 bg-slate-900 px-2 py-0.5 rounded">• Estado: <strong>{metahumanoDetails.estado}</strong></span>
+                )}
+              </div>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
               {/* Botón Gestión de Poderes */}
               <button 
                 onClick={togglePowersForm}
-                className="group relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-blue-500/30"
+                className="group relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-blue-500/30 cursor-pointer"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="relative z-10">
@@ -494,25 +742,430 @@ const solicitarPoder = async (poder) => {
                 </div>
               </button>
 
-              {/* Botón Definir Estilo de Vida */}
-              <button 
-                className="group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-bold text-left">Definir Estilo de Vida</h2>
-                    <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center group-hover:bg-purple-400/50 transition-colors">
-                      <span className="text-sm">→</span>
+              {/* Botones condicionales según el rol / tipoMeta */}
+              {(!metahumanoDetails || metahumanoDetails.tipoMeta === 'metahumano') && (
+                /* Botón Definir Estilo de Vida */
+                <button 
+                  onClick={() => {
+                    setShowFormLifestyle(true);
+                    setShowFormPowers(false);
+                  }}
+                  className="group relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-purple-500/30 cursor-pointer"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold text-left">Definir Estilo de Vida</h2>
+                      <div className="w-8 h-8 bg-purple-500/30 rounded-full flex items-center justify-center group-hover:bg-purple-400/50 transition-colors">
+                        <span className="text-sm">→</span>
+                      </div>
+                    </div>
+                    <p className="text-purple-100 text-sm text-left leading-relaxed">
+                      Determine si que tipo de vida llevara su metahumano. (Ej: Heroe, Villano)
+                    </p>
+                  </div>
+                </button>
+              )}
+
+              {metahumanoDetails && metahumanoDetails.tipoMeta === 'heroe' && (
+                /* Botón Solicitar Asignación de Enemigo */
+                <button 
+                  onClick={() => {
+                    setShowFormEnemy(true);
+                    setShowFormPowers(false);
+                    fetchVillanos();
+                  }}
+                  className="group relative overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-800 hover:from-indigo-700 hover:to-indigo-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-indigo-500/30 cursor-pointer"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-bold text-left">🎯 Solicitar Enemigo</h2>
+                      <div className="w-8 h-8 bg-indigo-500/30 rounded-full flex items-center justify-center group-hover:bg-indigo-400/50 transition-colors">
+                        <span className="text-sm">→</span>
+                      </div>
+                    </div>
+                    <p className="text-indigo-100 text-sm text-left leading-relaxed">
+                      Solicita formalmente la asignación oficial de un Villano como tu archienemigo.
+                    </p>
+                  </div>
+                </button>
+              )}
+
+              {metahumanoDetails && metahumanoDetails.tipoMeta === 'villano' && (
+                <>
+                  {/* Botón Solicitar Permiso de Destrucción */}
+                  <button 
+                    onClick={() => {
+                      setShowFormDestruction(true);
+                      setShowFormPowers(false);
+                    }}
+                    className="group relative overflow-hidden bg-gradient-to-br from-amber-600 to-amber-800 hover:from-amber-700 hover:to-amber-900 text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border border-amber-500/30 cursor-pointer"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-left">💥 Permiso de Destrucción</h2>
+                        <div className="w-8 h-8 bg-amber-500/30 rounded-full flex items-center justify-center group-hover:bg-amber-400/50 transition-colors">
+                          <span className="text-sm">→</span>
+                        </div>
+                      </div>
+                      <p className="text-amber-100 text-sm text-left leading-relaxed">
+                        Solicita autorizaciones gubernamentales para daños colaterales estimados en combates.
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Botón Trámite de Rehabilitación */}
+                  <button 
+                    onClick={handleSolicitarRehabilitacion}
+                    disabled={metahumanoDetails.estado === 'rehabilitando' || metahumanoDetails.estado === 'rehabilitado'}
+                    className={`group relative overflow-hidden text-white p-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 border cursor-pointer ${
+                      metahumanoDetails.estado === 'rehabilitando'
+                        ? 'bg-yellow-800/40 border-yellow-500/30 cursor-not-allowed opacity-80'
+                        : metahumanoDetails.estado === 'rehabilitado'
+                        ? 'bg-emerald-800/40 border-emerald-500/30 cursor-not-allowed opacity-80'
+                        : 'bg-gradient-to-br from-emerald-600 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 border-emerald-500/30'
+                    }`}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold text-left">
+                          {metahumanoDetails.estado === 'rehabilitando' ? '⏳ Rehabilitación en Proceso' :
+                           metahumanoDetails.estado === 'rehabilitado' ? '🕊️ Rehabilitación Completada' :
+                           '🕊️ Solicitar Rehabilitación'}
+                        </h2>
+                        <div className="w-8 h-8 bg-emerald-500/30 rounded-full flex items-center justify-center group-hover:bg-emerald-400/50 transition-colors">
+                          <span className="text-sm">→</span>
+                        </div>
+                      </div>
+                      <p className="text-emerald-100 text-sm text-left leading-relaxed">
+                        {metahumanoDetails.estado === 'rehabilitando' ? 'Tu trámite de transición a Héroe está siendo evaluado por las autoridades.' :
+                         metahumanoDetails.estado === 'rehabilitado' ? '¡Felicitaciones! Has completado el proceso de reinserción a la sociedad.' :
+                         'Inicia el proceso paso a paso supervisado por el gobierno para convertirte en Héroe.'}
+                      </p>
+                    </div>
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Alertas generales de Error o Éxito */}
+            {(error || successMessage) && (
+              <div className="mt-6">
+                {error && (
+                  <div className="bg-red-900/50 border border-red-600 rounded-lg p-4">
+                    <p className="text-red-200 flex items-center">
+                      <span className="mr-2">❌</span>
+                      {error}
+                    </p>
+                  </div>
+                )}
+                {successMessage && (
+                  <div className="bg-green-900/50 border border-green-600 rounded-lg p-4">
+                    <p className="text-green-200 flex items-center">
+                      <span className="mr-2">✅</span>
+                      {successMessage}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Formulario de Definir Estilo de Vida */}
+            {showFormLifestyle && (
+              <div className="mt-8 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl shadow-2xl border border-slate-650 animate-fadeIn">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                    🌟 Definir Estilo de Vida
+                  </h3>
+                  <button 
+                    onClick={() => setShowFormLifestyle(false)}
+                    className="text-gray-400 hover:text-white transition-colors duration-200 text-2xl cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleDefinirEstiloVida} className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-300 mb-3">
+                      Selecciona tu camino:
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setLifestyleRole("HEROE")}
+                        className={`p-4 rounded-xl border-2 text-center transition-all duration-300 cursor-pointer ${
+                          lifestyleRole === 'HEROE'
+                            ? 'border-blue-500 bg-blue-600/20 text-white'
+                            : 'border-slate-700 bg-slate-800/50 text-gray-400 hover:border-slate-600'
+                        }`}
+                      >
+                        <span className="text-3xl block mb-2">🦸‍♂️</span>
+                        <span className="font-bold block">Héroe</span>
+                        <span className="text-xs opacity-75">Protector de la justicia</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setLifestyleRole("VILLANO")}
+                        className={`p-4 rounded-xl border-2 text-center transition-all duration-300 cursor-pointer ${
+                          lifestyleRole === 'VILLANO'
+                            ? 'border-red-500 bg-red-600/20 text-white'
+                            : 'border-slate-700 bg-slate-800/50 text-gray-400 hover:border-slate-600'
+                        }`}
+                      >
+                        <span className="text-3xl block mb-2">🦹</span>
+                        <span className="font-bold block">Villano</span>
+                        <span className="text-xs opacity-75">Sembrador de caos</span>
+                      </button>
                     </div>
                   </div>
-                  <p className="text-purple-100 text-sm text-left leading-relaxed">
-                    Determine si que tipo de vida llevara su metahumano. (Ej: Heroe, Villano)
-                  </p>
+
+                  {lifestyleRole === 'HEROE' ? (
+                    <div className="space-y-4 bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
+                      <h4 className="font-semibold text-blue-400 mb-2">Detalles de Héroe</h4>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                          Nivel de Fama
+                        </label>
+                        <select
+                          value={nivelFama}
+                          onChange={(e) => setNivelFama(e.target.value)}
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+                        >
+                          <option value="Bajo">Bajo</option>
+                          <option value="Medio">Medio</option>
+                          <option value="Alto">Alto</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                          Misión Inicial
+                        </label>
+                        <input
+                          type="text"
+                          value={mision}
+                          onChange={(e) => setMision(e.target.value)}
+                          placeholder="Ej: Proteger el banco central de Metrópolis"
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 bg-slate-800/40 p-4 rounded-lg border border-slate-700/50">
+                      <h4 className="font-semibold text-red-400 mb-2">Detalles de Villano</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                            Nivel de Peligrosidad
+                          </label>
+                          <select
+                            value={nivelPeligrosidad}
+                            onChange={(e) => setNivelPeligrosidad(e.target.value)}
+                            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500 cursor-pointer"
+                          >
+                            <option value="Baja">Baja</option>
+                            <option value="Media">Media</option>
+                            <option value="Alta">Alta</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                            Recompensa por captura ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={recompensa}
+                            onChange={(e) => setRecompensa(e.target.value)}
+                            placeholder="Ej: 50000"
+                            className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                          Motivación Principal
+                        </label>
+                        <input
+                          type="text"
+                          value={motivacion}
+                          onChange={(e) => setMotivacion(e.target.value)}
+                          placeholder="Ej: Venganza o control total del mundo"
+                          className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end gap-3 border-t border-slate-750 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowFormLifestyle(false)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800/50 text-white font-bold rounded-lg transition-colors cursor-pointer"
+                    >
+                      {loading ? "Procesando..." : "Confirmar Estilo de Vida"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Formulario de Solicitud de Enemigos */}
+            {showFormEnemy && (
+              <div className="mt-8 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl shadow-2xl border border-slate-650 animate-fadeIn">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                    🎯 Solicitar Asignación de Enemigo
+                  </h3>
+                  <button 
+                    onClick={() => setShowFormEnemy(false)}
+                    className="text-gray-400 hover:text-white transition-colors duration-200 text-2xl cursor-pointer"
+                  >
+                    ✕
+                  </button>
                 </div>
-              </button>
-            </div>
-            
+
+                <form onSubmit={handleSolicitarEnemigo} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Seleccionar Villano
+                    </label>
+                    <select
+                      value={selectedVillanoId}
+                      onChange={(e) => setSelectedVillanoId(e.target.value)}
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500 cursor-pointer"
+                      required
+                    >
+                      <option value="">-- Selecciona un Villano --</option>
+                      {villanosList.map((villano) => (
+                        <option key={villano.id} value={villano.id}>
+                          {villano.alias} (Peligrosidad: {villano.nivelPeligrosidad || 'Baja'})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Motivo / Descripción de la Solicitud
+                    </label>
+                    <textarea
+                      value={enemyDescription}
+                      onChange={(e) => setEnemyDescription(e.target.value)}
+                      rows={4}
+                      placeholder="Especifica el motivo de la rivalidad o detalles del enfrentamiento estimado..."
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 border-t border-slate-750 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowFormEnemy(false)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800/50 text-white font-bold rounded-lg transition-colors cursor-pointer"
+                    >
+                      {loading ? "Enviando..." : "Enviar Solicitud"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {/* Formulario de Permiso de Destrucción */}
+            {showFormDestruction && (
+              <div className="mt-8 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl shadow-2xl border border-slate-650 animate-fadeIn">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                    💥 Solicitar Permiso de Destrucción Colateral
+                  </h3>
+                  <button 
+                    onClick={() => setShowFormDestruction(false)}
+                    className="text-gray-400 hover:text-white transition-colors duration-200 text-2xl cursor-pointer"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleSolicitarPermisoDestruccion} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Motivo del Combate/Evento
+                    </label>
+                    <input
+                      type="text"
+                      value={destructionMotivo}
+                      onChange={(e) => setDestructionMotivo(e.target.value)}
+                      placeholder="Ej: Batalla planificada con mi archienemigo"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Zona Afectada Estimada
+                    </label>
+                    <input
+                      type="text"
+                      value={destructionZona}
+                      onChange={(e) => setDestructionZona(e.target.value)}
+                      placeholder="Ej: Zona portuaria o Plaza Central"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Descripción de Daños Estimados
+                    </label>
+                    <textarea
+                      value={destructionDanos}
+                      onChange={(e) => setDestructionDanos(e.target.value)}
+                      rows={3}
+                      placeholder="Detalles sobre infraestructura comprometida, vehículos, etc..."
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-3 border-t border-slate-750 pt-4">
+                    <button
+                      type="button"
+                      onClick={() => setShowFormDestruction(false)}
+                      className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-6 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-800/50 text-white font-bold rounded-lg transition-colors cursor-pointer"
+                    >
+                      {loading ? "Enviando..." : "Enviar Solicitud"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
             {/* Formulario de Gestión de Poderes */}
             {showFormPowers && (
               <div className="mt-8 bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-xl shadow-2xl border border-slate-600">
@@ -903,7 +1556,6 @@ const solicitarPoder = async (poder) => {
               </div>
             )}
           </div>
-        </div>
     </MetahumanoLayout>
   );
 }

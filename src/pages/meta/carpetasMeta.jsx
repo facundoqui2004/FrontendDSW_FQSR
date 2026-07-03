@@ -2,7 +2,9 @@ import React, { useState, useCallback, useEffect } from "react";
 import { getMetaId, getUserFromCookie}  from "../../utils/cookies";
 import { FaFolder, FaExclamationCircle } from "react-icons/fa";
 import { getBurocrataByIdRequest } from "../../api/burocratas";
+import { pagarMultaRequest } from "../../api/multas";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout";
+import { useAuth } from "../../context/AuthContext";
 
 
 function Home() {
@@ -14,6 +16,7 @@ function Home() {
   const [expandedCarpetas, setExpandedCarpetas] = useState({});
   const [expandedMultas, setExpandedMultas] = useState({});
   const [burocrataNombre, setBurocrataNombre] = useState(null)
+  const { user } = useAuth();
  
 
   
@@ -91,6 +94,24 @@ function Home() {
         }));
     };
     
+    // Función para pagar una multa
+    const handlePagarMulta = async (multaId) => {
+      try {
+        const confirmPay = window.confirm("¿Deseas pagar esta multa?");
+        if (!confirmPay) return;
+        
+        setLoading(true);
+        await pagarMultaRequest(multaId);
+        alert("✅ Multa pagada con éxito!");
+        await fetchCarpetas();
+      } catch (err) {
+        console.error("Error al pagar la multa:", err);
+        alert("Error al pagar la multa: " + (err.response?.data?.message || err.message));
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     // todas las multas de una carpeta
   const obtenerMultasDeCarpeta = (carpeta) => {
     const totalMultas = [];
@@ -119,11 +140,18 @@ function Home() {
         return null;
     };
 
+  const currentTheme = user?.tipoMeta || "";
+  const containerBg = currentTheme === 'heroe' || currentTheme === 'heróe'
+    ? 'bg-red-950/45 border border-red-800/30 backdrop-blur-md'
+    : currentTheme === 'villano'
+    ? 'bg-zinc-950/75 border border-zinc-800/40 backdrop-blur-md'
+    : 'bg-[#296588]';
+
   return (
-    <MetahumanoLayout>
+    <MetahumanoLayout theme={currentTheme}>
         {/* Contenido principal */}
         <div
-          className={`p-4 bg-[#296588] text-white rounded-lg shadow-lg h-full hover:shadow-xl
+          className={`p-4 ${containerBg} text-white rounded-lg shadow-lg h-full hover:shadow-xl transition-all duration-500
             ${showUser ? "lg:col-span-6" : "lg:col-span-8"}
             ${showUser ? "opacity-90" : "opacity-100"}`}
         >
@@ -293,7 +321,7 @@ function Home() {
                                         Monto: ${multa.montoMulta.toLocaleString()}
                                       </p>
                                       <h7 className="text-gray-300 font-medium mb-2 block">📋 Información de la multa:</h7>
-                                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 text-sm pl-4">
+                                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 text-sm pl-4 mb-4">
                                         <div>
                                           <p className="text-gray-400">Motivo:</p>
                                           <p className="text-white font-medium">{multa.motivoMulta}</p>
@@ -317,6 +345,17 @@ function Home() {
                                           </p>
                                         </div>
                                       </div>
+
+                                      {multa.estado === 'PENDIENTE' && (
+                                        <div className="mt-3 flex justify-end border-t border-gray-700/50 pt-3">
+                                          <button
+                                            onClick={() => handlePagarMulta(multa.id)}
+                                            className="px-4 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md flex items-center gap-1 cursor-pointer"
+                                          >
+                                            💳 Pagar Multa
+                                          </button>
+                                        </div>
+                                      )}
                                     </div>
                                   ))}
                                 </div>
