@@ -21,17 +21,18 @@ function Home() {
   const goToPerfil = () => {
     navigate("/metahumano/perfil");
   }
-
+  const goToVigilar = () => {
+    navigate("/metahumano/vigilar-mundo");
+  }
 
   const toggleMenu = () => {
     setShowMenu(!showMenu);
     if (showUser) {
-      setShowUser(false); // Cierra el menú de usuario si el menú principal se abre
+      setShowUser(false);
     }
   };
   
   const toggleUser = () => setShowUser(!showUser);
-  
   const closeUser = () => setShowUser(false);
 
   const currentTheme = user?.tipoMeta || "";
@@ -91,6 +92,25 @@ function Home() {
                 </p>
               </div>
             </button>
+
+            {/* Vigilar Mundo Metahumano */}
+            <div
+              onClick={goToVigilar}
+              className="cursor-pointer group relative overflow-hidden bg-gradient-to-br from-orange-600 to-red-500 hover:from-orange-700 hover:to-red-600 text-white p-6 rounded-xl shadow-lg hover:shadow-orange-500/30 transform hover:scale-105 transition-all duration-300 border border-orange-500/30 h-full w-full max-w-md max-h-md"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-left">
+                  🗺️ Vigilar Mundo
+                </h2>
+                <div className="w-8 h-8 bg-orange-500/30 rounded-full flex items-center justify-center group-hover:bg-orange-400/50 transition-colors">
+                  <span className="text-sm">→</span>
+                </div>
+              </div>
+              <p className="text-orange-100 text-sm text-left leading-relaxed">
+                Monitorea bases de operaciones y reportes de destrucción a nivel nacional en tiempo real.
+              </p>
+            </div>
+
             {/* Mi Perfil */}
             <div
               onClick={goToPerfil}

@@ -7,5 +7,18 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    {
+      name: 'ignore-install-hook-map',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url && req.url.includes('installHook.js.map')) {
+            res.statusCode = 404;
+            res.end();
+            return;
+          }
+          next();
+        });
+      }
+    }
   ],
 })

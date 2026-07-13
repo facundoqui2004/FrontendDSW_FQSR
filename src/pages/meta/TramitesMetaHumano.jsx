@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "../../context/AuthContext";
 import MetahumanoLayout from "../../components/layouts/MetahumanoLayout"
 import { Meta } from "react-router-dom";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 function Home() {
   const [showMenu, setShowMenu] = useState(false);
@@ -33,6 +35,13 @@ function Home() {
   const [destructionMotivo, setDestructionMotivo] = useState("");
   const [destructionZona, setDestructionZona] = useState("");
   const [destructionDanos, setDestructionDanos] = useState("");
+  const [destructionLat, setDestructionLat] = useState(null);
+  const [destructionLng, setDestructionLng] = useState(null);
+  const [destructionRadio, setDestructionRadio] = useState(500);
+  const destructionMapRef = useRef(null);
+  const destructionMarkerRef = useRef(null);
+  const destructionCircleRef = useRef(null);
+  const [incomingEnemyRequests, setIncomingEnemyRequests] = useState([]);
 
   // Obtener datos del usuario
   const { 
@@ -79,12 +88,146 @@ function Home() {
     }
   };
 
+  // Cargar solicitudes de enemigo entrantes para villanos
+  const fetchIncomingEnemyRequests = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/villanos/solicitudes-enemigo', {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIncomingEnemyRequests(data.data || []);
+      }
+    } catch (err) {
+      console.error('Error fetching incoming enemy requests:', err);
+    }
+  };
+
+
+  // Responder a solicitud de enemigo
+  const handleResponderSolicitudEnemigo = async (carpetaId, respuesta) => {
+    try {
+      setLoading(true);
+      setError("");
+      setSuccessMessage("");
+      const response = await fetch(`http://localhost:3000/api/villanos/solicitudes-enemigo/${carpetaId}/responder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ respuesta })
+      });
+      
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || 'Error al responder la solicitud');
+      }
+      
+      setSuccessMessage(`Solicitud de enemigo ${respuesta === 'ACEPTAR' ? 'aceptada' : 'rechazada'} con éxito!`);
+      await fetchIncomingEnemyRequests();
+    } catch (err) {
+      setError(err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Cargar perfil al montar o cambiar autenticacion
   useEffect(() => {
     if (isAuthenticated) {
       fetchPerfilMetahumano();
     }
   }, [isAuthenticated, fetchPerfilMetahumano]);
+
+  // Cargar solicitudes de enemigo si el metahumano es un villano
+  useEffect(() => {
+    if (metahumanoDetails?.tipoMeta === 'villano') {
+      fetchIncomingEnemyRequests();
+    }
+  }, [metahumanoDetails]);
+
+  // Manejar inicialización y destrucción del mapa del trámite de destrucción
+  useEffect(() => {
+    if (showFormDestruction) {
+      const timer = setTimeout(() => {
+        const container = document.getElementById("destruction-map");
+        if (container && !destructionMapRef.current) {
+          const defaultLat = -32.9468;
+          const defaultLng = -60.6393;
+          const initialLat = destructionLat || defaultLat;
+          const initialLng = destructionLng || defaultLng;
+
+          const map = L.map("destruction-map").setView([initialLat, initialLng], 14);
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+          }).addTo(map);
+
+          destructionMapRef.current = map;
+
+          const icon = L.divIcon({
+            html: `<div style="font-size: 26px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.5));">💥</div>`,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13]
+          });
+
+          if (destructionLat && destructionLng) {
+            destructionMarkerRef.current = L.marker([destructionLat, destructionLng], { icon }).addTo(map);
+            destructionCircleRef.current = L.circle([destructionLat, destructionLng], {
+              radius: destructionRadio,
+              color: '#ef4444',
+              fillColor: '#ef4444',
+              fillOpacity: 0.15,
+              weight: 1.5,
+              dashArray: '5, 5'
+            }).addTo(map);
+          }
+
+          map.on("click", (e) => {
+            const { lat, lng } = e.latlng;
+            setDestructionLat(lat);
+            setDestructionLng(lng);
+
+            if (destructionMarkerRef.current) {
+              destructionMarkerRef.current.setLatLng([lat, lng]);
+            } else {
+              destructionMarkerRef.current = L.marker([lat, lng], { icon }).addTo(map);
+            }
+
+            if (destructionCircleRef.current) {
+              destructionCircleRef.current.setLatLng([lat, lng]);
+            } else {
+              destructionCircleRef.current = L.circle([lat, lng], {
+                radius: destructionRadio,
+                color: '#ef4444',
+                fillColor: '#ef4444',
+                fillOpacity: 0.15,
+                weight: 1.5,
+                dashArray: '5, 5'
+              }).addTo(map);
+            }
+          });
+        }
+      }, 100);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      if (destructionMapRef.current) {
+        destructionMapRef.current.remove();
+        destructionMapRef.current = null;
+        destructionMarkerRef.current = null;
+        destructionCircleRef.current = null;
+      }
+    }
+  }, [showFormDestruction]);
+
+  // Actualizar dinámicamente el radio del círculo del trámite
+  useEffect(() => {
+    if (destructionMapRef.current && destructionLat && destructionLng && destructionCircleRef.current) {
+      destructionCircleRef.current.setRadius(destructionRadio);
+    }
+  }, [destructionRadio, destructionLat, destructionLng]);
 
   // Definir estilo de vida (Héroe o Villano)
   const handleDefinirEstiloVida = async (e) => {
@@ -199,6 +342,10 @@ function Home() {
   // Solicitar Permiso de Destrucción
   const handleSolicitarPermisoDestruccion = async (e) => {
     e.preventDefault();
+    if (!destructionLat || !destructionLng) {
+      setError("Por favor, selecciona una ubicación en el mapa haciendo clic sobre él.");
+      return;
+    }
     try {
       setLoading(true);
       setError("");
@@ -211,7 +358,10 @@ function Home() {
         body: JSON.stringify({
           motivo: destructionMotivo,
           zonaAfectada: destructionZona,
-          descripcionDanos: destructionDanos
+          descripcionDanos: destructionDanos,
+          latitud: destructionLat,
+          longitud: destructionLng,
+          radio: destructionRadio
         })
       });
       
@@ -225,6 +375,9 @@ function Home() {
       setDestructionMotivo("");
       setDestructionZona("");
       setDestructionDanos("");
+      setDestructionLat(null);
+      setDestructionLng(null);
+      setDestructionRadio(500);
     } catch (err) {
       setError(err.message);
       console.error(err);
@@ -851,6 +1004,46 @@ const solicitarPoder = async (poder) => {
               )}
             </div>
 
+            {/* Solicitudes de Archienemigo Recibidas para Villanos */}
+            {metahumanoDetails?.tipoMeta === 'villano' && incomingEnemyRequests.length > 0 && (
+              <div className="mt-8 bg-slate-800/80 border border-slate-700 rounded-xl p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  ⚔️ Solicitudes de Archienemigo Recibidas
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {incomingEnemyRequests.map((req) => (
+                    <div key={req.id} className="bg-slate-900/50 border border-slate-700 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">Héroe Solicitante</span>
+                          <h4 className="text-lg font-bold text-white">{req.metahumano?.alias || 'Héroe'}</h4>
+                          <p className="text-xs text-gray-400">Nombre: {req.metahumano?.nombre}</p>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-600/20 text-yellow-400 border border-yellow-500/20">
+                          Pendiente
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-sm my-3 italic">"{req.descripcion}"</p>
+                      <div className="flex gap-2 justify-end mt-4 pt-3 border-t border-slate-850">
+                        <button
+                          onClick={() => handleResponderSolicitudEnemigo(req.id, 'RECHAZAR')}
+                          className="px-3 py-1.5 bg-red-600/20 hover:bg-red-600 text-red-200 hover:text-white border border-red-500/30 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                        >
+                          ✕ Rechazar
+                        </button>
+                        <button
+                          onClick={() => handleResponderSolicitudEnemigo(req.id, 'ACEPTAR')}
+                          className="px-4 py-1.5 bg-green-600/20 hover:bg-green-600 text-green-200 hover:text-white border border-green-500/30 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                        >
+                          ✓ Aceptar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Alertas generales de Error o Éxito */}
             {(error || successMessage) && (
               <div className="mt-6">
@@ -1144,6 +1337,42 @@ const solicitarPoder = async (poder) => {
                       className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
                       required
                     />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Radio de Destrucción Estimado (metros)
+                    </label>
+                    <input
+                      type="number"
+                      min="10"
+                      max="10000"
+                      value={destructionRadio}
+                      onChange={(e) => setDestructionRadio(Number(e.target.value))}
+                      placeholder="Ej: 500"
+                      className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">
+                      Ubicación del Incidente/Destrucción (Seleccionar en el mapa)
+                    </label>
+                    <div 
+                      id="destruction-map" 
+                      style={{ height: "250px" }} 
+                      className="w-full rounded-lg overflow-hidden border border-slate-700 mb-2 relative z-10"
+                    ></div>
+                    {destructionLat && destructionLng ? (
+                      <p className="text-xs text-green-400">
+                        Coordenadas seleccionadas: Lat: {destructionLat.toFixed(6)}, Lng: {destructionLng.toFixed(6)} | Radio: {destructionRadio}m
+                      </p>
+                    ) : (
+                      <p className="text-xs text-amber-400">
+                        Haz clic en el mapa para marcar el lugar del incidente.
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex justify-end gap-3 border-t border-slate-750 pt-4">
@@ -1555,6 +1784,7 @@ const solicitarPoder = async (poder) => {
                 )}
               </div>
             )}
+
           </div>
     </MetahumanoLayout>
   );

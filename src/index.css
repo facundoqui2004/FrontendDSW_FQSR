@@ -37,3 +37,14 @@ html, body {
   scrollbar-width: thin;
   scrollbar-color: #0891b2 #0f172a;
 }
+
+/* Custom Animations */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-\\[shimmer_1\\.5s_infinite\\] {
+  animation: shimmer 1.5s infinite;
+}

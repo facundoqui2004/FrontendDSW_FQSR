@@ -38,11 +38,13 @@ const AprobarTramites = () => {
       try {
         setLoading(true);
         await patchCarpetaEstadoRequest(id, nuevoEstado);
-        alert(`Trámite ${accion}do exitosamente`);
-        await cargarCarpetas();
+        
+        // Actualización instantánea local
+        setCarpetas(prev => prev.map(c => c.id === id ? { ...c, estado: nuevoEstado } : c));
       } catch (error) {
         console.error(`Error al ${accion} trámite:`, error);
         alert(`Error al ${accion} el trámite: ` + (error.response?.data?.message || error.message));
+        await cargarCarpetas();
       } finally {
         setLoading(false);
       }
@@ -204,6 +206,50 @@ const AprobarTramites = () => {
                   <p className="text-white text-base font-medium mb-4 leading-relaxed bg-slate-900/40 p-4 rounded-lg border border-slate-800">
                     {c.descripcion}
                   </p>
+
+                  {/* Evidencias de la carpeta */}
+                  {c.evidencias && c.evidencias.length > 0 && (
+                    <div className="mt-4 border-t border-slate-700 pt-4 mb-4">
+                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                        🔍 Evidencias Adjuntas ({c.evidencias.length})
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {c.evidencias.map((ev) => (
+                          <div key={ev.id} className="bg-slate-900/60 border border-slate-800 rounded-lg p-3 space-y-2">
+                            <p className="text-white text-sm font-medium">{ev.descripcion}</p>
+                            <div className="flex flex-wrap gap-2 text-xs text-gray-400">
+                              <span>📅 {new Date(ev.fechaRecoleccion).toLocaleDateString()}</span>
+                              {ev.latitud && ev.longitud && (
+                                <span className="text-amber-400">📍 Lat: {Number(ev.latitud).toFixed(4)}, Lng: {Number(ev.longitud).toFixed(4)}</span>
+                              )}
+                            </div>
+                            {ev.imagen && (
+                              <div className="mt-2">
+                                <a href={ev.imagen} target="_blank" rel="noopener noreferrer" className="inline-block" title="Ver imagen en tamaño completo">
+                                  <img src={ev.imagen} alt="Evidencia" className="max-h-24 rounded border border-slate-700 object-contain hover:scale-[1.02] transition-transform" />
+                                </a>
+                              </div>
+                            )}
+                            
+                            {/* Multas asociadas a la evidencia */}
+                            {ev.multas && ev.multas.length > 0 && (
+                              <div className="mt-2 pt-2 border-t border-slate-800/85">
+                                <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">💰 Multas de la Evidencia</p>
+                                <div className="space-y-1">
+                                  {ev.multas.map((m) => (
+                                    <div key={m.id} className="flex justify-between items-center text-xs bg-slate-950/40 p-1.5 rounded border border-slate-800/50">
+                                      <span className="text-gray-300 font-medium truncate">{m.motivoMulta}</span>
+                                      <span className="text-amber-300 font-bold ml-2">${m.montoMulta}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-sm text-gray-400">
                     <div className="flex flex-wrap gap-x-6 gap-y-2">

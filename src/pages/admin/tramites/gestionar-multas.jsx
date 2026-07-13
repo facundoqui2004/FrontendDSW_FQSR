@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from '../../../components/layouts/AdminLayout';
-import { getAllMultasRequest } from '../../../api/multas';
+import { getAllMultasRequest, updateMultaRequest } from '../../../api/multas';
 
 const GestionarMultas = () => {
   const navigate = useNavigate();
@@ -45,26 +45,14 @@ const GestionarMultas = () => {
   const handleAprobarMulta = async (multaId) => {
     if (window.confirm('¿Estás seguro de que quieres aprobar esta multa?')) {
       try {
-        const response = await fetch(`http://localhost:3000/api/multas/${multaId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            estado: 'APROBADA'
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al aprobar la multa');
-        }
-
-        alert('Multa aprobada exitosamente');
-        await cargarMultas();
+        await updateMultaRequest(multaId, { estado: 'APROBADA' });
+        // Actualización instantánea local
+        setMultas(prev => prev.map(m => m.id === multaId ? { ...m, estado: 'APROBADA' } : m));
       } catch (error) {
         console.error('Error al aprobar multa:', error);
-        alert('Error al aprobar la multa: ' + error.message);
+        const errMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error desconocido';
+        alert('Error al aprobar la multa: ' + errMsg);
+        await cargarMultas();
       }
     }
   };
@@ -72,26 +60,14 @@ const GestionarMultas = () => {
   const handleRechazarMulta = async (multaId) => {
     if (window.confirm('¿Estás seguro de que quieres rechazar esta multa?')) {
       try {
-        const response = await fetch(`http://localhost:3000/api/multas/${multaId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            estado: 'RECHAZADA'
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al rechazar la multa');
-        }
-
-        alert('Multa rechazada exitosamente');
-        await cargarMultas();
+        await updateMultaRequest(multaId, { estado: 'RECHAZADA' });
+        // Actualización instantánea local
+        setMultas(prev => prev.map(m => m.id === multaId ? { ...m, estado: 'RECHAZADA' } : m));
       } catch (error) {
         console.error('Error al rechazar multa:', error);
-        alert('Error al rechazar la multa: ' + error.message);
+        const errMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error desconocido';
+        alert('Error al rechazar la multa: ' + errMsg);
+        await cargarMultas();
       }
     }
   };
@@ -108,18 +84,18 @@ const GestionarMultas = () => {
       multa.burocrata?.nomBurocrata?.toLowerCase().includes(busqueda.toLowerCase()) ||
       multa.id?.toString().includes(busqueda);
 
-    const coincideEstado = filtroEstado === 'todos' || multa.estado === filtroEstado;
+    const coincideEstado = filtroEstado === 'todos' || multa.estado?.toUpperCase() === filtroEstado.toUpperCase();
 
     return coincideBusqueda && coincideEstado;
   });
 
   const totalMultas = multas.length;
-  const multasPendientes = multas.filter(m => m.estado === 'PENDIENTE').length;
-  const multasAprobadas = multas.filter(m => m.estado === 'APROBADA').length;
-  const multasRechazadas = multas.filter(m => m.estado === 'RECHAZADA').length;
+  const multasPendientes = multas.filter(m => m.estado?.toUpperCase() === 'PENDIENTE').length;
+  const multasAprobadas = multas.filter(m => m.estado?.toUpperCase() === 'APROBADA').length;
+  const multasRechazadas = multas.filter(m => m.estado?.toUpperCase() === 'RECHAZADA').length;
 
   const getEstadoColor = (estado) => {
-    switch (estado) {
+    switch (estado?.toUpperCase()) {
       case 'PENDIENTE':
         return 'bg-yellow-600 text-yellow-100';
       case 'APROBADA':
@@ -134,7 +110,7 @@ const GestionarMultas = () => {
   };
 
   const getEstadoIcon = (estado) => {
-    switch (estado) {
+    switch (estado?.toUpperCase()) {
       case 'PENDIENTE':
         return '⏳';
       case 'APROBADA':
@@ -489,7 +465,7 @@ const GestionarMultas = () => {
                       </div>
 
                       {/* Acciones */}
-                      {multa.estado === 'PENDIENTE' && (
+                      {multa.estado?.toUpperCase() === 'PENDIENTE' && (
                         <div className="flex gap-2 pt-3">
                           <button
                             onClick={() => handleAprobarMulta(multa.id)}
@@ -509,16 +485,16 @@ const GestionarMultas = () => {
                       )}
 
                       {/* Estado procesado */}
-                      {multa.estado !== 'PENDIENTE' && (
+                      {multa.estado?.toUpperCase() !== 'PENDIENTE' && (
                         <div className={`p-3 rounded-lg border ${
-                          multa.estado === 'APROBADA' || multa.estado === 'PAGADA'
+                          multa.estado?.toUpperCase() === 'APROBADA' || multa.estado?.toUpperCase() === 'PAGADA'
                             ? 'bg-green-900/30 border-green-600/50 text-green-200' 
                             : 'bg-red-900/30 border-red-600/50 text-red-200'
                         }`}>
                           <p className="text-sm font-medium text-center">
-                            {multa.estado === 'APROBADA' && '✅ Multa aprobada'}
-                            {multa.estado === 'PAGADA' && '💰 Multa pagada'}
-                            {multa.estado === 'RECHAZADA' && '❌ Multa rechazada'}
+                            {multa.estado?.toUpperCase() === 'APROBADA' && '✅ Multa aprobada'}
+                            {multa.estado?.toUpperCase() === 'PAGADA' && '💰 Multa pagada'}
+                            {multa.estado?.toUpperCase() === 'RECHAZADA' && '❌ Multa rechazada'}
                           </p>
                         </div>
                       )}

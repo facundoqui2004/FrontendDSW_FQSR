@@ -6,7 +6,7 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { RiCloseFill } from "react-icons/ri";
 import { useAuth } from "../../context/AuthContext";
 
-export default function MetahumanoLayout({ children, theme }) {
+export default function MetahumanoLayout({ children, theme, hideFooter = false, fullScreen = false }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const { user } = useAuth();
@@ -29,7 +29,7 @@ export default function MetahumanoLayout({ children, theme }) {
   const closeUser = () => setShowUser(false);
 
   return (
-    <div className={`${bgClass} w-full min-h-screen transition-all duration-500 flex flex-col`}>
+    <div className={`${bgClass} w-full ${fullScreen ? "h-screen overflow-hidden" : "min-h-screen"} transition-all duration-500 flex flex-col`}>
       {/* Sidebar */}
       <SidebarMetahum showMenu={showMenu} toggleUser={toggleUser} />
 
@@ -45,18 +45,20 @@ export default function MetahumanoLayout({ children, theme }) {
 
       {/* CONTENIDO */}
       <main
-        className={`flex-1 pt-20 lg:pt-6 pb-10 transition-all duration-300 ease-in-out
-        ${showMenu ? "pl-4" : "pl-0"} lg:ml-28`}
+        className={`flex-1 ${fullScreen ? "h-screen pb-4 lg:pb-6" : "pb-10"} pt-20 lg:pt-6 transition-all duration-300 ease-in-out
+        ${showMenu ? "pl-4" : "pl-0"} lg:ml-28 ${fullScreen ? "flex flex-col" : ""}`}
       >
         {children}
       </main>
 
       {/* FOOTER */}
-      <footer
-        className={`mt-auto ${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
-      >
-        <Footer />
-      </footer>
+      {!hideFooter && (
+        <footer
+          className={`mt-auto ${showMenu ? "pl-4" : "pl-0"} transition-all duration-300 ease-in-out lg:ml-28`}
+        >
+          <Footer />
+        </footer>
+      )}
     </div>
   );
 }
